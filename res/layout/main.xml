@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scroll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dip">
+        <LinearLayout android:orientation="horizontal"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="From:"
+                      android:textColor="@color/orange"/>
+            <TextView android:id="@+id/from"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/anywhere"
+                      android:textColor="@color/orange"
+                      android:paddingLeft="10dip"/>
+            <Button android:id="@+id/from_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select"
+                    android:paddingLeft="10dip"/>
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/orange"
+                      android:text="To:"/>
+            <TextView android:id="@+id/to"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/orange"
+                      android:text="@string/anywhere"
+                      android:paddingLeft="10dip"/>
+            <Button android:id="@+id/to_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select"
+                    android:paddingLeft="10dip"/>
+        </LinearLayout>
+        <Button
+                android:id="@+id/submit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/submit_msg"
+                />
+        <TextView android:id="@+id/output"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""/>
+    </LinearLayout>
+</ScrollView>

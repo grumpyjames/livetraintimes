@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">livetraintimes</string>
+    <string name="from">From Station</string>
+    <string name="to">To Station</string>
+    <string name="submit_msg">Find trains!</string>
+    <string name="select">Select</string>
+    <string name="anywhere">Anywhere!</string>
+</resources>
