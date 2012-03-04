@@ -44,19 +44,17 @@ public class FavouriteStationFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setupStationSelector(stationView, getActivity().getBaseContext(), getActivity().getIntent());
+        setupStationSelector(stationView, getActivity().getBaseContext());
     }
 
-    private void setupStationSelector(ListView listView, final Context context, final Intent outerIntent) {
+    private void setupStationSelector(ListView listView, final Context context) {
         final ImmutableList<CharSequence> favourites = ImmutableList.<CharSequence>of("Denmark Hill", "Lewisham", "London Victoria");
         final SimpleAdapter adapter =
                 new SimpleAdapter(context, android.R.layout.simple_list_item_1, favourites);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final CharSequence stationFullName = favourites.get(i);
-                final Intent intent = new Intent(context, LiveTrainTimesActivity.class);
-                intent.putExtras(outerIntent.getExtras());
-                intent.putExtra("STATION", stationFullName);
+                final Intent intent = State.selectStation(stationFullName.toString(), context);
                 startActivity(intent);
             }
         });

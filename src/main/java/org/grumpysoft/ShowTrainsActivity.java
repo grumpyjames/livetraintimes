@@ -26,7 +26,13 @@ public class ShowTrainsActivity extends Activity {
         
         populateBoard(table, State.board);
     }
-    
+
+    @Override
+    public void onBackPressed() {
+        State.unsetStation();
+        super.onBackPressed();
+    }
+
     private static class TrainTableRow extends TableRow {
 
         private final Typeface tf;

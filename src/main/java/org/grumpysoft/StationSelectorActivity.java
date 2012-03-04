@@ -157,10 +157,7 @@ public class StationSelectorActivity extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final CharSequence stationFullName = allStations.get(i);
-                final Intent intent = new Intent(context, LiveTrainTimesActivity.class);
-                intent.putExtras(outerIntent.getExtras());
-                intent.putExtra("STATION", stationFullName);
-                startActivity(intent);
+                startActivity(State.selectStation(stationFullName.toString(), context));
             }
         });
         listView.setAdapter(adapter);
@@ -168,10 +165,7 @@ public class StationSelectorActivity extends Fragment {
     }
 
     private int getSelectedIndex(ArrayAdapter<CharSequence> adapter, final Intent intent) {
-        final String currentlySelected = intent.getExtras().getString(LiveTrainTimesActivity.currentSelection);
-        if (currentlySelected.equals(getResources().getString(R.string.anywhere)))
-            return 0;
-        else
-            return adapter.getPosition(currentlySelected);
+        // FIXME: this is teh broken;
+        return 0;
     }
 }

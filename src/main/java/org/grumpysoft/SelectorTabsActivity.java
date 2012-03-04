@@ -16,6 +16,12 @@ public class SelectorTabsActivity extends FragmentActivity {
     private TabHost host;
 
     @Override
+    public void onBackPressed() {
+        State.unsetStation();
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tabbed_selectors);
