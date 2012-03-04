@@ -19,6 +19,15 @@ public class State {
         }
     }
 
+    public static String currentStation() {
+        // FIXME: almost certainly broken.
+        return STATION_STATE.toStation != null ? STATION_STATE.toStation : STATION_STATE.fromStation;
+    }
+
+    public static CharSequence fromOrTo() {
+        return STATION_STATE.fromStation == null ? "From.." : "From " + STATION_STATE.fromStation + "\n To..";
+    }
+
     private static class StationState {
         String fromStation;
         String toStation;

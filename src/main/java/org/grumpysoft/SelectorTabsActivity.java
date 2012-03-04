@@ -1,12 +1,14 @@
 package org.grumpysoft;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import java.util.HashMap;
 
@@ -25,6 +27,8 @@ public class SelectorTabsActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tabbed_selectors);
+        
+        setFromOrTo();
 
         host = (TabHost) findViewById(android.R.id.tabhost);
         host.setup();
@@ -39,6 +43,13 @@ public class SelectorTabsActivity extends FragmentActivity {
         if (savedInstanceState != null) {
             host.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
+    }
+
+    private void setFromOrTo() {
+        final TextView textView = (TextView) findViewById(R.id.fromOrTo);
+        final Typeface tf = Typeface.createFromAsset(getAssets(), "britrln.ttf");
+        textView.setTypeface(tf);
+        textView.setText(State.fromOrTo());
     }
 
     @Override

@@ -161,11 +161,12 @@ public class StationSelectorActivity extends Fragment {
             }
         });
         listView.setAdapter(adapter);
-        listView.setSelection(getSelectedIndex(adapter, outerIntent));
+        listView.setSelection(getSelectedIndex(adapter));
     }
 
-    private int getSelectedIndex(ArrayAdapter<CharSequence> adapter, final Intent intent) {
-        // FIXME: this is teh broken;
-        return 0;
+    private int getSelectedIndex(ArrayAdapter<CharSequence> adapter) {
+        final String currentStation = State.currentStation();
+        if (currentStation == null) return 0;
+        else return adapter.getPosition(currentStation);
     }
 }
