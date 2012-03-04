@@ -8,14 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
 
 import java.io.IOException;
 
 public class LiveTrainTimesActivity extends Activity
 {
-    final LiveTrainsService service = DepartureBoards.wrap("204.246.215.19");
+    final LiveTrainsService service =
+            DepartureBoards.nationalRailServer(new DefaultHttpClient(new ThreadSafeClientConnManager(new BasicHttpParams(), new DefaultHttpClient().getConnectionManager().getSchemeRegistry()), new BasicHttpParams()));
 
     public static final String type = "TYPE";
+    public static final String currentSelection = "CURRENT";
+
     private final String from = "FROM";
     private final String to = "TO";
 
@@ -31,8 +37,11 @@ public class LiveTrainTimesActivity extends Activity
         if (extras != null) {
             reviveCurrentStations(extras);
             if (extras.containsKey(type))
-                setStation(extras.getInt(type), (String) extras.get("STATION"));
+                setStation(extras.getInt(type), (String) extras.get("STATION"));            
         }
+        addNecessaryResetter(R.id.from, R.id.from_clear);
+        addNecessaryResetter(R.id.to, R.id.to_clear);
+        
         
         final Button fromSelectButton = (Button) findViewById(R.id.from_select);
         setupSelectorButton(fromSelectButton, R.id.from);
@@ -49,6 +58,24 @@ public class LiveTrainTimesActivity extends Activity
         });
     }
 
+    private void addNecessaryResetter(int textViewId, int clearButtonId) {
+        final TextView textView = (TextView) findViewById(textViewId);
+        final View clearButton = findViewById(clearButtonId);
+        final String anywhere = getResources().getString(R.string.anywhere);
+        if (!textView.getText().equals(anywhere)) {
+            clearButton.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    textView.setText(anywhere);
+                    view.setVisibility(View.INVISIBLE);
+                }
+            });
+            clearButton.setVisibility(View.VISIBLE);
+        } else {
+            clearButton.setVisibility(View.INVISIBLE);
+        }        
+    }
+
     private void reviveCurrentStations(Bundle extras) {
         setStation(R.id.from, (String)extras.get(from));
         setStation(R.id.to, (String)extras.get(to));
@@ -62,12 +89,17 @@ public class LiveTrainTimesActivity extends Activity
     private void setupSelectorButton(Button fromSelectButton, final int id) {
         fromSelectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {                
-                final Intent intent = new Intent(getBaseContext(), StationSelectorActivity.class);
+                final Intent intent = new Intent(getBaseContext(), SelectorTabsActivity.class);
                 saveCurrentStations(intent);
                 intent.putExtra(type, id);
+                intent.putExtra(currentSelection, getTextView(id).getText());
                 startActivity(intent);
             }
         });
+    }
+
+    private TextView getTextView(int id) {
+        return (TextView) findViewById(id);
     }
 
     private void saveCurrentStations(Intent intent) {
@@ -122,7 +154,7 @@ public class LiveTrainTimesActivity extends Activity
         protected void onPostExecute(BoardOrError boardOrError) {
             final TextView textView = (TextView) findViewById(R.id.output);
             if (boardOrError.hasBoard())
-                showDepartureBoard(boardOrError, textView);
+                showDepartureBoard(boardOrError);
             else
                 showError(boardOrError, textView);
             super.onPostExecute(boardOrError);
@@ -132,21 +164,10 @@ public class LiveTrainTimesActivity extends Activity
             textView.setText("Problemo: " + boardOrError.error().getMessage());
         }
 
-        private void showDepartureBoard(BoardOrError boardOrError, TextView textView) {
+        private void showDepartureBoard(BoardOrError boardOrError) {
             State.board = boardOrError.board(); // yuk!
             final Intent intent = new Intent(getBaseContext(), ShowTrainsActivity.class);
             startActivity(intent);
-
-//            textView.setText(Joiner.on("\n").join(Iterables.transform(boardOrError.board().departingTrains(), new Function<DepartingTrain, String>() {
-//                public String apply(DepartingTrain departingTrain) {
-//                    return Joiner.on(",").join(departingTrain.destinationList()) + " @ " + departingTrain.expectedAt() +
-//                            " (platform " + platformOrInterrogative(departingTrain.platform()) + ")";
-//                }
-//
-//                private String platformOrInterrogative(String platform) {
-//                    return platform.equals("") ? "?" : platform;
-//                }
-//            })));
         }
     }
 

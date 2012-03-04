@@ -7,32 +7,44 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:padding="10dip">
+        android:padding="10dip"
+        android:gravity="center">
         <LinearLayout android:orientation="horizontal"
                       android:layout_width="fill_parent"
-                      android:layout_height="wrap_content">
+                      android:layout_height="wrap_content"
+                      android:gravity="center">
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="From:"
-                      android:textColor="@color/orange"/>
+                      android:textColor="@color/dull"/>
             <TextView android:id="@+id/from"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="@string/anywhere"
                       android:textColor="@color/orange"
-                      android:paddingLeft="10dip"/>
+                      android:paddingLeft="6dip"/>
+            <Button android:id="@+id/from_clear"
+                    android:background="@android:drawable/ic_delete"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:visibility="invisible"/>
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="right">
             <Button android:id="@+id/from_select"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:text="@string/select"
-                    android:paddingLeft="10dip"/>
+                    />
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout android:orientation="horizontal"
                       android:layout_width="fill_parent"
-                      android:layout_height="wrap_content">
+                      android:layout_height="wrap_content"
+                android:gravity="center">
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:textColor="@color/orange"
+                      android:textColor="@color/dull"
                       android:text="To:"/>
             <TextView android:id="@+id/to"
                       android:layout_width="wrap_content"
@@ -40,17 +52,27 @@
                       android:textColor="@color/orange"
                       android:text="@string/anywhere"
                       android:paddingLeft="10dip"/>
-            <Button android:id="@+id/to_select"
-                    android:layout_width="wrap_content"
+            <Button android:id="@+id/to_clear"
+                    android:background="@android:drawable/ic_delete"
                     android:layout_height="wrap_content"
-                    android:text="@string/select"
-                    android:paddingLeft="10dip"/>
+                    android:layout_width="wrap_content"
+                    android:visibility="invisible"/>
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="right">
+                <Button android:id="@+id/to_select"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select"
+                        />
+            </LinearLayout>
         </LinearLayout>
         <Button
                 android:id="@+id/submit"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/submit_msg"
+                android:color="#000000"
                 />
         <TextView android:id="@+id/output"
                 android:layout_width="fill_parent"
