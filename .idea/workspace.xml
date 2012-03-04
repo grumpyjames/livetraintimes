@@ -12,22 +12,8 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="032a3be9-fc44-45e6-8b8a-01700a426985" name="Default" comment="add icon">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/drawable/ic_tab_a_to_z.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/drawable/ic_tab_favourite.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/layout/tabbed_selectors.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/grumpysoft/FavouriteStationFragment.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/grumpysoft/SelectorTabsActivity.java" />
+    <list default="true" id="032a3be9-fc44-45e6-8b8a-01700a426985" name="Default" comment="move to a tabbed selector activity and add feature to remove a selected station">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/livetraintimes.iml" afterPath="$PROJECT_DIR$/livetraintimes.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/main.xml" afterPath="$PROJECT_DIR$/res/layout/main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/colors.xml" afterPath="$PROJECT_DIR$/res/values/colors.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/grumpysoft/LiveTrainTimesActivity.java" afterPath="$PROJECT_DIR$/src/main/java/org/grumpysoft/LiveTrainTimesActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/grumpysoft/ShowTrainsActivity.java" afterPath="$PROJECT_DIR$/src/main/java/org/grumpysoft/ShowTrainsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/grumpysoft/State.java" afterPath="$PROJECT_DIR$/src/main/java/org/grumpysoft/State.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/grumpysoft/StationSelectorActivity.java" afterPath="$PROJECT_DIR$/src/main/java/org/grumpysoft/StationSelectorActivity.java" />
     </list>
     <ignored path="livetraintimes.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -87,15 +73,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Bundle.class" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/bin/android-sdk-linux/platforms/android-15/android.jar!/android/os/Bundle.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="184" column="0" selection-start="8637" selection-end="8637" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="LiveTrainTimesActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/LiveTrainTimesActivity.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -123,37 +100,50 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StationSelectorActivity.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="StationSelectorActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/StationSelectorActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="0" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.82137626">
+            <state line="172" column="81" selection-start="6775" selection-end="6775" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ShowTrainsActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/ShowTrainsActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="158" column="24" selection-start="5544" selection-end="5544" vertical-scroll-proportion="1.2413273">
+              <folding>
+                <element signature="e#5481#5519#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Bundle.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/bin/android-sdk-linux/platforms/android-15/android.jar!/android/os/Bundle.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="131" column="28" selection-start="5956" selection-end="5956" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
+      <file leaf-file-name="SelectorTabsActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/SelectorTabsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="18" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0">
+            <state line="145" column="0" selection-start="5504" selection-end="5504" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="select_station.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/select_station.xml">
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="50" selection-start="493" selection-end="493" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="show_board.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/show_board.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="66" selection-start="425" selection-end="425" vertical-scroll-proportion="0.0">
+            <state line="13" column="19" selection-start="685" selection-end="685" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -192,15 +182,12 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/org/grumpysoft/ShowTrainsActivity.java" />
         <option value="$PROJECT_DIR$/tests/src/test/java/org/grumpysoft/StationIndexerTest.java" />
         <option value="$PROJECT_DIR$/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/res/layout/show_board.xml" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/res/layout/tabbed_selectors.xml" />
         <option value="$PROJECT_DIR$/src/main/java/org/grumpysoft/State.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/grumpysoft/StationSelectorActivity.java" />
         <option value="$PROJECT_DIR$/res/drawable/ic_tab_artists.xml" />
         <option value="$PROJECT_DIR$/res/drawable/ic_tab_a_to_z.xml" />
         <option value="$PROJECT_DIR$/res/drawable/ic_tab_favourite.xml" />
@@ -208,6 +195,9 @@
         <option value="$PROJECT_DIR$/src/main/java/org/grumpysoft/FavouriteStationFragment.java" />
         <option value="$PROJECT_DIR$/res/layout/main.xml" />
         <option value="$PROJECT_DIR$/src/main/java/org/grumpysoft/LiveTrainTimesActivity.java" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/org/grumpysoft/StationSelectorActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/grumpysoft/ShowTrainsActivity.java" />
       </list>
     </option>
   </component>
@@ -780,7 +770,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33584195" sideWeight="0.34490123" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283161" sideWeight="0.49386013" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32796207" sideWeight="0.49386013" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925683" sideWeight="0.49599573" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -832,7 +822,7 @@
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
     <option name="CREATE_PATCH_EXPAND_DETAILS_DEFAULT" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="idea build files" />
+    <option name="LAST_COMMIT_MESSAGE" value="ignore libs and bin" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -848,6 +838,9 @@
     <MESSAGE value="add icon" />
     <MESSAGE value="centre the 'no trains' display" />
     <MESSAGE value="idea build files" />
+    <MESSAGE value="more idea stuff (ugh)" />
+    <MESSAGE value="move to a tabbed selector activity and add feature to remove a selected station" />
+    <MESSAGE value="ignore libs and bin" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -857,21 +850,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/bin/android-sdk-linux/extras/android/support/v13/android-support-v13.jar!/android/support/v4/app/Fragment.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="50" selection-start="2018" selection-end="2018" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/drawable/ic_tab_a_to_z.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="76" selection-start="152" selection-end="224" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/SelectorTabsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="145" column="0" selection-start="5504" selection-end="5504" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/FavouriteStationFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="23" selection-start="1323" selection-end="1323" vertical-scroll-proportion="0.0" />
@@ -880,11 +858,6 @@
     <entry file="file://$PROJECT_DIR$/res/drawable/ic_tab_favourite.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="61" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/bin/android-sdk-linux/platforms/android-15/android.jar!/android/os/Bundle.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="184" column="0" selection-start="8637" selection-end="8637" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
@@ -917,13 +890,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/LiveTrainTimesActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="34" selection-start="2181" selection-end="2181" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/res/values/colors.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="18" selection-start="71" selection-end="71" vertical-scroll-proportion="0.0">
@@ -938,10 +904,47 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/SelectorTabsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="145" column="0" selection-start="5504" selection-end="5504" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/LiveTrainTimesActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="58" column="34" selection-start="2181" selection-end="2181" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="19" selection-start="685" selection-end="685" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/bin/android-sdk-linux/platforms/android-15/android.jar!/android/os/Bundle.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="131" column="28" selection-start="5956" selection-end="5956" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/StationSelectorActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="0" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.82137626">
-          <folding />
+        <state line="172" column="81" selection-start="6775" selection-end="6775" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/grumpysoft/ShowTrainsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="158" column="24" selection-start="5544" selection-end="5544" vertical-scroll-proportion="1.2413273">
+          <folding>
+            <element signature="e#5481#5519#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
