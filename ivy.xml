@@ -1,0 +1,6 @@
+<ivy-module version="2.0">
+    <info organisation="org.grumpysoft" module="livetraintimes"/>
+    <dependencies>
+        <dependency org="org.grumpysoft" name="traintimes_2.9.1" rev="0.1" conf="default->runtime"/>
+    </dependencies>
+</ivy-module>
