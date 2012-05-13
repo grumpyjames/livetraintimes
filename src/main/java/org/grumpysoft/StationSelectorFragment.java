@@ -18,7 +18,7 @@ import org.grumpysoft.impl.Stations;
 
 import java.util.List;
 
-public class StationSelectorActivity extends Fragment {
+public class StationSelectorFragment extends Fragment {
 
     private Typeface tf;
 

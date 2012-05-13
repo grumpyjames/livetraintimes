@@ -36,7 +36,7 @@ public class SelectorTabsActivity extends FragmentActivity {
         tabManager = new TabManager(this, host, R.id.realtabcontent);
 
         tabManager.addTab(host.newTabSpec("List").setIndicator("List", getResources().getDrawable(R.drawable.ic_tab_a_to_z)),
-                StationSelectorActivity.class, savedInstanceState);
+                StationSelectorFragment.class, savedInstanceState);
         tabManager.addTab(host.newTabSpec("Favourites").setIndicator("Favourites", getResources().getDrawable(R.drawable.ic_tab_favourite)),
                 FavouriteStationFragment.class, savedInstanceState);
 
