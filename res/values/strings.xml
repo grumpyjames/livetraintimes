@@ -6,4 +6,5 @@
     <string name="submit_msg">Find trains!</string>
     <string name="select">=</string>
     <string name="anywhere">Anywhere!</string>
+    <string name="searchHint">Start typing the station name…</string>
 </resources>

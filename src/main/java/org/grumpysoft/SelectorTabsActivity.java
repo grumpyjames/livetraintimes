@@ -39,6 +39,8 @@ public class SelectorTabsActivity extends FragmentActivity {
                 StationSelectorFragment.class, savedInstanceState);
         tabManager.addTab(host.newTabSpec("Favourites").setIndicator("Favourites", getResources().getDrawable(R.drawable.ic_tab_favourite)),
                 FavouriteStationFragment.class, savedInstanceState);
+        tabManager.addTab(host.newTabSpec("Search").setIndicator("Search", getResources().getDrawable(R.drawable.ic_tab_search)),
+                StationSearchFragment.class, savedInstanceState);
 
         if (savedInstanceState != null) {
             host.setCurrentTabByTag(savedInstanceState.getString("tab"));
