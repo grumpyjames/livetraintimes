@@ -48,7 +48,7 @@ public class FavouriteStationFragment extends Fragment {
     }
 
     private void setupStationSelector(ListView listView, final Context context) {
-        final ImmutableList<CharSequence> favourites = ImmutableList.<CharSequence>of("Denmark Hill", "Lewisham", "London Victoria");
+        final ImmutableList<CharSequence> favourites = ImmutableList.<CharSequence>of("Anywhere!", "Denmark Hill", "Lewisham", "London Victoria");
         final SimpleAdapter adapter =
                 new SimpleAdapter(context, android.R.layout.simple_list_item_1, favourites);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

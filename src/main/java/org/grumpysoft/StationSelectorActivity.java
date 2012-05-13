@@ -22,11 +22,12 @@ public class StationSelectorActivity extends Fragment {
 
     private Typeface tf;
 
-    private static final List<CharSequence> allStations = ImmutableList.copyOf(Iterables.transform(Stations.allStations(), new Function<Station, CharSequence>() {
-        public CharSequence apply(Station station) {
-            return station.fullName();
-        }
-    }));
+    private static final List<CharSequence> allStations = ImmutableList.copyOf(Iterables.concat(ImmutableList.of("Anywhere!"),
+            Iterables.transform(Stations.allStations(), new Function<Station, CharSequence>() {
+                public CharSequence apply(Station station) {
+                    return station.fullName();
+                }
+    })));
     private View fullView;
 
     @Override
@@ -61,7 +62,7 @@ public class StationSelectorActivity extends Fragment {
     }
 
     private List<IndexResult> index(List<CharSequence> toIndex, String[] toIndexBy) {
-        int currentPosition = 0;
+        int currentPosition = 1; // skip "Anywhere!"
         int currentIndexIndex = 0;
         final List<IndexResult> results = Lists.newArrayList();
 
