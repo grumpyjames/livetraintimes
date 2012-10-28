@@ -9,8 +9,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import org.grumpysoft.impl.Stations;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class SelectorTabsActivity extends FragmentActivity {
 
@@ -44,7 +51,18 @@ public class SelectorTabsActivity extends FragmentActivity {
 
         if (savedInstanceState != null) {
             host.setCurrentTabByTag(savedInstanceState.getString("tab"));
+            for (Station station : deserializeFavouritesFrom(savedInstanceState.getCharSequenceArray("favourites")))
+                Favourites.toggleFavourite(station, true);
         }
+    }
+
+    private List<Station> deserializeFavouritesFrom(CharSequence[] favourites) {
+        return Lists.transform(ImmutableList.copyOf(favourites), new Function<CharSequence, Station>() {
+            @Override
+            public Station apply(CharSequence charSequence) {
+                return Iterables.getOnlyElement(StationService.findStations(charSequence.toString()));
+            }
+        });
     }
 
     private void setFromOrTo() {
@@ -58,6 +76,20 @@ public class SelectorTabsActivity extends FragmentActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("tab", host.getCurrentTabTag());
+        outState.putCharSequenceArray("favourites", currentFavouritesAsArray());
+    }
+
+    private CharSequence[] currentFavouritesAsArray() {
+        return Lists.transform(ImmutableList.copyOf(currentFavourites()), new Function<Station, CharSequence>() {
+            @Override
+            public CharSequence apply(Station station) {
+                return station.threeLetterCode();
+            }
+        }).toArray(new CharSequence[currentFavourites().size()]);
+    }
+
+    private Set<Station> currentFavourites() {
+        return Favourites.getFavourites();
     }
 
     /**
