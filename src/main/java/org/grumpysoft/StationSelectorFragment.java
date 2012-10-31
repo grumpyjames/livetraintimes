@@ -35,7 +35,6 @@ public class StationSelectorFragment extends Fragment {
     }
 
     private void setupStationSelector(ListView listView, final Context context) {
-        final ArrayAdapter<Station> adapter = new IndexedStationAdapter(this, context, tf);
-        listView.setAdapter(adapter);
+        listView.setAdapter(new IndexedStationAdapter(this, context, tf));
     }
 }

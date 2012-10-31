@@ -36,8 +36,8 @@ public class FavouriteStationFragment extends Fragment {
         final StationAdapter adapter = new StationAdapter(this, context, tf, ImmutableList.copyOf(favourites));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final Station station = adapter.getItem(i);
-                final Intent intent = State.selectStation(station.fullName().toString(), context);
+                final Station station = (Station) adapter.getItem(i);
+                final Intent intent = State.selectStation(station.fullName(), context);
                 startActivity(intent);
             }
         });

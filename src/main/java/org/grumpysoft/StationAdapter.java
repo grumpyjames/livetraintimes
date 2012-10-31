@@ -1,42 +1,58 @@
 package org.grumpysoft;
 
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 
-import java.util.Collection;
 import java.util.List;
 
-class StationAdapter extends ArrayAdapter<Station> {
+class StationAdapter extends BaseAdapter {
+    private final Context context;
     private final Typeface tf;
+    private final List<Station> stations;
     private final Fragment fragment;
     private final TextView.OnClickListener clickListener = new TextView.OnClickListener() {
         @Override
         public void onClick(View view) {
-            fragment.startActivity(State.selectStation(((TextView) view).getText().toString(), getContext()));
+            fragment.startActivity(State.selectStation(((TextView) view).getText().toString(), context));
         }
     };
 
     public StationAdapter(Fragment fragment, Context context, Typeface tf, List<Station> stations) {
-        super(context, android.R.layout.simple_list_item_1, stations);
+
         this.fragment = fragment;
+        this.context = context;
         this.tf = tf;
+        this.stations = stations;
     }
 
     @Override
-    public void addAll(Collection<? extends Station> stations) {
-        super.addAll(stations);
+    public int getCount() {
+        return stations.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return stations.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
     public View getView(final int position, View uselessView, ViewGroup parent) {
-        final View convertView = LayoutInflater.from(getContext()).inflate(R.layout.station, parent, false);
-
-        final Station station = getItem(position);
+        final LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View convertView = layoutInflater.inflate(R.layout.station, null);
+        final Station station = (Station) getItem(position);
 
         final TextView textView = (TextView) convertView.findViewById(R.id.station_name);
         textView.setTextColor(fragment.getResources().getColor(R.color.orange));
