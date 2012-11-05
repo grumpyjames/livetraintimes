@@ -26,7 +26,6 @@ class StationAdapter extends BaseAdapter {
     };
 
     public StationAdapter(Fragment fragment, Context context, Typeface tf, List<Station> stations) {
-
         this.fragment = fragment;
         this.context = context;
         this.tf = tf;
@@ -55,7 +54,7 @@ class StationAdapter extends BaseAdapter {
         final Station station = (Station) getItem(position);
 
         final TextView textView = (TextView) convertView.findViewById(R.id.station_name);
-        textView.setTextColor(fragment.getResources().getColor(R.color.orange));
+        textView.setTextColor(context.getResources().getColor(R.color.orange));
         textView.setTypeface(tf);
         textView.setText(station.fullName());
         textView.setOnClickListener(clickListener);

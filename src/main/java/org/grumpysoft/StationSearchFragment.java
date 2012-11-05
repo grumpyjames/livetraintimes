@@ -14,7 +14,12 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class StationSearchFragment extends Fragment {
+public class StationSearchFragment extends Fragment implements MiniFragment {
+    @Override
+    public void initialize(Context baseContext) {
+        // already done
+    }
+
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.search_stations, container, false);

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
-public class StationSelectorFragment extends Fragment {
+public class StationSelectorFragment extends Fragment implements MiniFragment {
 
     private Typeface tf;
     private View fullView;
@@ -24,14 +24,14 @@ public class StationSelectorFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initialize(getActivity());
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), getActivity().getBaseContext());
+    public void initialize(Context baseContext) {
+        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), baseContext);
     }
 
     private void setupStationSelector(ListView listView, final Context context) {
