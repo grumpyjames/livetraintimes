@@ -20,17 +20,15 @@ public class ShowTrainsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_board);               
+        setContentView(R.layout.show_board);
+
+        final StationState stationState = (StationState) getIntent().getExtras().get("state");
+        final State.BoardOrError board = State.fetchTrains(this, stationState);
 
         final TableLayout table = (TableLayout) findViewById(R.id.board);
-        
-        populateBoard(table, State.board);
-    }
 
-    @Override
-    public void onBackPressed() {
-        State.unsetStation();
-        super.onBackPressed();
+        if (board.hasBoard())
+            populateBoard(table, board.board());
     }
 
     private static class TrainTableRow extends TableRow {

@@ -29,20 +29,13 @@ public class FavouriteStationFragment extends Fragment implements MiniFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize(getActivity());
+        initialize(getActivity(), null);
     }
 
     @Override
-    public void initialize(final Context context) {
+    public void initialize(final Context context, final State state) {
         final Set<Station> favourites = Favourites.getFavourites();
-        final StationAdapter adapter = new StationAdapter(this, context, tf, ImmutableList.copyOf(favourites));
-        stationView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final Station station = (Station) adapter.getItem(i);
-                final Intent intent = State.selectStation(station.fullName(), context);
-                startActivity(intent);
-            }
-        });
+        final StationAdapter adapter = new StationAdapter(context, tf, ImmutableList.copyOf(favourites), state);
         stationView.setAdapter(adapter);
     }
 }

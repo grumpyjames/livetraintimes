@@ -2,7 +2,6 @@ package org.grumpysoft;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +16,19 @@ class StationAdapter extends BaseAdapter {
     private final Context context;
     private final Typeface tf;
     private final List<Station> stations;
-    private final Fragment fragment;
-    private final TextView.OnClickListener clickListener = new TextView.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            fragment.startActivity(State.selectStation(((TextView) view).getText().toString(), context));
-        }
-    };
+    private final TextView.OnClickListener clickListener;
 
-    public StationAdapter(Fragment fragment, Context context, Typeface tf, List<Station> stations) {
-        this.fragment = fragment;
+    public StationAdapter(final Context context, final Typeface tf, final List<Station> stations, final State state) {
         this.context = context;
         this.tf = tf;
         this.stations = stations;
+        this.clickListener = new TextView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (state.selectStation(((TextView) view).getText().toString()))
+                    state.launchShowTrainsActivity(context);
+            }
+        };
     }
 
     @Override

@@ -22,10 +22,11 @@ public class SelectorTabsActivity extends FragmentActivity {
 
     private TabManager tabManager;
     private TabHost host;
+    private State state;
 
     @Override
     public void onBackPressed() {
-        State.unsetStation();
+        state.unsetStation();
         super.onBackPressed();
     }
 
@@ -33,8 +34,11 @@ public class SelectorTabsActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tabbed_selectors);
-        
-        setFromOrTo();
+
+        final TextView textView = (TextView) findViewById(R.id.fromOrTo);
+        final Typeface tf = Typeface.createFromAsset(getAssets(), "britrln.ttf");
+        textView.setTypeface(tf);
+        state = new State(textView);
 
         host = (TabHost) findViewById(android.R.id.tabhost);
         host.setup();
@@ -62,13 +66,6 @@ public class SelectorTabsActivity extends FragmentActivity {
                 return Iterables.getOnlyElement(StationService.findStations(charSequence.toString()));
             }
         });
-    }
-
-    private void setFromOrTo() {
-        final TextView textView = (TextView) findViewById(R.id.fromOrTo);
-        final Typeface tf = Typeface.createFromAsset(getAssets(), "britrln.ttf");
-        textView.setTypeface(tf);
-        textView.setText(State.fromOrTo());
     }
 
     @Override

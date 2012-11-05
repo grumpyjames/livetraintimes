@@ -3,6 +3,7 @@ package org.grumpysoft;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.widget.TextView;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -11,42 +12,25 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class State {
-    public static void unsetStation() {
-        if (STATION_STATE.toStation != null) {
-            STATION_STATE.withToStation(null);
+    State(TextView view) {
+        this.stationState = new StationState(view);
+    }
+
+    public void unsetStation() {
+        if (stationState.toStation != null) {
+            stationState.withToStation(null);
         } else {
-            STATION_STATE.withFromStation(null);
+            stationState.withFromStation(null);
         }
     }
 
-    public static String currentStation() {
-        // FIXME: almost certainly broken.
-        return STATION_STATE.toStation != null ? STATION_STATE.toStation : STATION_STATE.fromStation;
+    public void launchShowTrainsActivity(Context context) {
+        final Intent showTrainsIntent = new Intent(context, ShowTrainsActivity.class);
+        showTrainsIntent.putExtra("state", stationState);
+        context.startActivity(showTrainsIntent);
     }
 
-    public static CharSequence fromOrTo() {
-        return STATION_STATE.fromStation == null ? "From.." : "From " + STATION_STATE.fromStation + "\n To..";
-    }
-
-    private static class StationState {
-        String fromStation;
-        String toStation;
-        
-        private StationState() {
-            this.fromStation = null;
-            this.toStation = null;            
-        }
-        
-        private void withFromStation(String station) {
-            this.fromStation = station;
-        }
-        
-        private void withToStation(String station) {
-            this.toStation = station;
-        }
-    }
-
-    private static class BoardOrError {
+    public static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;
 
@@ -60,7 +44,7 @@ public class State {
             board = null;
         }
 
-        private boolean hasBoard() {
+        public boolean hasBoard() {
             return board != null;
         }
 
@@ -69,7 +53,7 @@ public class State {
             return error;
         }
 
-        private DepartureBoard board() {
+        public DepartureBoard board() {
             return board;
         }
     }
@@ -105,29 +89,27 @@ public class State {
         }
     }
     
-    private static final StationState STATION_STATE = new StationState();
+    private final StationState stationState;
 
-    public static Intent selectStation(String station, Context context) {
-        if (STATION_STATE.fromStation == null) {
-            STATION_STATE.withFromStation(station);
-            return new Intent(context, SelectorTabsActivity.class);
+    public boolean selectStation(String station) {
+        if (stationState.fromStation == null) {
+            stationState.withFromStation(station);
+            return false;
         } else {
-            STATION_STATE.withToStation(station);
-            final GetBoardsTask task = new GetBoardsTask(context);
-            try {
-                final BoardOrError board = task.execute(STATION_STATE.fromStation, STATION_STATE.toStation).get();
-                if (board.hasBoard()) {
-                    State.board = board.board(); // yuk!
-                    return new Intent(context, ShowTrainsActivity.class);
-                } else {
-                   throw new RuntimeException("ffs");
-                }
-            } catch (InterruptedException e) {
-                //FIXME: pass on the interrupt..
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            }
+            stationState.withToStation(station);
+            return true;
+        }
+    }
+
+    public static BoardOrError fetchTrains(Context context, StationState stationState) {
+        final GetBoardsTask task = new GetBoardsTask(context);
+        try {
+            return task.execute(stationState.fromStation, stationState.toStation).get();
+        } catch (InterruptedException e) {
+            //FIXME: pass on the interrupt..
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 

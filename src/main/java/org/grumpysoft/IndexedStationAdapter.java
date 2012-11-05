@@ -26,8 +26,8 @@ class IndexedStationAdapter extends StationAdapter implements SectionIndexer {
     private static final List<IndexResult> results = workoutIndices();
 
 
-    public IndexedStationAdapter(Fragment fragment, Context context, Typeface typeface) {
-        super(fragment, context, typeface, copyOf(Stations.allStations()));
+    public IndexedStationAdapter(Context context, Typeface typeface, State state) {
+        super(context, typeface, copyOf(Stations.allStations()), state);
     }
 
     public Object[] getSections() {

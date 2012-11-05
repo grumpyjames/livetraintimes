@@ -1,6 +1,5 @@
 package org.grumpysoft;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -26,15 +25,15 @@ public class StationSelectorFragment extends Fragment implements MiniFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize(getActivity());
+        initialize(getActivity(), null);
     }
 
     @Override
-    public void initialize(Context baseContext) {
-        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), baseContext);
+    public void initialize(Context baseContext, State state) {
+        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), baseContext, state);
     }
 
-    private void setupStationSelector(ListView listView, final Context context) {
-        listView.setAdapter(new IndexedStationAdapter(this, context, tf));
+    private void setupStationSelector(ListView listView, final Context context, State state) {
+        listView.setAdapter(new IndexedStationAdapter(context, tf, state));
     }
 }
