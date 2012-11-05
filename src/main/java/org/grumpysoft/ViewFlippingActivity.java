@@ -10,6 +10,12 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 public class ViewFlippingActivity extends Activity {
+    private State state;
+
+    @Override
+    public void onBackPressed() {
+        if (state.unwind()) super.onBackPressed();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +25,7 @@ public class ViewFlippingActivity extends Activity {
         final TextView textView = (TextView) findViewById(R.id.fromOrTo);
         final Typeface tf = Typeface.createFromAsset(getAssets(), "britrln.ttf");
         textView.setTypeface(tf);
-        final State state = new State(textView);
+        state = new State(textView);
 
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         final ViewFlipper viewflipper = (ViewFlipper) findViewById(R.id.flipper);

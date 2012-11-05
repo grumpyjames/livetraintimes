@@ -30,6 +30,10 @@ public class State {
         context.startActivity(showTrainsIntent);
     }
 
+    public boolean unwind() {
+        return stationState.unwind();
+    }
+
     public static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;

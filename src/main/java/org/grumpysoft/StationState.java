@@ -13,6 +13,7 @@ class StationState implements Serializable {
         this.view = view;
         this.fromStation = null;
         this.toStation = null;
+        updateView();
     }
 
     void withFromStation(String station) {
@@ -36,5 +37,20 @@ class StationState implements Serializable {
             return "From " + fromStation + " To...";
         else
             return "From " + fromStation + " To " + toStation;
+    }
+
+    public boolean unwind() {
+        final boolean result;
+        if (toStation != null) {
+            toStation = null;
+            result = false;
+        } else if (fromStation != null) {
+            fromStation = null;
+            result = false;
+        } else {
+            result = true;
+        }
+        updateView();
+        return result;
     }
 }
