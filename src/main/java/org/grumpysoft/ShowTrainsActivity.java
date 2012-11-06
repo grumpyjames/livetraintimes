@@ -15,6 +15,8 @@ import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.List;
 
+import static org.grumpysoft.Favourites.currentFavouritesAsArray;
+
 public class ShowTrainsActivity extends Activity {
 
     @Override
@@ -29,6 +31,11 @@ public class ShowTrainsActivity extends Activity {
 
         if (board.hasBoard())
             populateBoard(table, board.board());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequenceArray("favourites", currentFavouritesAsArray());
     }
 
     private static class TrainTableRow extends TableRow {
