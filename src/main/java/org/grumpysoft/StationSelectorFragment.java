@@ -1,22 +1,19 @@
 package org.grumpysoft;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ListView;
 
 public class StationSelectorFragment extends Fragment implements MiniFragment {
 
-    private Typeface tf;
     private View fullView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        tf = Typeface.createFromAsset(inflater.getContext().getAssets(), "britrln.ttf");
         fullView = inflater.inflate(R.layout.select_station, container, false);
 
         return fullView;
@@ -34,6 +31,6 @@ public class StationSelectorFragment extends Fragment implements MiniFragment {
     }
 
     private void setupStationSelector(ListView listView, final Context context, State state) {
-        listView.setAdapter(new IndexedStationAdapter(context, tf, state));
+        listView.setAdapter(new IndexedStationAdapter(context, state));
     }
 }

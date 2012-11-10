@@ -2,7 +2,6 @@ package org.grumpysoft;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -40,13 +39,10 @@ public class ShowTrainsActivity extends Activity {
 
     private static class TrainTableRow extends TableRow {
 
-        private final Typeface tf;
-        
         private TextView destinationArrivalTimeView;
 
-        public TrainTableRow(Context context, Typeface tf, DepartingTrain train) {
+        public TrainTableRow(Context context, DepartingTrain train) {
             super(context);
-            this.tf = tf;
             setId(train.serviceId().hashCode()); //risky business!
             setPadding(1, 1, 1, 1);
             addStationNameView(train);
@@ -96,8 +92,7 @@ public class ShowTrainsActivity extends Activity {
         private TextView textViewWithGravity(int gravity) {
             final TextView view = new TextView(getContext());
             view.setGravity(gravity);
-            view.setTypeface(tf);
-            view.setTextColor(getResources().getColor(R.color.orange));
+            Utility.changeFonts(view, getContext().getAssets(), getContext().getResources());
             return view;
         }
     }
@@ -133,13 +128,12 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private void populateBoard(TableLayout table, DepartureBoard board) {
-        Utility.changeFonts(table, getAssets());
-        final Typeface tf = Typeface.createFromAsset(getAssets(), "britrln.ttf");
+        Utility.changeFonts(table, getAssets(), getResources());
         final List<DepartingTrain> trains = ImmutableList.copyOf(board.departingTrains());
         if (trains.size() > 0) {
             table.removeAllViews();
             for (DepartingTrain train: board.departingTrains()) {
-                final TrainTableRow row = new TrainTableRow(getBaseContext(), tf, train);
+                final TrainTableRow row = new TrainTableRow(getBaseContext(), train);
                 table.addView(row);
                 if (board.hasToStation())
                     new FetchDetailsTask(row, board.toStation()).execute(train);

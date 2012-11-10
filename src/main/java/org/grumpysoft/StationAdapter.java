@@ -1,7 +1,6 @@
 package org.grumpysoft;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,11 @@ import java.util.List;
 
 class StationAdapter extends BaseAdapter {
     private final Context context;
-    private final Typeface tf;
     private final List<Station> stations;
     private final TextView.OnClickListener clickListener;
 
-    public StationAdapter(final Context context, final Typeface tf, final List<Station> stations, final State state) {
+    public StationAdapter(final Context context, final List<Station> stations, final State state) {
         this.context = context;
-        this.tf = tf;
         this.stations = stations;
         this.clickListener = new TextView.OnClickListener() {
             @Override
@@ -53,8 +50,8 @@ class StationAdapter extends BaseAdapter {
         final Station station = (Station) getItem(position);
 
         final TextView textView = (TextView) convertView.findViewById(R.id.station_name);
-        textView.setTextColor(context.getResources().getColor(R.color.orange));
-        textView.setTypeface(tf);
+        Utility.changeFonts(textView, context.getAssets(), context.getResources());
+
         textView.setText(station.fullName());
         textView.setOnClickListener(clickListener);
 

@@ -6,6 +6,6 @@
               android:id="@+id/board"
               android:stretchColumns="1">
     <TableRow android:id="@+id/no_trains" android:gravity="center">
-        <TextView android:text="No Trains!" android:paddingLeft="2dip" android:textColor="@color/orange"/>
+        <TextView android:text="No Trains!" android:paddingLeft="2dip"/>
     </TableRow>
 </TableLayout>

@@ -1,7 +1,6 @@
 package org.grumpysoft;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.grumpysoft.Favourites.currentFavouritesAsArray;
 
@@ -37,8 +35,7 @@ public class ViewFlippingActivity extends Activity {
         }
 
         final TextView textView = (TextView) findViewById(R.id.fromOrTo);
-        final Typeface tf = Typeface.createFromAsset(getAssets(), "britrln.ttf");
-        textView.setTypeface(tf);
+        Utility.changeFonts(textView, getAssets(), getResources());
         state = new State(textView);
 
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);

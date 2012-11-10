@@ -1,8 +1,6 @@
 package org.grumpysoft;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v4.app.Fragment;
 import android.widget.SectionIndexer;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -26,8 +24,8 @@ class IndexedStationAdapter extends StationAdapter implements SectionIndexer {
     private static final List<IndexResult> results = workoutIndices();
 
 
-    public IndexedStationAdapter(Context context, Typeface typeface, State state) {
-        super(context, typeface, copyOf(Stations.allStations()), state);
+    public IndexedStationAdapter(Context context, State state) {
+        super(context, copyOf(Stations.allStations()), state);
     }
 
     public Object[] getSections() {
