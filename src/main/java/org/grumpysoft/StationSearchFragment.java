@@ -34,6 +34,11 @@ public class StationSearchFragment extends Fragment implements MiniFragment {
         return view;
     }
 
+    @Override
+    public void onShow(Context context, State state) {
+        // nothing required
+    }
+
     private void attachEditListener(final EditText editView, final ListView resultView,
                                     final Context context, final State state) {
         editView.addTextChangedListener(new TextWatcher() {

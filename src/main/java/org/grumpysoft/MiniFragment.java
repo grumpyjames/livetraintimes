@@ -10,4 +10,6 @@ public interface MiniFragment {
     void initialize(Context baseContext, State state);
 
     View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+
+    void onShow(Context context, State state);
 }

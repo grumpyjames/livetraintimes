@@ -20,6 +20,11 @@ public class StationSelectorFragment extends Fragment implements MiniFragment {
     }
 
     @Override
+    public void onShow(Context context, State state) {
+        // nothing required
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initialize(getActivity(), null);

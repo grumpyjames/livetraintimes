@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import com.google.common.collect.ImmutableList;
 
-import java.util.Set;
-
 public class FavouriteStationFragment extends Fragment implements MiniFragment {
     private ListView stationView;
 
@@ -22,6 +20,11 @@ public class FavouriteStationFragment extends Fragment implements MiniFragment {
     }
 
     @Override
+    public void onShow(final Context context, final State state) {
+        initialize(context, state);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initialize(getActivity(), null);
@@ -29,8 +32,8 @@ public class FavouriteStationFragment extends Fragment implements MiniFragment {
 
     @Override
     public void initialize(final Context context, final State state) {
-        final Set<Station> favourites = Favourites.getFavourites();
-        final StationAdapter adapter = new StationAdapter(context, ImmutableList.copyOf(favourites), state);
+        final StationAdapter adapter =
+                new StationAdapter(context, ImmutableList.copyOf(Favourites.getFavourites()), state);
         stationView.setAdapter(adapter);
     }
 }
