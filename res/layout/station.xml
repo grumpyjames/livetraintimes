@@ -10,5 +10,6 @@
               android:button="@drawable/favourite"/>
     <TextView android:id="@+id/station_name"
               android:layout_height="wrap_content"
-              android:layout_width="fill_parent"/>
+              android:layout_width="fill_parent"
+              style="@style/station"/>
 </LinearLayout>
