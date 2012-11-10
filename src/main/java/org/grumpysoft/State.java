@@ -116,6 +116,4 @@ public class State {
             throw new RuntimeException(e);
         }
     }
-
-    public static DepartureBoard board;         
 }

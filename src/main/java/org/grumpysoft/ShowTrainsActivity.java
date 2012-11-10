@@ -104,9 +104,11 @@ public class ShowTrainsActivity extends Activity {
 
     private class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
         private final TrainTableRow rowToUpdate;
+        private final Station targetStation;
 
-        private FetchDetailsTask(TrainTableRow rowToUpdate) {
+        private FetchDetailsTask(TrainTableRow rowToUpdate, Station station) {
             this.rowToUpdate = rowToUpdate;
+            targetStation = station;
         }
 
         @Override
@@ -122,7 +124,7 @@ public class ShowTrainsActivity extends Activity {
         protected void onPostExecute(ServiceDetailsOrError serviceDetailsOrError) {
             if (serviceDetailsOrError.hasDetails()) {
                 for (CallingPoint point: serviceDetailsOrError.details()) {
-                    if (point.stationName().equals(State.board.toStation().fullName()))
+                    if (point.stationName().equals(targetStation.fullName()))
                         rowToUpdate.updateArrivalTime(point.scheduledTime());
                 }
             }
@@ -140,7 +142,7 @@ public class ShowTrainsActivity extends Activity {
                 final TrainTableRow row = new TrainTableRow(getBaseContext(), tf, train);
                 table.addView(row);
                 if (board.hasToStation())
-                    new FetchDetailsTask(row).execute(train);
+                    new FetchDetailsTask(row, board.toStation()).execute(train);
             }
         }
     }
