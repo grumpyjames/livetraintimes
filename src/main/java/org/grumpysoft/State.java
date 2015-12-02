@@ -9,9 +9,10 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
-public class State {
+public class State implements Serializable {
     State(TextView view) {
         this.stationState = new StationState(view);
     }

@@ -11,10 +11,11 @@ import com.google.common.collect.ImmutableList;
 
 public class FavouriteStationFragment extends Fragment implements MiniFragment {
     private ListView stationView;
-    private final State state;
+    private State state;
 
-    public FavouriteStationFragment(State state) {
-        this.state = state;
+    @Override
+    public void setArguments(Bundle args) {
+        this.state = (State) args.getSerializable("state");
     }
 
     @Override

@@ -39,9 +39,12 @@ public class ViewFlippingActivity extends FragmentActivity {
         Utility.changeFonts(textView, getAssets(), getResources());
         state = new State(textView);
 
-        addFragment(new StationSelectorFragment(state));
-        addFragment(new FavouriteStationFragment(state));
-        addFragment(new StationSearchFragment(state));
+        StationSelectorFragment fragment = new StationSelectorFragment();
+        StationSearchFragment fragmentTwo = new StationSearchFragment();
+        FavouriteStationFragment fragmentThree = new FavouriteStationFragment();
+        addFragment(fragment);
+        addFragment(fragmentThree);
+        addFragment(fragmentTwo);
 
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -82,5 +85,8 @@ public class ViewFlippingActivity extends FragmentActivity {
 
     private void addFragment(Fragment fragment) {
         fragments.add(fragment);
+        Bundle args = new Bundle();
+        args.putSerializable("state", state);
+        fragment.setArguments(args);
     }
 }

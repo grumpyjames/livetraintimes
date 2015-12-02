@@ -11,10 +11,11 @@ import android.widget.ListView;
 public class StationSelectorFragment extends Fragment implements MiniFragment {
 
     private View fullView;
-    private final State state;
+    private State state;
 
-    public StationSelectorFragment(final State state) {
-        this.state = state;
+    @Override
+    public void setArguments(Bundle args) {
+        this.state = (State) args.getSerializable("state");
     }
 
     @Override

@@ -17,10 +17,11 @@ import java.util.List;
 public class StationSearchFragment extends Fragment implements MiniFragment {
     private ListView resultView;
     private EditText editView;
-    private final State state;
+    private State state;
 
-    public StationSearchFragment(State state) {
-        this.state = state;
+    @Override
+    public void setArguments(Bundle args) {
+        state = (State) args.getSerializable("state");
     }
 
     @Override
