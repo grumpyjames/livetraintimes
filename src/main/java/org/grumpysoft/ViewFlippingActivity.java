@@ -1,21 +1,26 @@
 package org.grumpysoft;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
+import com.astuetz.viewpager.extensions.FixedTabsView;
+import com.astuetz.viewpager.extensions.TabsAdapter;
+import com.astuetz.viewpager.extensions.ViewPagerTabButton;
 import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class ViewFlippingActivity extends Activity {
+public class ViewFlippingActivity extends FragmentActivity {
 
     private State state;
-    private List<MiniFragment> miniFragments = Lists.newArrayList();
+    private List<Fragment> fragments = Lists.newArrayList();
+    private String[] titles = {"Directory", "Favourites", "Search"};
 
     @Override
     public void onBackPressed() {
@@ -34,16 +39,38 @@ public class ViewFlippingActivity extends Activity {
         Utility.changeFonts(textView, getAssets(), getResources());
         state = new State(textView);
 
-        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        final ViewFlipper viewflipper = (ViewFlipper) findViewById(R.id.flipper);
+        addFragment(new StationSelectorFragment(state));
+        addFragment(new FavouriteStationFragment(state));
+        addFragment(new StationSearchFragment(state));
 
-        attachAnimationStarter(viewflipper, R.id.dir, 0);
-        attachAnimationStarter(viewflipper, R.id.fav, 1);
-        attachAnimationStarter(viewflipper, R.id.search, 2);
+        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int i) {
+                return fragments.get(i);
+            }
 
-        createSubView(savedInstanceState, inflater, viewflipper, StationSelectorFragment.class, 0, state);
-        createSubView(savedInstanceState, inflater, viewflipper, FavouriteStationFragment.class, 1, state);
-        createSubView(savedInstanceState, inflater, viewflipper, StationSearchFragment.class, 2, state);
+            @Override
+            public int getCount() {
+                return fragments.size();
+            }
+        });
+
+        final FixedTabsView fixedTabsView = (FixedTabsView) findViewById(R.id.tabs);
+        fixedTabsView.setAdapter(new TabsAdapter() {
+            @Override
+            public View getView(int position) {
+                ViewPagerTabButton tab;
+
+                LayoutInflater inflater = getLayoutInflater();
+                tab = (ViewPagerTabButton) inflater.inflate(R.layout.tab_fixed, null);
+
+                if (position < titles.length) tab.setText(titles[position]);
+
+                return tab;
+            }
+        });
+        fixedTabsView.setViewPager(pager);
     }
 
     @Override
@@ -53,31 +80,7 @@ public class ViewFlippingActivity extends Activity {
         Favourites.save(getPreferences(0));
     }
 
-    private void attachAnimationStarter(final ViewFlipper viewflipper, final int buttonId,
-                                        final int whichChild) {
-        final Button button = (Button) findViewById(buttonId);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                miniFragments.get(whichChild).onShow(ViewFlippingActivity.this, state);
-                viewflipper.setDisplayedChild(whichChild);
-            }
-        });
-    }
-
-    private void createSubView(Bundle savedInstanceState, LayoutInflater inflater,
-                               ViewFlipper viewflipper, Class<? extends MiniFragment> klass,
-                               int index, State state) {
-        final MiniFragment fragment;
-        try {
-            fragment = klass.newInstance();
-            miniFragments.add(index, fragment);
-            viewflipper.addView(fragment.onCreateView(inflater, viewflipper, savedInstanceState), index);
-            fragment.initialize(this, state);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    private void addFragment(Fragment fragment) {
+        fragments.add(fragment);
     }
 }

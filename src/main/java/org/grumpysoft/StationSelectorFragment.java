@@ -11,6 +11,11 @@ import android.widget.ListView;
 public class StationSelectorFragment extends Fragment implements MiniFragment {
 
     private View fullView;
+    private final State state;
+
+    public StationSelectorFragment(final State state) {
+        this.state = state;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,10 +37,10 @@ public class StationSelectorFragment extends Fragment implements MiniFragment {
 
     @Override
     public void initialize(Context baseContext, State state) {
-        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), baseContext, state);
+        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), baseContext);
     }
 
-    private void setupStationSelector(ListView listView, final Context context, State state) {
+    private void setupStationSelector(ListView listView, final Context context) {
         listView.setAdapter(new IndexedStationAdapter(context, state));
     }
 }

@@ -17,12 +17,17 @@ import java.util.List;
 public class StationSearchFragment extends Fragment implements MiniFragment {
     private ListView resultView;
     private EditText editView;
+    private final State state;
+
+    public StationSearchFragment(State state) {
+        this.state = state;
+    }
 
     @Override
     public void initialize(Context context, State state) {
-        final StationAdapter adapter = new StationAdapter(context, Lists.<Station>newArrayList(), state);
+        final StationAdapter adapter = new StationAdapter(context, Lists.<Station>newArrayList(), this.state);
         resultView.setAdapter(adapter);
-        attachEditListener(editView, resultView, context, state);
+        attachEditListener(editView, resultView, context);
     }
 
     @Override
@@ -30,6 +35,8 @@ public class StationSearchFragment extends Fragment implements MiniFragment {
         final View view = inflater.inflate(R.layout.search_stations, container, false);
         editView = (EditText) view.findViewById(R.id.search_string);
         resultView = (ListView) view.findViewById(R.id.result_list);
+
+        initialize(getActivity(), this.state);
 
         return view;
     }
@@ -39,8 +46,7 @@ public class StationSearchFragment extends Fragment implements MiniFragment {
         // nothing required
     }
 
-    private void attachEditListener(final EditText editView, final ListView resultView,
-                                    final Context context, final State state) {
+    private void attachEditListener(final EditText editView, final ListView resultView, final Context context) {
         editView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

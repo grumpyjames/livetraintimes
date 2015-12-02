@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout android:layout_width="fill_parent"
+    <RelativeLayout android:layout_height="fill_parent"
+                  android:layout_width="fill_parent"
+                  android:orientation="vertical">
+        <com.astuetz.viewpager.extensions.FixedTabsView
+                android:id="@+id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+        <android.support.v4.view.ViewPager
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/pager"
+                android:layout_below="@+id/tabs" />
+    </RelativeLayout>
+
+    <!-- <LinearLayout android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
                   android:orientation="vertical">
         <LinearLayout android:layout_width="fill_parent"
@@ -23,7 +37,7 @@
         <ViewFlipper android:layout_height="wrap_content"
                      android:layout_width="wrap_content"
                      android:id="@+id/flipper"/>
-    </LinearLayout>
+    </LinearLayout> -->
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginBottom="60dip"

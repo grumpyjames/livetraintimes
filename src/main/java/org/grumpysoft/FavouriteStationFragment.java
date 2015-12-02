@@ -11,6 +11,11 @@ import com.google.common.collect.ImmutableList;
 
 public class FavouriteStationFragment extends Fragment implements MiniFragment {
     private ListView stationView;
+    private final State state;
+
+    public FavouriteStationFragment(State state) {
+        this.state = state;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -21,7 +26,7 @@ public class FavouriteStationFragment extends Fragment implements MiniFragment {
 
     @Override
     public void onShow(final Context context, final State state) {
-        initialize(context, state);
+        initialize(context, this.state);
     }
 
     @Override
@@ -33,7 +38,7 @@ public class FavouriteStationFragment extends Fragment implements MiniFragment {
     @Override
     public void initialize(final Context context, final State state) {
         final StationAdapter adapter =
-                new StationAdapter(context, ImmutableList.copyOf(Favourites.getFavourites()), state);
+                new StationAdapter(context, ImmutableList.copyOf(Favourites.getFavourites()), this.state);
         stationView.setAdapter(adapter);
     }
 }

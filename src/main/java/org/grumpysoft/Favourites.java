@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
-import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
 public final class Favourites implements Serializable {
