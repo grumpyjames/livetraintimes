@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.TextView;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
+import net.digihippo.soap.WWHLDBServiceSoap;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -64,8 +62,7 @@ public class State implements Serializable {
     }
 
     static final LiveTrainsService service =
-            DepartureBoards.nationalRailServer(new DefaultHttpClient(new ThreadSafeClientConnManager(new BasicHttpParams(), new DefaultHttpClient().getConnectionManager().getSchemeRegistry()), new BasicHttpParams()));
-
+            WWHLDBServiceSoap.liveTrainsService();
     private static class GetBoardsTask extends AsyncTask<String, Integer, BoardOrError> {
         
         final Context context;

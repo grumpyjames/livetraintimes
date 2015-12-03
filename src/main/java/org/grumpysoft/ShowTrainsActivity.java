@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -98,10 +99,10 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
-        private final TrainTableRow rowToUpdate;
+        private final TableRow rowToUpdate;
         private final Station targetStation;
 
-        private FetchDetailsTask(TrainTableRow rowToUpdate, Station station) {
+        private FetchDetailsTask(TableRow rowToUpdate, Station station) {
             this.rowToUpdate = rowToUpdate;
             targetStation = station;
         }
@@ -119,8 +120,10 @@ public class ShowTrainsActivity extends Activity {
         protected void onPostExecute(ServiceDetailsOrError serviceDetailsOrError) {
             if (serviceDetailsOrError.hasDetails()) {
                 for (CallingPoint point: serviceDetailsOrError.details()) {
-                    if (point.stationName().equals(targetStation.fullName()))
-                        rowToUpdate.updateArrivalTime(point.scheduledTime());
+                    if (point.stationName().equals(targetStation.fullName())) {
+                        TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
+                        arrivingAt.setText(point.scheduledTime());
+                    }
                 }
             }
         }
@@ -130,13 +133,28 @@ public class ShowTrainsActivity extends Activity {
     private void populateBoard(TableLayout table, DepartureBoard board) {
         Utility.changeFonts(table, getAssets(), getResources());
         final List<DepartingTrain> trains = ImmutableList.copyOf(board.departingTrains());
+        table.setColumnShrinkable(0, false);
+        table.setColumnStretchable(1, true);
+        table.setColumnShrinkable(2, false);
         if (trains.size() > 0) {
             table.removeAllViews();
             for (DepartingTrain train: board.departingTrains()) {
-                final TrainTableRow row = new TrainTableRow(getBaseContext(), train);
+                TableRow row = (TableRow) View.inflate(this, R.layout.board_entry, null);
+
+                TextView due = (TextView) row.findViewById(R.id.due);
+                due.setText(train.expectedAt());
+                // FIXME: via
+                TextView destination = (TextView) row.findViewById(R.id.destination);
+                destination.setText(Joiner.on(" & ").join(train.destinationList()));
+
+                TextView platform = (TextView) row.findViewById(R.id.platform);
+                platform.setText(train.platform());
+
                 table.addView(row);
                 if (board.hasToStation())
                     new FetchDetailsTask(row, board.toStation()).execute(train);
+                else
+                    table.setColumnCollapsed(3, true);
             }
         }
     }
