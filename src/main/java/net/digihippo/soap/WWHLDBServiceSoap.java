@@ -54,9 +54,8 @@ public class WWHLDBServiceSoap
             @Override
             public DepartureBoard boardFor(String crsFrom) throws IOException {
                 try {
-                    Station actualCrs = org.grumpysoft.Stations.reverseLookup(crsFrom);
                     return toDepartureBoard(
-                            wwhldbServiceSoap.GetDepartureBoard(20, actualCrs.threeLetterCode(), null, null, null, null, accessToken),
+                            wwhldbServiceSoap.GetDepartureBoard(20, crsFrom, null, null, null, null, accessToken),
                             null);
                 } catch (Exception e) {
                     throw new IOException(e);
@@ -66,12 +65,10 @@ public class WWHLDBServiceSoap
             @Override
             public DepartureBoard boardForJourney(String crsFrom, String crsTo) throws IOException {
                 try {
-                    Station actualCrsFrom = org.grumpysoft.Stations.reverseLookup(crsFrom);
-                    Station actualCrsTo = org.grumpysoft.Stations.reverseLookup(crsTo);
                     return toDepartureBoard(
                             wwhldbServiceSoap.GetDepartureBoard(
-                                    20, actualCrsFrom.threeLetterCode(), actualCrsTo.threeLetterCode(), null, null, null, accessToken),
-                            actualCrsTo);
+                                    20, crsFrom, crsTo, null, null, null, accessToken),
+                            Stations.lookup(crsTo));
                 } catch (Exception e) {
                     throw new IOException(e);
                 }

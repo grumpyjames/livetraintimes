@@ -15,18 +15,6 @@ public class State implements Serializable {
         this.stationState = new StationState(view);
     }
 
-    public void unsetStation() {
-        if (stationState.toStation != null) {
-            stationState.withToStation(null);
-        } else {
-            stationState.withFromStation(null);
-        }
-    }
-
-    public boolean unwind() {
-        return stationState.unwind();
-    }
-
     public static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;
@@ -71,7 +59,7 @@ public class State implements Serializable {
             try {
                 final String fromStation = strings[0];
                 final String toStation = strings[1];
-                if (toStation.equals("Anywhere!"))
+                if (toStation.equals("ANY"))
                     return new BoardOrError(service.boardFor(fromStation));
                 else
                     return new BoardOrError(service.boardForJourney(fromStation, toStation));
@@ -87,16 +75,6 @@ public class State implements Serializable {
     }
     
     private final StationState stationState;
-
-    public boolean selectStation(String station) {
-        if (stationState.fromStation == null) {
-            stationState.withFromStation(station);
-            return false;
-        } else {
-            stationState.withToStation(station);
-            return true;
-        }
-    }
 
     public static BoardOrError fetchTrains(Context context, NavigatorState navigatorState) {
         final GetBoardsTask task = new GetBoardsTask(context);
