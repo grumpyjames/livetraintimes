@@ -6,11 +6,12 @@
     <CheckBox android:id="@+id/favourite_toggle"
               android:text=""
               android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
+              android:layout_width="33dip"
               android:button="@drawable/favourite"/>
     <TextView android:id="@+id/station_name"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
+              android:layout_weight="1"
               android:textAppearance="?android:attr/textAppearanceMedium"
               android:text="London Kings Cross"/>
 </LinearLayout>

@@ -6,15 +6,16 @@
               android:weightSum="1">
 
     <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="50dip"
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="From:"
             android:id="@+id/label"
             android:gravity="left|center_vertical"
-            android:textAlignment="gravity"/>
-    <include android:layout_width="wrap_content"
+            android:textAlignment="textEnd"/>
+    <include android:layout_width="fill_parent"
              android:layout_height="wrap_content"
+             android:layout_weight="1"
              layout="@layout/station"
              android:layout_gravity="center"/>
     <Button
@@ -22,5 +23,5 @@
             android:layout_height="wrap_content"
             android:text="Select"
             android:id="@+id/select_action"
-            android:gravity="center_vertical|right"/>
+            android:gravity="center_vertical|right" android:textAlignment="gravity"/>
 </LinearLayout>
