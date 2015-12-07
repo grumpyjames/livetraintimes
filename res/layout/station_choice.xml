@@ -10,14 +10,17 @@
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="From:"
-            android:id="@+id/label" android:gravity="left|center_vertical"
+            android:id="@+id/label"
+            android:gravity="left|center_vertical"
             android:textAlignment="gravity"/>
     <include android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             layout="@layout/station" android:layout_gravity="center" android:layout_weight="0.96"/>
+             layout="@layout/station"
+             android:layout_gravity="center"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select"
-            android:id="@+id/select_action" android:gravity="center_vertical|right"/>
+            android:id="@+id/select_action"
+            android:gravity="center_vertical|right"/>
 </LinearLayout>
