@@ -79,19 +79,36 @@ public class NavigatorActivity extends Activity {
     private void renderFastestTrain(Optional<Station> stationOne, Optional<Station> stationTwo) {
         setSelectedType(R.id.fastest);
 
-        renderCommon(stationOne, stationTwo, "From: ", "To: ", "Please select a 'from' station");
+        renderCommon(stationOne, stationTwo, "From: ", "To: ");
+        if (stationOne.isPresent() && stationTwo.isPresent()) {
+            readyToGo();
+        } else {
+            error("Please select a 'from' and a 'to' station");
+        }
     }
 
     private void renderDeparting(Optional<Station> stationOne, Optional<Station> stationTwo) {
         setSelectedType(R.id.departures);
 
-        renderCommon(stationOne, stationTwo, "From: ", "To: ", "Please select a 'from' station");
+        renderCommon(stationOne, stationTwo, "From: ", "To: ");
+
+        if (!stationOne.isPresent()) {
+            error("Please select a 'from' station");
+        } else {
+            readyToGo();
+        }
     }
 
     private void renderArriving(Optional<Station> stationOne, Optional<Station> stationTwo) {
         setSelectedType(R.id.arrivals);
 
-        renderCommon(stationOne, stationTwo, "At: ", "From: ", "Please select an 'at' station");
+        renderCommon(stationOne, stationTwo, "At: ", "From: ");
+
+        if (!stationOne.isPresent()) {
+            error("Please select an 'at' station");
+        } else {
+            readyToGo();
+        }
     }
 
     private void setSelectedType(int id) {
@@ -109,19 +126,12 @@ public class NavigatorActivity extends Activity {
             Optional<Station> stationOne,
             Optional<Station> stationTwo,
             String labelOneText,
-            String labelTwoText,
-            String errorText) {
+            String labelTwoText) {
         Station firstStation = stationOne.or(Anywhere.INSTANCE);
         populateStationChoice(firstStation, findViewById(R.id.choice_one), labelOneText);
 
         Station secondStation = stationTwo.or(Anywhere.INSTANCE);
         populateStationChoice(secondStation, findViewById(R.id.choice_two), labelTwoText);
-
-        if (firstStation.equals(Anywhere.INSTANCE)) {
-            error(errorText);
-        } else {
-            readyToGo();
-        }
     }
 
     private void readyToGo() {
