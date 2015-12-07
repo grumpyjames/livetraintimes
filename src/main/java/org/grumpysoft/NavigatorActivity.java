@@ -82,17 +82,6 @@ public class NavigatorActivity extends Activity {
         renderCommon(stationOne, stationTwo, "From: ", "To: ", "Please select a 'from' station");
     }
 
-    private void setSelectedType(int id) {
-        for (int typeId : typeIds) {
-            if (typeId != id)
-            {
-                ((TextView) findViewById(typeId)).setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-            }
-        }
-        TextView selected = (TextView) findViewById(id);
-        selected.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
-    }
-
     private void renderDeparting(Optional<Station> stationOne, Optional<Station> stationTwo) {
         setSelectedType(R.id.departures);
 
@@ -105,27 +94,45 @@ public class NavigatorActivity extends Activity {
         renderCommon(stationOne, stationTwo, "At: ", "From: ", "Please select an 'at' station");
     }
 
+    private void setSelectedType(int id) {
+        for (int typeId : typeIds) {
+            if (typeId != id)
+            {
+                ((TextView) findViewById(typeId)).setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+            }
+        }
+        TextView selected = (TextView) findViewById(id);
+        selected.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
+    }
+
     private void renderCommon(
             Optional<Station> stationOne,
             Optional<Station> stationTwo,
             String labelOneText,
             String labelTwoText,
             String errorText) {
-        Station fromStation = stationOne.or(Anywhere.INSTANCE);
-        populateStationChoice(fromStation, findViewById(R.id.choice_one), labelOneText);
+        Station firstStation = stationOne.or(Anywhere.INSTANCE);
+        populateStationChoice(firstStation, findViewById(R.id.choice_one), labelOneText);
 
-        Station toStation = stationTwo.or(Anywhere.INSTANCE);
-        populateStationChoice(toStation, findViewById(R.id.choice_two), labelTwoText);
+        Station secondStation = stationTwo.or(Anywhere.INSTANCE);
+        populateStationChoice(secondStation, findViewById(R.id.choice_two), labelTwoText);
 
-        if (fromStation.equals(Anywhere.INSTANCE))
-        {
-            setErrorText(errorText);
+        if (firstStation.equals(Anywhere.INSTANCE)) {
+            error(errorText);
+        } else {
+            readyToGo();
         }
     }
 
-    private void setErrorText(String errorText) {
+    private void readyToGo() {
+        findViewById(R.id.go).setEnabled(true);
+    }
+
+    private void error(String errorText) {
         TextView errorView = (TextView) findViewById(R.id.error);
         errorView.setText(errorText);
+
+        findViewById(R.id.go).setEnabled(false);
     }
 
     private void populateStationChoice(Station fromStation, View stationOneView, String labelOneText) {
