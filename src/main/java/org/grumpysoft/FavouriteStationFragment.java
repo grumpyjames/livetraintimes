@@ -1,6 +1,5 @@
 package org.grumpysoft;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,13 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import com.google.common.collect.ImmutableList;
 
-public class FavouriteStationFragment extends Fragment implements MiniFragment {
+public class FavouriteStationFragment extends Fragment {
     private ListView stationView;
-    private State state;
+    private Bundle state;
 
     @Override
     public void setArguments(Bundle args) {
-        this.state = (State) args.getSerializable("state");
+        this.state = args;
     }
 
     @Override
@@ -26,20 +25,11 @@ public class FavouriteStationFragment extends Fragment implements MiniFragment {
     }
 
     @Override
-    public void onShow(final Context context, final State state) {
-        initialize(context, this.state);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize(getActivity(), null);
-    }
-
-    @Override
-    public void initialize(final Context context, final State state) {
         final StationAdapter adapter =
-                new StationAdapter(context, ImmutableList.copyOf(Favourites.getFavourites()), this.state);
+                new StationAdapter(getActivity(), ImmutableList.copyOf(Favourites.getFavourites()), this.state);
         stationView.setAdapter(adapter);
     }
+
 }

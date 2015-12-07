@@ -56,7 +56,8 @@ public class WWHLDBServiceSoap
                 try {
                     Station actualCrs = org.grumpysoft.Stations.reverseLookup(crsFrom);
                     return toDepartureBoard(
-                            wwhldbServiceSoap.GetDepartureBoard(20, actualCrs.threeLetterCode(), null, null, null, null, accessToken));
+                            wwhldbServiceSoap.GetDepartureBoard(20, actualCrs.threeLetterCode(), null, null, null, null, accessToken),
+                            null);
                 } catch (Exception e) {
                     throw new IOException(e);
                 }
@@ -65,171 +66,22 @@ public class WWHLDBServiceSoap
             @Override
             public DepartureBoard boardForJourney(String crsFrom, String crsTo) throws IOException {
                 try {
+                    Station actualCrsFrom = org.grumpysoft.Stations.reverseLookup(crsFrom);
+                    Station actualCrsTo = org.grumpysoft.Stations.reverseLookup(crsTo);
                     return toDepartureBoard(
-                            wwhldbServiceSoap.GetDepartureBoard(null, crsFrom, crsTo, null, null, null, accessToken));
+                            wwhldbServiceSoap.GetDepartureBoard(
+                                    20, actualCrsFrom.threeLetterCode(), actualCrsTo.threeLetterCode(), null, null, null, accessToken),
+                            actualCrsTo);
                 } catch (Exception e) {
                     throw new IOException(e);
                 }
             }
 
-            private DepartureBoard toDepartureBoard(final WWHStationBoard wwhStationBoard) {
-                return new DepartureBoard() {
-                    @Override
-                    public Iterable<? extends DepartingTrain> departingTrains() {
-                        return transform(wwhStationBoard.trainServices, new Function<WWHServiceItem, DepartingTrain>() {
-                            @Override
-                            public DepartingTrain apply(final WWHServiceItem wwhServiceItem) {
-                                return new DepartingTrain() {
-                                    @Override
-                                    public List<String> viaDestinations() {
-                                        return ImmutableList.copyOf(
-                                                transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
-                                                    @Override
-                                                    public String apply(WWHServiceLocation wwhServiceLocation) {
-                                                        return wwhServiceLocation.via;
-                                                    }
-                                                })
-                                        );
-                                    }
-
-                                    @Override
-                                    public boolean isCircularRoute() {
-                                        return wwhServiceItem.isCircularRoute;
-                                    }
-
-                                    @Override
-                                    public List<String> destinationList() {
-                                        return ImmutableList.copyOf(
-                                                transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
-                                                    @Override
-                                                    public String apply(WWHServiceLocation wwhServiceLocation) {
-                                                        return wwhServiceLocation.locationName;
-                                                    }
-                                                })
-                                        );
-                                    }
-
-                                    @Override
-                                    public String platform() {
-                                        return wwhServiceItem.platform;
-                                    }
-
-                                    @Override
-                                    public String scheduledAt() {
-                                        return wwhServiceItem.sta;
-                                    }
-
-                                    @Override
-                                    public TrainStatus status() {
-                                        // FIXME: lies
-                                        return TrainStatus.ON_TIME;
-                                    }
-
-                                    @Override
-                                    public String expectedAt() {
-                                        return wwhServiceItem.etd.equals("On time") ?
-                                                wwhServiceItem.std : wwhServiceItem.etd;
-                                    }
-
-                                    @Override
-                                    public String serviceId() {
-                                        return wwhServiceItem.serviceID;
-                                    }
-
-                                    @Override
-                                    public ServiceDetails serviceDetails() throws IOException {
-                                        try {
-                                            return toServiceDetails(serviceId(),
-                                                    wwhldbServiceSoap.GetServiceDetails(serviceId(), accessToken));
-                                        } catch (Exception e) {
-                                            throw new IOException(e);
-                                        }
-                                    }
-                                };
-                            }
-                        });
-                    }
-
-                    @Override
-                    public boolean hasToStation() {
-                        return false;
-                    }
-
-                    @Override
-                    public Station toStation() {
-                        return null;
-                    }
-
-                    @Override
-                    public Station station() {
-                        return null;
-                    }
-
-                    @Override
-                    public String generatedTime() {
-                        return "now";
-                    }
-
-                    @Override
-                    public String updateText() {
-                        return "huh?";
-                    }
-                };
+            private DepartureBoard toDepartureBoard(final WWHStationBoard wwhStationBoard, Station toStation) {
+                return new MyDepartureBoard(wwhStationBoard, wwhldbServiceSoap, accessToken, toStation);
             }
 
-            private ServiceDetails toServiceDetails(final String serviceId, final WWHServiceDetails wwhServiceDetails) {
-                return new ServiceDetails() {
-                    @Override
-                    public Location currentLocation() {
-                        return new Location() {
-                            @Override
-                            public LocationStatus status() {
-                                return LocationStatus.UNKNOWN;
-                            }
 
-                            @Override
-                            public List<String> stations() {
-                                return ImmutableList.of();
-                            }
-                        };
-                    }
-
-                    @Override
-                    public String serviceId() {
-                        return serviceId;
-                    }
-
-                    @Override
-                    public Iterator<CallingPoint> iterator() {
-                        return concat(transform(wwhServiceDetails.subsequentCallingPoints, new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
-                            @Override
-                            public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
-                                return transform(wwhArrayOfCallingPoints.callingPoint, new Function<WWHCallingPoint, CallingPoint>() {
-                                    @Override
-                                    public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
-                                        return new CallingPoint() {
-                                            @Override
-                                            public String stationName() {
-                                                return wwhCallingPoint.locationName;
-                                            }
-
-                                            @Override
-                                            public String scheduledTime() {
-                                                return wwhCallingPoint.st;
-                                            }
-
-                                            @Override
-                                            public PointStatus status() {
-                                                return PointStatus.NO_REPORT;
-                                            }
-                                        };
-                                    }
-                                });
-                            }
-                        })).iterator();
-                    }
-                };
-            }
         };
     }
 
@@ -797,6 +649,196 @@ public class WWHLDBServiceSoap
     {
 
         return new Exception(fault.faultstring);
+    }
+
+    private static class MyDepartureBoard implements DepartureBoard {
+        private final WWHStationBoard wwhStationBoard;
+        private final WWHLDBServiceSoap wwhldbServiceSoap;
+        private final WWHAccessToken accessToken;
+        private final Station toStation;
+
+        public MyDepartureBoard(WWHStationBoard wwhStationBoard,
+                                WWHLDBServiceSoap wwhldbServiceSoap,
+                                WWHAccessToken accessToken,
+                                Station toStation) {
+            this.wwhStationBoard = wwhStationBoard;
+            this.wwhldbServiceSoap = wwhldbServiceSoap;
+            this.accessToken = accessToken;
+            this.toStation = toStation;
+        }
+
+        @Override
+        public Iterable<? extends DepartingTrain> departingTrains() {
+            return transform(wwhStationBoard.trainServices, new Function<WWHServiceItem, DepartingTrain>() {
+                @Override
+                public DepartingTrain apply(final WWHServiceItem wwhServiceItem) {
+                    return new MyDepartingTrain(wwhServiceItem);
+                }
+            });
+        }
+
+        @Override
+        public boolean hasToStation() {
+            return toStation != null;
+        }
+
+        @Override
+        public Station toStation() {
+            return toStation;
+        }
+
+        @Override
+        public Station station() {
+            return null;
+        }
+
+        @Override
+        public String generatedTime() {
+            return "now";
+        }
+
+        @Override
+        public String updateText() {
+            return "huh?";
+        }
+
+        private ServiceDetails toServiceDetails(final String serviceId, final WWHServiceDetails wwhServiceDetails) {
+            return new MyServiceDetails(serviceId, wwhServiceDetails);
+        }
+
+        private static class MyServiceDetails implements ServiceDetails {
+            private final String serviceId;
+            private final WWHServiceDetails wwhServiceDetails;
+
+            public MyServiceDetails(String serviceId, WWHServiceDetails wwhServiceDetails) {
+                this.serviceId = serviceId;
+                this.wwhServiceDetails = wwhServiceDetails;
+            }
+
+            @Override
+            public Location currentLocation() {
+                return new Location() {
+                    @Override
+                    public LocationStatus status() {
+                        return LocationStatus.UNKNOWN;
+                    }
+
+                    @Override
+                    public List<String> stations() {
+                        return ImmutableList.of();
+                    }
+                };
+            }
+
+            @Override
+            public String serviceId() {
+                return serviceId;
+            }
+
+            @Override
+            public Iterator<CallingPoint> iterator() {
+                return concat(transform(wwhServiceDetails.subsequentCallingPoints, new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
+                    @Override
+                    public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
+                        return transform(wwhArrayOfCallingPoints.callingPoint, new Function<WWHCallingPoint, CallingPoint>() {
+                            @Override
+                            public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
+                                return new CallingPoint() {
+                                    @Override
+                                    public String stationName() {
+                                        return wwhCallingPoint.locationName;
+                                    }
+
+                                    @Override
+                                    public String scheduledTime() {
+                                        return wwhCallingPoint.st;
+                                    }
+
+                                    @Override
+                                    public PointStatus status() {
+                                        return PointStatus.NO_REPORT;
+                                    }
+                                };
+                            }
+                        });
+                    }
+                })).iterator();
+            }
+        }
+
+        private class MyDepartingTrain implements DepartingTrain {
+            private final WWHServiceItem wwhServiceItem;
+
+            public MyDepartingTrain(WWHServiceItem wwhServiceItem) {
+                this.wwhServiceItem = wwhServiceItem;
+            }
+
+            @Override
+            public List<String> viaDestinations() {
+                return ImmutableList.copyOf(
+                        transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
+                            @Override
+                            public String apply(WWHServiceLocation wwhServiceLocation) {
+                                return wwhServiceLocation.via;
+                            }
+                        })
+                );
+            }
+
+            @Override
+            public boolean isCircularRoute() {
+                return wwhServiceItem.isCircularRoute;
+            }
+
+            @Override
+            public List<String> destinationList() {
+                return ImmutableList.copyOf(
+                        transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
+                            @Override
+                            public String apply(WWHServiceLocation wwhServiceLocation) {
+                                return wwhServiceLocation.locationName;
+                            }
+                        })
+                );
+            }
+
+            @Override
+            public String platform() {
+                return wwhServiceItem.platform;
+            }
+
+            @Override
+            public String scheduledAt() {
+                return wwhServiceItem.sta;
+            }
+
+            @Override
+            public TrainStatus status() {
+                // FIXME: lies
+                return TrainStatus.ON_TIME;
+            }
+
+            @Override
+            public String expectedAt() {
+                return wwhServiceItem.etd.equals("On time") ?
+                        wwhServiceItem.std : wwhServiceItem.etd;
+            }
+
+            @Override
+            public String serviceId() {
+                return wwhServiceItem.serviceID;
+            }
+
+            @Override
+            public ServiceDetails serviceDetails() throws IOException {
+                try {
+                    return toServiceDetails(serviceId(),
+                            wwhldbServiceSoap.GetServiceDetails(serviceId(), accessToken));
+                } catch (Exception e) {
+                    throw new IOException(e);
+                }
+            }
+        }
     }
 }
 

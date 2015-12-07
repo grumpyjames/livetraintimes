@@ -22,8 +22,14 @@ public class ShowTrainsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_board);
 
-        final StationState stationState = (StationState) getIntent().getExtras().get("state");
-        final State.BoardOrError board = State.fetchTrains(this, stationState);
+        final NavigatorState navigatorState =
+                (NavigatorState) getIntent().getExtras().get(NavigatorActivity.NAVIGATOR_STATE);
+        assert navigatorState != null;
+        final State.BoardOrError board =
+                State.fetchTrains(
+                        this,
+                        navigatorState.stationOne.get(),
+                        navigatorState.stationTwo.or(Anywhere.INSTANCE));
 
         final TableLayout table = (TableLayout) findViewById(R.id.board);
 
@@ -104,7 +110,7 @@ public class ShowTrainsActivity extends Activity {
 
         private FetchDetailsTask(TableRow rowToUpdate, Station station) {
             this.rowToUpdate = rowToUpdate;
-            targetStation = station;
+            this.targetStation = station;
         }
 
         @Override

@@ -1,6 +1,8 @@
 package org.grumpysoft;
 
-final class BasicStation implements Station {
+import java.io.Serializable;
+
+final class BasicStation implements Station, Serializable {
     private final String threeLetterCode;
     private final String fullname;
 

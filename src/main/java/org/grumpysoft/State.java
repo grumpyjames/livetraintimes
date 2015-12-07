@@ -103,10 +103,10 @@ public class State implements Serializable {
         }
     }
 
-    public static BoardOrError fetchTrains(Context context, StationState stationState) {
+    public static BoardOrError fetchTrains(Context context, Station stationOne, Station stationTwo) {
         final GetBoardsTask task = new GetBoardsTask(context);
         try {
-            return task.execute(stationState.fromStation, stationState.toStation).get();
+            return task.execute(stationOne.threeLetterCode(), stationTwo.threeLetterCode()).get();
         } catch (InterruptedException e) {
             //FIXME: pass on the interrupt..
             throw new RuntimeException(e);

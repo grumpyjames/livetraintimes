@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-public class StationSelectorFragment extends Fragment implements MiniFragment {
+public class StationSelectorFragment extends Fragment {
 
     private View fullView;
-    private State state;
+    private Bundle state;
 
     @Override
     public void setArguments(Bundle args) {
-        this.state = (State) args.getSerializable("state");
+        this.state = args;
     }
 
     @Override
@@ -26,19 +26,9 @@ public class StationSelectorFragment extends Fragment implements MiniFragment {
     }
 
     @Override
-    public void onShow(Context context, State state) {
-        // nothing required
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize(getActivity(), null);
-    }
-
-    @Override
-    public void initialize(Context baseContext, State state) {
-        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), baseContext);
+        setupStationSelector((ListView) fullView.findViewById(R.id.station_list), getActivity());
     }
 
     private void setupStationSelector(ListView listView, final Context context) {

@@ -14,18 +14,17 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class StationSearchFragment extends Fragment implements MiniFragment {
+public class StationSearchFragment extends Fragment {
     private ListView resultView;
     private EditText editView;
-    private State state;
+    private Bundle state;
 
     @Override
     public void setArguments(Bundle args) {
-        state = (State) args.getSerializable("state");
+        state = args;
     }
 
-    @Override
-    public void initialize(Context context, State state) {
+    public void initialize(Context context) {
         final StationAdapter adapter = new StationAdapter(context, Lists.<Station>newArrayList(), this.state);
         resultView.setAdapter(adapter);
         attachEditListener(editView, resultView, context);
@@ -37,14 +36,9 @@ public class StationSearchFragment extends Fragment implements MiniFragment {
         editView = (EditText) view.findViewById(R.id.search_string);
         resultView = (ListView) view.findViewById(R.id.result_list);
 
-        initialize(getActivity(), this.state);
+        initialize(getActivity());
 
         return view;
-    }
-
-    @Override
-    public void onShow(Context context, State state) {
-        // nothing required
     }
 
     private void attachEditListener(final EditText editView, final ListView resultView, final Context context) {

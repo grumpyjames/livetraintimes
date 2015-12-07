@@ -32,6 +32,8 @@ public class ViewFlippingActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.flipping_views);
 
+        Bundle extras = getIntent().getExtras();
+
         final SharedPreferences preferences = getPreferences(0);
         Favourites.deserializeFrom(preferences);
 
@@ -42,9 +44,9 @@ public class ViewFlippingActivity extends FragmentActivity {
         StationSelectorFragment fragment = new StationSelectorFragment();
         StationSearchFragment fragmentTwo = new StationSearchFragment();
         FavouriteStationFragment fragmentThree = new FavouriteStationFragment();
-        addFragment(fragment);
-        addFragment(fragmentThree);
-        addFragment(fragmentTwo);
+        addFragment(fragment, extras);
+        addFragment(fragmentThree, extras);
+        addFragment(fragmentTwo, extras);
 
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -83,10 +85,8 @@ public class ViewFlippingActivity extends FragmentActivity {
         Favourites.save(getPreferences(0));
     }
 
-    private void addFragment(Fragment fragment) {
+    private void addFragment(Fragment fragment, Bundle extras) {
         fragments.add(fragment);
-        Bundle args = new Bundle();
-        args.putSerializable("state", state);
-        fragment.setArguments(args);
+        fragment.setArguments(extras);
     }
 }

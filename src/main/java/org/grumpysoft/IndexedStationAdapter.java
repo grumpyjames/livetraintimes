@@ -1,6 +1,7 @@
 package org.grumpysoft;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.widget.SectionIndexer;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -24,7 +25,7 @@ class IndexedStationAdapter extends StationAdapter implements SectionIndexer {
     private static final List<IndexResult> results = workoutIndices();
 
 
-    public IndexedStationAdapter(Context context, State state) {
+    public IndexedStationAdapter(Context context, Bundle state) {
         super(context, copyOf(Stations.allStations()), state);
     }
 
