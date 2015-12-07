@@ -41,10 +41,9 @@ public final class Tasks implements Serializable {
             WWHLDBServiceSoap.liveTrainsService();
 
     private static class GetBoardsTask extends AsyncTask<String, Integer, BoardOrError> {
-        
-        final Context context;
+        private final ShowTrainsActivity context;
 
-        private GetBoardsTask(Context context) {
+        private GetBoardsTask(ShowTrainsActivity context) {
             this.context = context;
         }
 
@@ -65,21 +64,15 @@ public final class Tasks implements Serializable {
         @Override
         protected void onPostExecute(BoardOrError boardOrError) {
             super.onPostExecute(boardOrError);
+            context.onBoardOrError(boardOrError);
         }
     }
     
-    public static BoardOrError fetchTrains(Context context, NavigatorState navigatorState) {
+    public static void fetchTrains(ShowTrainsActivity context, NavigatorState navigatorState) {
         final GetBoardsTask task = new GetBoardsTask(context);
-        try {
-            final String stationOne = navigatorState.stationOne.get().threeLetterCode();
-            final String stationTwo = navigatorState.stationTwo.or(Anywhere.INSTANCE).threeLetterCode();
-            return task.execute(stationOne, stationTwo).get();
-        } catch (InterruptedException e) {
-            //FIXME: pass on the interrupt..
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        final String stationOne = navigatorState.stationOne.get().threeLetterCode();
+        final String stationTwo = navigatorState.stationTwo.or(Anywhere.INSTANCE).threeLetterCode();
+        task.execute(stationOne, stationTwo);
     }
 
     private Tasks() {}
