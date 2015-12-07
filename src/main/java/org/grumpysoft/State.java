@@ -23,12 +23,6 @@ public class State implements Serializable {
         }
     }
 
-    public void launchShowTrainsActivity(Context context) {
-        final Intent showTrainsIntent = new Intent(context, ShowTrainsActivity.class);
-        showTrainsIntent.putExtra("state", stationState);
-        context.startActivity(showTrainsIntent);
-    }
-
     public boolean unwind() {
         return stationState.unwind();
     }
@@ -63,6 +57,7 @@ public class State implements Serializable {
 
     static final LiveTrainsService service =
             WWHLDBServiceSoap.liveTrainsService();
+
     private static class GetBoardsTask extends AsyncTask<String, Integer, BoardOrError> {
         
         final Context context;
@@ -103,10 +98,12 @@ public class State implements Serializable {
         }
     }
 
-    public static BoardOrError fetchTrains(Context context, Station stationOne, Station stationTwo) {
+    public static BoardOrError fetchTrains(Context context, NavigatorState navigatorState) {
         final GetBoardsTask task = new GetBoardsTask(context);
         try {
-            return task.execute(stationOne.threeLetterCode(), stationTwo.threeLetterCode()).get();
+            final String stationOne = navigatorState.stationOne.get().threeLetterCode();
+            final String stationTwo = navigatorState.stationTwo.or(Anywhere.INSTANCE).threeLetterCode();
+            return task.execute(stationOne, stationTwo).get();
         } catch (InterruptedException e) {
             //FIXME: pass on the interrupt..
             throw new RuntimeException(e);

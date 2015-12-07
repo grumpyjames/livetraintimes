@@ -22,13 +22,6 @@ public class SelectorTabsActivity extends FragmentActivity {
 
     private TabManager tabManager;
     private TabHost host;
-    private State state;
-
-    @Override
-    public void onBackPressed() {
-        state.unsetStation();
-        super.onBackPressed();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +31,6 @@ public class SelectorTabsActivity extends FragmentActivity {
         final TextView textView = (TextView) findViewById(R.id.fromOrTo);
         final Typeface tf = Typeface.createFromAsset(getAssets(), "britrln.ttf");
         textView.setTypeface(tf);
-        state = new State(textView);
 
         host = (TabHost) findViewById(android.R.id.tabhost);
         host.setup();

@@ -23,12 +23,7 @@ public class ShowTrainsActivity extends Activity {
         final NavigatorState navigatorState =
                 (NavigatorState) getIntent().getExtras().get(NavigatorActivity.NAVIGATOR_STATE);
         assert navigatorState != null;
-        final State.BoardOrError board =
-                State.fetchTrains(
-                        this,
-                        navigatorState.stationOne.get(),
-                        navigatorState.stationTwo.or(Anywhere.INSTANCE));
-
+        final State.BoardOrError board = State.fetchTrains(this, navigatorState);
         final TableLayout table = (TableLayout) findViewById(R.id.board);
 
         if (board.hasBoard())

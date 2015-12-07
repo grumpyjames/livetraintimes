@@ -17,15 +17,8 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 public class ViewFlippingActivity extends FragmentActivity {
-
-    private State state;
     private List<Fragment> fragments = Lists.newArrayList();
     private String[] titles = {"Directory", "Favourites", "Search"};
-
-    @Override
-    public void onBackPressed() {
-        if (state.unwind()) super.onBackPressed();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +32,6 @@ public class ViewFlippingActivity extends FragmentActivity {
 
         final TextView textView = (TextView) findViewById(R.id.fromOrTo);
         Utility.changeFonts(textView, getAssets(), getResources());
-        state = new State(textView);
 
         StationSelectorFragment fragment = new StationSelectorFragment();
         StationSearchFragment fragmentTwo = new StationSearchFragment();
