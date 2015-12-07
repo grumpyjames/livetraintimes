@@ -1,12 +1,10 @@
 package org.grumpysoft;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import net.digihippo.soap.WWHLDBServiceSoap;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.concurrent.ExecutionException;
 
 public final class Tasks implements Serializable {
     public static class BoardOrError {
