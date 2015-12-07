@@ -11,6 +11,6 @@
     <TextView android:id="@+id/station_name"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
-              style="@style/station" android:textAppearance="?android:attr/textAppearanceMedium"
+              android:textAppearance="?android:attr/textAppearanceMedium"
               android:text="London Kings Cross"/>
 </LinearLayout>

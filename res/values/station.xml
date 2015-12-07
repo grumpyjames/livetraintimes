@@ -1,5 +1,0 @@
-<resources>
-    <style name="station" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">20sp</item>
-    </style>
-</resources>

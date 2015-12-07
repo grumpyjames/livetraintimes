@@ -2,20 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" android:gravity="center_horizontal">
+              android:layout_height="wrap_content" android:baselineAligned="false" android:gravity="center"
+              android:weightSum="1">
 
     <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="From:"
-            android:id="@+id/label"/>
+            android:id="@+id/label" android:gravity="left|center_vertical"
+            android:textAlignment="gravity"/>
     <include android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             layout="@layout/station"/>
+             layout="@layout/station" android:layout_gravity="center" android:layout_weight="0.96"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Station"
-            android:id="@+id/select_action"/>
+            android:text="Select"
+            android:id="@+id/select_action" android:gravity="center_vertical|right"/>
 </LinearLayout>
