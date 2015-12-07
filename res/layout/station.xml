@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
-              android:orientation="horizontal">
+              android:orientation="horizontal" android:gravity="center_vertical">
     <CheckBox android:id="@+id/favourite_toggle"
               android:text=""
               android:layout_height="wrap_content"
@@ -11,5 +11,6 @@
     <TextView android:id="@+id/station_name"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
-              style="@style/station"/>
+              style="@style/station" android:textAppearance="?android:attr/textAppearanceMedium"
+              android:text="London Kings Cross"/>
 </LinearLayout>

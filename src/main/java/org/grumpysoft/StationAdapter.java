@@ -51,10 +51,7 @@ class StationAdapter extends BaseAdapter {
         final View stationView = layoutInflater.inflate(R.layout.station, null);
         final Station station = (Station) getItem(position);
 
-        final TextView textView = StationView.initialiseStationView(stationView, station, clickListener);
-
-        Utility.changeFonts(textView, context.getAssets(), context.getResources());
-
+        StationView.initialiseStationView(stationView, station, clickListener);
 
         return stationView;
     }

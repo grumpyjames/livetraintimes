@@ -111,7 +111,6 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private void populateBoard(TableLayout table, DepartureBoard board) {
-        Utility.changeFonts(table, getAssets(), getResources());
         final List<DepartingTrain> trains = ImmutableList.copyOf(board.departingTrains());
         table.setColumnShrinkable(0, false);
         table.setColumnStretchable(1, true);

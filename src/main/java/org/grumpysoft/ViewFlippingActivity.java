@@ -31,7 +31,6 @@ public class ViewFlippingActivity extends FragmentActivity {
         Favourites.deserializeFrom(preferences);
 
         final TextView textView = (TextView) findViewById(R.id.fromOrTo);
-        Utility.changeFonts(textView, getAssets(), getResources());
 
         StationSelectorFragment fragment = new StationSelectorFragment();
         StationSearchFragment fragmentTwo = new StationSearchFragment();
