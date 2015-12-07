@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 import com.astuetz.viewpager.extensions.FixedTabsView;
 import com.astuetz.viewpager.extensions.TabsAdapter;
 import com.astuetz.viewpager.extensions.ViewPagerTabButton;
@@ -29,8 +28,6 @@ public class ViewFlippingActivity extends FragmentActivity {
 
         final SharedPreferences preferences = getPreferences(0);
         Favourites.deserializeFrom(preferences);
-
-        final TextView textView = (TextView) findViewById(R.id.fromOrTo);
 
         StationSelectorFragment fragment = new StationSelectorFragment();
         StationSearchFragment fragmentTwo = new StationSearchFragment();
