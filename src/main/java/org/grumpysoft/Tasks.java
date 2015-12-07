@@ -1,20 +1,14 @@
 package org.grumpysoft;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.widget.TextView;
 import net.digihippo.soap.WWHLDBServiceSoap;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
-public class State implements Serializable {
-    State(TextView view) {
-        this.stationState = new StationState(view);
-    }
-
+public final class Tasks implements Serializable {
     public static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;
@@ -74,8 +68,6 @@ public class State implements Serializable {
         }
     }
     
-    private final StationState stationState;
-
     public static BoardOrError fetchTrains(Context context, NavigatorState navigatorState) {
         final GetBoardsTask task = new GetBoardsTask(context);
         try {
@@ -89,4 +81,6 @@ public class State implements Serializable {
             throw new RuntimeException(e);
         }
     }
+
+    private Tasks() {}
 }
