@@ -24,5 +24,6 @@
     <orderEntry type="library" name="jaxws-api-2.1" level="project" />
     <orderEntry type="library" name="jaxb-api-2.2.12" level="project" />
     <orderEntry type="library" name="ksoap2-android-assembly-3.6.0-jar-with-dependencies" level="project" />
+    <orderEntry type="library" name="joda-time-2.7" level="project" />
   </component>
 </module>

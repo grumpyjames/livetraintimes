@@ -2,6 +2,7 @@ package org.grumpysoft;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -11,6 +12,10 @@ import android.widget.TextView;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
@@ -19,6 +24,8 @@ public class ShowTrainsActivity extends Activity {
     private AlertDialog alertDialog;
     private NavigatorState navigatorState;
     private ProgressBar progressBar;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm");
+    private CurrentBestTrain currentBestTrain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +109,28 @@ public class ShowTrainsActivity extends Activity {
 
     public void onDetails(TableRow rowToUpdate, Tasks.ServiceDetailsOrError serviceDetailsOrError) {
         if (serviceDetailsOrError.hasDetails()) {
-            for (CallingPoint point: serviceDetailsOrError.details()) {
+            String arrivalTime = null;
+            ServiceDetails details = serviceDetailsOrError.details();
+            for (CallingPoint point: details) {
                 if (point.stationName().equals(navigatorState.stationTwo.get().fullName())) {
+                    arrivalTime = point.scheduledTime();
                     TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
-                    arrivingAt.setText(point.scheduledTime());
+                    arrivingAt.setText(arrivalTime);
+                }
+            }
+
+            LocalTime now = LocalTime.now();
+            if (arrivalTime != null) {
+                LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
+                final DateTime arrivalDateTime;
+                if (localTime.isBefore(now)) {
+                    arrivalDateTime = localTime.toDateTimeToday().plusDays(1);
+                } else {
+                    arrivalDateTime = localTime.toDateTimeToday();
+                }
+
+                if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
+                    currentBestTrain = new CurrentBestTrain(rowToUpdate, details, arrivalDateTime);
                 }
             }
 
@@ -114,6 +139,28 @@ public class ShowTrainsActivity extends Activity {
                 progressBar.incrementProgressBy(1);
                 if (progressBar.getProgress() == progressBar.getMax()) {
                     alertDialog.hide();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Fastest Train");
+                    TextView textView = new TextView(this);
+                    TextView dueView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(0);
+                    TextView platformView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(2);
+                    String platformText = (platformView.getText().length() > 0)
+                            ? " from platform " + platformView.getText()
+                            : "";
+                    builder.setMessage("The fastest train from " + navigatorState.stationOne.get().fullName()
+                            + " to " + navigatorState.stationTwo.get().fullName()
+                            + " leaves at " + dueView.getText()
+                            + platformText
+                            + ". It is expected to arrive at "
+                            + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
+                    builder.setNeutralButton("Ok.", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            alertDialog.hide();
+                        }
+                    });
+                    this.alertDialog = builder.create();
+                    alertDialog.show();
                 }
             }
         }
@@ -158,4 +205,19 @@ public class ShowTrainsActivity extends Activity {
         }
     }
 
+    private class CurrentBestTrain {
+        private final TableRow rowToUpdate;
+        private final ServiceDetails details;
+        private final DateTime arrivalDateTime;
+
+        public CurrentBestTrain(TableRow rowToUpdate, ServiceDetails details, DateTime arrivalDateTime) {
+            this.rowToUpdate = rowToUpdate;
+            this.details = details;
+            this.arrivalDateTime = arrivalDateTime;
+        }
+
+        public boolean arrivesAfter(DateTime arrivalDateTime) {
+            return arrivalDateTime.isBefore(this.arrivalDateTime);
+        }
+    }
 }
