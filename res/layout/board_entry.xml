@@ -9,21 +9,40 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="00:00"
-            android:id="@+id/due" android:layout_weight="0.19" android:minWidth="65dp" android:lines="1"
-            android:paddingLeft="4dp" android:paddingRight="4dp"/>
+            android:id="@+id/due"
+            android:layout_weight="0.19"
+            android:minWidth="65dp"
+            android:lines="1"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Destination"
-            android:id="@+id/destination" android:minLines="3" android:textStyle="bold" android:layout_weight="0.73"
-            android:gravity="center_vertical" android:lines="3" android:elegantTextHeight="false"/>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:textAppearance="?android:attr/textAppearanceMedium" android:text="13" android:id="@+id/platform"
-              android:layout_weight="0.10" android:minWidth="10dp"/>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:textAppearance="?android:attr/textAppearanceMedium" android:text="00:00" android:id="@+id/arrivingAt"
-              android:layout_weight="0.07" android:paddingLeft="2dp" android:minWidth="52dp" android:lines="1"/>
+            android:id="@+id/destination"
+            android:minLines="3"
+            android:textStyle="bold"
+            android:layout_weight="0.73"
+            android:gravity="center_vertical"
+            android:lines="3"
+            android:elegantTextHeight="false"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="?android:attr/textAppearanceMedium"
+              android:text="13"
+              android:id="@+id/platform"
+              android:layout_weight="0.10"
+              android:minWidth="10dp"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="?android:attr/textAppearanceMedium"
+              android:text="00:00"
+              android:id="@+id/arrivingAt"
+              android:layout_weight="0.07"
+              android:paddingLeft="2dp"
+              android:minWidth="52dp"
+              android:lines="1"/>
     <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
