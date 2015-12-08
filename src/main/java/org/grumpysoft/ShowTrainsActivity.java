@@ -125,7 +125,7 @@ public class ShowTrainsActivity extends Activity {
         private ShowTrainsActivity showTrainsActivity;
         private final TableRow rowToUpdate;
 
-        private FetchDetailsTask(ShowTrainsActivity showTrainsActivity, TableRow rowToUpdate, Station station) {
+        private FetchDetailsTask(ShowTrainsActivity showTrainsActivity, TableRow rowToUpdate) {
             this.showTrainsActivity = showTrainsActivity;
             this.rowToUpdate = rowToUpdate;
         }
@@ -171,7 +171,7 @@ public class ShowTrainsActivity extends Activity {
 
                 table.addView(row);
                 if (stationTwoSpecified)
-                    new FetchDetailsTask(this, row, navigatorState.stationTwo.get()).execute(train);
+                    new FetchDetailsTask(this, row).execute(train);
             }
         }
     }
