@@ -124,12 +124,10 @@ public class ShowTrainsActivity extends Activity {
     private static class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
         private ShowTrainsActivity showTrainsActivity;
         private final TableRow rowToUpdate;
-        private final Station targetStation;
 
         private FetchDetailsTask(ShowTrainsActivity showTrainsActivity, TableRow rowToUpdate, Station station) {
             this.showTrainsActivity = showTrainsActivity;
             this.rowToUpdate = rowToUpdate;
-            this.targetStation = station;
         }
 
         @Override
