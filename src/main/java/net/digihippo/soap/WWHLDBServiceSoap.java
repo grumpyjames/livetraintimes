@@ -15,6 +15,7 @@ package net.digihippo.soap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.grumpysoft.*;
@@ -34,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
 
@@ -739,18 +741,17 @@ public class WWHLDBServiceSoap
             @Override
             public List<String> viaDestinations() {
                 return ImmutableList.copyOf(
-                        transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
+                        filter(transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
                             @Override
                             public String apply(WWHServiceLocation wwhServiceLocation) {
                                 return wwhServiceLocation.via;
                             }
-                        })
-                );
+                        }), Predicates.notNull()));
             }
 
             @Override
             public boolean isCircularRoute() {
-                return wwhServiceItem.isCircularRoute;
+                return wwhServiceItem.isCircularRoute == null ? false : wwhServiceItem.isCircularRoute;
             }
 
             @Override

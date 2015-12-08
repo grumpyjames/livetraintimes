@@ -78,7 +78,7 @@ public final class Favourites implements Serializable {
         return Lists.transform(ImmutableList.copyOf(favourites), new Function<CharSequence, Station>() {
             @Override
             public Station apply(CharSequence charSequence) {
-                return Iterables.getOnlyElement(Stations.find(charSequence.toString()));
+                return Stations.lookup(charSequence.toString());
             }
         });
     }

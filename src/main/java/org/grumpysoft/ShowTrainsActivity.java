@@ -164,9 +164,16 @@ public class ShowTrainsActivity extends Activity {
 
                 TextView due = (TextView) row.findViewById(R.id.due);
                 due.setText(train.expectedAt());
-                // FIXME: via
-                TextView destination = (TextView) row.findViewById(R.id.destination);
-                destination.setText(Joiner.on(" & ").join(train.destinationList()));
+                final String circularPart = train.isCircularRoute() ? " (circular route)" : "";
+                final String viaPart = train.viaDestinations().isEmpty()
+                                ? "" : " " + Joiner.on(" & ").join(train.viaDestinations());
+
+                final String destination =
+                        Joiner.on(" & ").join(train.destinationList()) + viaPart + circularPart;
+
+                TextView destinationView = (TextView) row.findViewById(R.id.destination);
+                destinationView.setText(destination);
+
 
                 TextView platform = (TextView) row.findViewById(R.id.platform);
                 platform.setText(train.platform());
