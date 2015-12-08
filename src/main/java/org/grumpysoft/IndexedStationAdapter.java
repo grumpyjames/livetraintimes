@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.SectionIndexer;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.grumpysoft.impl.Stations;
 
 import java.util.List;
 

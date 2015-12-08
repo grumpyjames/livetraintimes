@@ -50,7 +50,7 @@ public class StationSearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 2) {
-                    final List<Station> results = StationService.findStations(charSequence.toString());
+                    final List<Station> results = Stations.find(charSequence.toString());
                     resultView.setAdapter(new StationAdapter(context, results, state));
                 }
             }
