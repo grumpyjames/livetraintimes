@@ -19,6 +19,8 @@ import java.util.List;
 public class ShowTrainsActivity extends Activity {
 
     private AlertDialog alertDialog;
+    private NavigatorState navigatorState;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,8 @@ public class ShowTrainsActivity extends Activity {
         final NavigatorState navigatorState =
                 (NavigatorState) getIntent().getExtras().get(NavigatorActivity.NAVIGATOR_STATE);
         assert navigatorState != null;
+
+        this.navigatorState = navigatorState;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message(navigatorState));
@@ -74,15 +78,56 @@ public class ShowTrainsActivity extends Activity {
         }
         final TableLayout table = (TableLayout) findViewById(R.id.board);
 
-        if (boardOrError.hasBoard())
+        // FIXME: handle the error case
+        if (boardOrError.hasBoard()) {
+            if (navigatorState.type == NavigatorState.Type.FastestTrain) {
+                showFastestTrainDialog(boardOrError.board());
+            }
+
             populateBoard(table, boardOrError.board());
+        }
     }
 
-    private class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
+    private void showFastestTrainDialog(DepartureBoard board) {
+        List<? extends DepartingTrain> departingTrains = ImmutableList.copyOf(board.departingTrains());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Fetching calling points to ascertain fastest train");
+        progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        progressBar.setIndeterminate(false);
+        progressBar.setMax(departingTrains.size());
+        progressBar.setProgress(0);
+        builder.setView(progressBar);
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void onDetails(TableRow rowToUpdate, ServiceDetailsOrError serviceDetailsOrError) {
+        if (serviceDetailsOrError.hasDetails()) {
+            for (CallingPoint point: serviceDetailsOrError.details()) {
+                if (point.stationName().equals(navigatorState.stationTwo.get().fullName())) {
+                    TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
+                    arrivingAt.setText(point.scheduledTime());
+                }
+            }
+
+            if (navigatorState.type == NavigatorState.Type.FastestTrain)
+            {
+                progressBar.incrementProgressBy(1);
+                if (progressBar.getProgress() == progressBar.getMax()) {
+                    alertDialog.hide();
+                }
+            }
+        }
+    }
+
+    private static class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
+        private ShowTrainsActivity showTrainsActivity;
         private final TableRow rowToUpdate;
         private final Station targetStation;
 
-        private FetchDetailsTask(TableRow rowToUpdate, Station station) {
+        private FetchDetailsTask(ShowTrainsActivity showTrainsActivity, TableRow rowToUpdate, Station station) {
+            this.showTrainsActivity = showTrainsActivity;
             this.rowToUpdate = rowToUpdate;
             this.targetStation = station;
         }
@@ -96,18 +141,11 @@ public class ShowTrainsActivity extends Activity {
                 return new ServiceDetailsOrError(ioe.getMessage());
             }
         }
+
         @Override
         protected void onPostExecute(ServiceDetailsOrError serviceDetailsOrError) {
-            if (serviceDetailsOrError.hasDetails()) {
-                for (CallingPoint point: serviceDetailsOrError.details()) {
-                    if (point.stationName().equals(targetStation.fullName())) {
-                        TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
-                        arrivingAt.setText(point.scheduledTime());
-                    }
-                }
-            }
+            showTrainsActivity.onDetails(rowToUpdate, serviceDetailsOrError);
         }
-
     }
 
     private void populateBoard(TableLayout table, DepartureBoard board) {
@@ -115,6 +153,10 @@ public class ShowTrainsActivity extends Activity {
         table.setColumnShrinkable(0, false);
         table.setColumnStretchable(1, true);
         table.setColumnShrinkable(2, false);
+        boolean stationTwoSpecified = navigatorState.stationTwo.isPresent();
+        if (!stationTwoSpecified) {
+            table.setColumnCollapsed(3, true);
+        }
         if (trains.size() > 0) {
             table.removeAllViews();
             for (DepartingTrain train: board.departingTrains()) {
@@ -130,10 +172,8 @@ public class ShowTrainsActivity extends Activity {
                 platform.setText(train.platform());
 
                 table.addView(row);
-                if (board.hasToStation())
-                    new FetchDetailsTask(row, board.toStation()).execute(train);
-                else
-                    table.setColumnCollapsed(3, true);
+                if (stationTwoSpecified)
+                    new FetchDetailsTask(this, row, navigatorState.stationTwo.get()).execute(train);
             }
         }
     }

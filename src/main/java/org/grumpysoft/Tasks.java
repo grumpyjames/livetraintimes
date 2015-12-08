@@ -38,7 +38,7 @@ public final class Tasks implements Serializable {
     static final LiveTrainsService service =
             WWHLDBServiceSoap.liveTrainsService();
 
-    private static class GetBoardsTask extends AsyncTask<String, Integer, BoardOrError> {
+    private static class GetBoardsTask extends AsyncTask<NavigatorState, Integer, BoardOrError> {
         private final ShowTrainsActivity context;
 
         private GetBoardsTask(ShowTrainsActivity context) {
@@ -46,14 +46,19 @@ public final class Tasks implements Serializable {
         }
 
         @Override
-        protected BoardOrError doInBackground(String... strings) {
+        protected BoardOrError doInBackground(NavigatorState... states) {
             try {
-                final String fromStation = strings[0];
-                final String toStation = strings[1];
-                if (toStation.equals("ANY"))
-                    return new BoardOrError(service.boardFor(fromStation));
+                final NavigatorState navigatorState = states[0];
+                if (!navigatorState.stationTwo.isPresent())
+                    return new BoardOrError(
+                            service.boardFor(
+                                    navigatorState.stationOne.get().threeLetterCode()));
                 else
-                    return new BoardOrError(service.boardForJourney(fromStation, toStation));
+                    return new BoardOrError(
+                            service.boardForJourney(
+                                    navigatorState.stationOne.get().threeLetterCode(),
+                                    navigatorState.stationTwo.get().threeLetterCode()
+                            ));
             } catch (IOException e) {
                 return new BoardOrError(e);
             }
@@ -68,9 +73,7 @@ public final class Tasks implements Serializable {
     
     public static void fetchTrains(ShowTrainsActivity context, NavigatorState navigatorState) {
         final GetBoardsTask task = new GetBoardsTask(context);
-        final String stationOne = navigatorState.stationOne.get().threeLetterCode();
-        final String stationTwo = navigatorState.stationTwo.or(Anywhere.INSTANCE).threeLetterCode();
-        task.execute(stationOne, stationTwo);
+        task.execute(navigatorState);
     }
 
     private Tasks() {}

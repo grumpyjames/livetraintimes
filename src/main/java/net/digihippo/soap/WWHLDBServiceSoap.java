@@ -45,41 +45,7 @@ public class WWHLDBServiceSoap
         final WWHAccessToken accessToken = new WWHAccessToken();
         accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
 
-        return new LiveTrainsService() {
-            @Override
-            public ArrivalBoard arrivalsAt(String crsAt) throws IOException {
-                return null;
-            }
-
-            @Override
-            public DepartureBoard boardFor(String crsFrom) throws IOException {
-                try {
-                    return toDepartureBoard(
-                            wwhldbServiceSoap.GetDepartureBoard(20, crsFrom, null, null, null, null, accessToken),
-                            null);
-                } catch (Exception e) {
-                    throw new IOException(e);
-                }
-            }
-
-            @Override
-            public DepartureBoard boardForJourney(String crsFrom, String crsTo) throws IOException {
-                try {
-                    return toDepartureBoard(
-                            wwhldbServiceSoap.GetDepartureBoard(
-                                    20, crsFrom, crsTo, null, null, null, accessToken),
-                            Stations.lookup(crsTo));
-                } catch (Exception e) {
-                    throw new IOException(e);
-                }
-            }
-
-            private DepartureBoard toDepartureBoard(final WWHStationBoard wwhStationBoard, Station toStation) {
-                return new MyDepartureBoard(wwhStationBoard, wwhldbServiceSoap, accessToken, toStation);
-            }
-
-
-        };
+        return new SoapLiveTrainsService(wwhldbServiceSoap, accessToken);
     }
 
     interface WWHIWcfMethod
@@ -835,6 +801,48 @@ public class WWHLDBServiceSoap
                     throw new IOException(e);
                 }
             }
+        }
+    }
+
+    private static class SoapLiveTrainsService implements LiveTrainsService {
+        private final WWHLDBServiceSoap wwhldbServiceSoap;
+        private final WWHAccessToken accessToken;
+
+        public SoapLiveTrainsService(WWHLDBServiceSoap wwhldbServiceSoap, WWHAccessToken accessToken) {
+            this.wwhldbServiceSoap = wwhldbServiceSoap;
+            this.accessToken = accessToken;
+        }
+
+        @Override
+        public ArrivalBoard arrivalsAt(String crsAt) throws IOException {
+            return null;
+        }
+
+        @Override
+        public DepartureBoard boardFor(String crsFrom) throws IOException {
+            try {
+                return toDepartureBoard(
+                        wwhldbServiceSoap.GetDepartureBoard(20, crsFrom, null, null, null, null, accessToken),
+                        null);
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
+        }
+
+        @Override
+        public DepartureBoard boardForJourney(String crsFrom, String crsTo) throws IOException {
+            try {
+                return toDepartureBoard(
+                        wwhldbServiceSoap.GetDepartureBoard(
+                                20, crsFrom, crsTo, null, null, null, accessToken),
+                        Stations.lookup(crsTo));
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
+        }
+
+        private DepartureBoard toDepartureBoard(final WWHStationBoard wwhStationBoard, Station toStation) {
+            return new MyDepartureBoard(wwhStationBoard, wwhldbServiceSoap, accessToken, toStation);
         }
     }
 }
