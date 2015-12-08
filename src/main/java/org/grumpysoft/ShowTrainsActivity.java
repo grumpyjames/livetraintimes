@@ -157,6 +157,8 @@ public class ShowTrainsActivity extends Activity {
         }
         if (trains.size() > 0) {
             table.removeAllViews();
+            table.addView(View.inflate(this, R.layout.board_header, null));
+
             for (DepartingTrain train: board.departingTrains()) {
                 TableRow row = (TableRow) View.inflate(this, R.layout.board_entry, null);
 
