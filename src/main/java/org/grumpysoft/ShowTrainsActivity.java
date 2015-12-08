@@ -2,7 +2,6 @@ package org.grumpysoft;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -13,7 +12,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
-import java.io.IOException;
 import java.util.List;
 
 public class ShowTrainsActivity extends Activity {
@@ -45,26 +43,6 @@ public class ShowTrainsActivity extends Activity {
         Tasks.fetchTrains(this, navigatorState);
     }
 
-    private String message(NavigatorState navigatorState) {
-        switch (navigatorState.type) {
-            case Arriving:
-                return "Fetching arrivals at " + navigatorState.stationOne.get().fullName() +
-                            maybe(" from ", navigatorState.stationTwo);
-            case FastestTrain:
-            case Departing:
-                return "Fetching departures from " + navigatorState.stationOne.get().fullName() +
-                            maybe(" to ", navigatorState.stationTwo);
-        }
-        throw new RuntimeException("We added a new type and forgot to add the view for it");
-    }
-
-    private String maybe(String message, Optional<Station> stationTwo) {
-        if (stationTwo.isPresent()) {
-            return message + stationTwo.get().fullName();
-        }
-        return "";
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -88,6 +66,26 @@ public class ShowTrainsActivity extends Activity {
         }
     }
 
+    private String message(NavigatorState navigatorState) {
+        switch (navigatorState.type) {
+            case Arriving:
+                return "Fetching arrivals at " + navigatorState.stationOne.get().fullName() +
+                        maybe(" from ", navigatorState.stationTwo);
+            case FastestTrain:
+            case Departing:
+                return "Fetching departures from " + navigatorState.stationOne.get().fullName() +
+                        maybe(" to ", navigatorState.stationTwo);
+        }
+        throw new RuntimeException("We added a new type and forgot to add the view for it");
+    }
+
+    private String maybe(String message, Optional<Station> stationTwo) {
+        if (stationTwo.isPresent()) {
+            return message + stationTwo.get().fullName();
+        }
+        return "";
+    }
+
     private void showFastestTrainDialog(DepartureBoard board) {
         List<? extends DepartingTrain> departingTrains = ImmutableList.copyOf(board.departingTrains());
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -102,7 +100,7 @@ public class ShowTrainsActivity extends Activity {
         alertDialog.show();
     }
 
-    private void onDetails(TableRow rowToUpdate, ServiceDetailsOrError serviceDetailsOrError) {
+    public void onDetails(TableRow rowToUpdate, Tasks.ServiceDetailsOrError serviceDetailsOrError) {
         if (serviceDetailsOrError.hasDetails()) {
             for (CallingPoint point: serviceDetailsOrError.details()) {
                 if (point.stationName().equals(navigatorState.stationTwo.get().fullName())) {
@@ -118,31 +116,6 @@ public class ShowTrainsActivity extends Activity {
                     alertDialog.hide();
                 }
             }
-        }
-    }
-
-    private static class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
-        private ShowTrainsActivity showTrainsActivity;
-        private final TableRow rowToUpdate;
-
-        private FetchDetailsTask(ShowTrainsActivity showTrainsActivity, TableRow rowToUpdate) {
-            this.showTrainsActivity = showTrainsActivity;
-            this.rowToUpdate = rowToUpdate;
-        }
-
-        @Override
-        protected ServiceDetailsOrError doInBackground(DepartingTrain... departingTrains) {
-            final DepartingTrain train = departingTrains[0];
-            try {
-                return new ServiceDetailsOrError(train.serviceDetails());
-            } catch (IOException ioe) {
-                return new ServiceDetailsOrError(ioe.getMessage());
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ServiceDetailsOrError serviceDetailsOrError) {
-            showTrainsActivity.onDetails(rowToUpdate, serviceDetailsOrError);
         }
     }
 
@@ -180,35 +153,9 @@ public class ShowTrainsActivity extends Activity {
 
                 table.addView(row);
                 if (stationTwoSpecified)
-                    new FetchDetailsTask(this, row).execute(train);
+                    new Tasks.FetchDetailsTask(this, row).execute(train);
             }
         }
     }
 
-    private static class ServiceDetailsOrError {
-        private ServiceDetails serviceDetails;
-        private String exceptionText;
-
-        private ServiceDetailsOrError(ServiceDetails serviceDetails) {
-            this.serviceDetails = serviceDetails;
-        }
-        
-        private ServiceDetailsOrError(String exceptionText) {
-            this.exceptionText = exceptionText;
-            System.out.println(exceptionText);
-        }
-        
-        private boolean hasDetails() {
-            return serviceDetails != null;
-        }
-        
-        private ServiceDetails details() {
-            return serviceDetails;
-        }
-        
-        @SuppressWarnings("UnusedDeclaration")
-        private String errorMsg() {
-            return exceptionText;
-        }
-    }
 }

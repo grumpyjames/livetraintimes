@@ -1,6 +1,7 @@
 package org.grumpysoft;
 
 import android.os.AsyncTask;
+import android.widget.TableRow;
 import net.digihippo.soap.WWHLDBServiceSoap;
 
 import java.io.IOException;
@@ -77,4 +78,57 @@ public final class Tasks implements Serializable {
     }
 
     private Tasks() {}
+
+    public static class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
+        private ShowTrainsActivity showTrainsActivity;
+        private final TableRow rowToUpdate;
+
+        public FetchDetailsTask(ShowTrainsActivity showTrainsActivity, TableRow rowToUpdate) {
+            this.showTrainsActivity = showTrainsActivity;
+            this.rowToUpdate = rowToUpdate;
+        }
+
+        @Override
+        protected ServiceDetailsOrError doInBackground(DepartingTrain... departingTrains) {
+            final DepartingTrain train = departingTrains[0];
+            try {
+                return new ServiceDetailsOrError(train.serviceDetails());
+            } catch (IOException ioe) {
+                return new ServiceDetailsOrError(ioe.getMessage());
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ServiceDetailsOrError serviceDetailsOrError) {
+            super.onPostExecute(serviceDetailsOrError);
+            showTrainsActivity.onDetails(rowToUpdate, serviceDetailsOrError);
+        }
+    }
+
+    static class ServiceDetailsOrError {
+        private ServiceDetails serviceDetails;
+        private String exceptionText;
+
+        private ServiceDetailsOrError(ServiceDetails serviceDetails) {
+            this.serviceDetails = serviceDetails;
+        }
+
+        private ServiceDetailsOrError(String exceptionText) {
+            this.exceptionText = exceptionText;
+            System.out.println(exceptionText);
+        }
+
+        public boolean hasDetails() {
+            return serviceDetails != null;
+        }
+
+        public ServiceDetails details() {
+            return serviceDetails;
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public String errorMsg() {
+            return exceptionText;
+        }
+    }
 }
