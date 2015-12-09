@@ -153,7 +153,7 @@ public class ShowTrainsActivity extends Activity {
                             + platformText
                             + ". It is expected to arrive at "
                             + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
-                    builder.setNeutralButton("Ok.", new DialogInterface.OnClickListener() {
+                    builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             alertDialog.hide();
