@@ -75,9 +75,6 @@ public class ShowTrainsActivity extends Activity {
 
     private String message(NavigatorState navigatorState) {
         switch (navigatorState.type) {
-            case Arriving:
-                return "Fetching arrivals at " + navigatorState.stationOne.get().fullName() +
-                        maybe(" from ", navigatorState.stationTwo);
             case FastestTrain:
             case Departing:
                 return "Fetching departures from " + navigatorState.stationOne.get().fullName() +

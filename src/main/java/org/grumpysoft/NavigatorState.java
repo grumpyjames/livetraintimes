@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 final class NavigatorState implements Serializable {
     enum Type {
-        Arriving,
         Departing,
         FastestTrain
     }

@@ -16,7 +16,7 @@ public class NavigatorActivity extends Activity {
     private static final String CHOICE_TWO = "choiceTwo";
 
     private final ImmutableSet<Integer> typeIds =
-            ImmutableSet.of(R.id.arrivals, R.id.departures, R.id.fastest);
+            ImmutableSet.of(R.id.departures, R.id.fastest);
 
     private NavigatorState navigatorState = new NavigatorState();
 
@@ -50,9 +50,6 @@ public class NavigatorActivity extends Activity {
     private void renderState(NavigatorState navigatorState) {
         attachButtonListeners();
         switch (navigatorState.type) {
-            case Arriving:
-                renderArriving(navigatorState.stationOne, navigatorState.stationTwo);
-                break;
             case Departing:
                 renderDeparting(navigatorState.stationOne, navigatorState.stationTwo);
                 break;
@@ -63,7 +60,6 @@ public class NavigatorActivity extends Activity {
     }
 
     private void attachButtonListeners() {
-        findViewById(R.id.arrivals).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.Arriving));
         findViewById(R.id.departures).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.Departing));
         findViewById(R.id.fastest).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.FastestTrain));
         findViewById(R.id.choice_one).findViewById(R.id.select_action).setOnClickListener(new SelectStationListener(CHOICE_ONE));
@@ -94,18 +90,6 @@ public class NavigatorActivity extends Activity {
 
         if (!stationOne.isPresent()) {
             error("Please select a 'from' station");
-        } else {
-            readyToGo();
-        }
-    }
-
-    private void renderArriving(Optional<Station> stationOne, Optional<Station> stationTwo) {
-        setSelectedType(R.id.arrivals);
-
-        renderCommon(stationOne, stationTwo, "At: ", "From: ");
-
-        if (!stationOne.isPresent()) {
-            error("Please select an 'at' station");
         } else {
             readyToGo();
         }
