@@ -45,7 +45,7 @@ public interface Train {
      * @return the service details
      * @throws IOException if network issues prevent the details from being retrieved
      */
-    ServiceDetails serviceDetails() throws IOException;
+    ServiceDetails serviceDetails();
 
     /** The possible statuses of a given train **/
     enum TrainStatus {

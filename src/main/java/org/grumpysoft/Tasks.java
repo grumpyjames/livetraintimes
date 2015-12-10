@@ -79,37 +79,11 @@ public final class Tasks implements Serializable {
 
     private Tasks() {}
 
-    public static class FetchDetailsTask extends AsyncTask<DepartingTrain, Integer, ServiceDetailsOrError> {
-        private ShowTrainsActivity showTrainsActivity;
-        private final TableRow rowToUpdate;
-
-        public FetchDetailsTask(ShowTrainsActivity showTrainsActivity, TableRow rowToUpdate) {
-            this.showTrainsActivity = showTrainsActivity;
-            this.rowToUpdate = rowToUpdate;
-        }
-
-        @Override
-        protected ServiceDetailsOrError doInBackground(DepartingTrain... departingTrains) {
-            final DepartingTrain train = departingTrains[0];
-            try {
-                return new ServiceDetailsOrError(train.serviceDetails());
-            } catch (IOException ioe) {
-                return new ServiceDetailsOrError(ioe.getMessage());
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ServiceDetailsOrError serviceDetailsOrError) {
-            super.onPostExecute(serviceDetailsOrError);
-            showTrainsActivity.onDetails(rowToUpdate, serviceDetailsOrError);
-        }
-    }
-
-    static class ServiceDetailsOrError {
+    public static class ServiceDetailsOrError {
         private ServiceDetails serviceDetails;
         private String exceptionText;
 
-        private ServiceDetailsOrError(ServiceDetails serviceDetails) {
+        public ServiceDetailsOrError(ServiceDetails serviceDetails) {
             this.serviceDetails = serviceDetails;
         }
 

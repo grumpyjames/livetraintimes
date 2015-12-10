@@ -104,61 +104,58 @@ public class ShowTrainsActivity extends Activity {
         alertDialog.show();
     }
 
-    public void onDetails(TableRow rowToUpdate, Tasks.ServiceDetailsOrError serviceDetailsOrError) {
-        if (serviceDetailsOrError.hasDetails()) {
-            String arrivalTime = null;
-            ServiceDetails details = serviceDetailsOrError.details();
-            for (CallingPoint point: details) {
-                if (point.stationName().equals(navigatorState.stationTwo.get().fullName())) {
-                    arrivalTime = point.scheduledTime();
-                    TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
-                    arrivingAt.setText(arrivalTime);
-                }
+    public void onDetails(TableRow rowToUpdate, ServiceDetails details) {
+        String arrivalTime = null;
+        for (CallingPoint point: details) {
+            if (point.stationName().equals(navigatorState.stationTwo.get().fullName())) {
+                arrivalTime = point.scheduledTime();
+                TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
+                arrivingAt.setText(arrivalTime);
+            }
+        }
+
+        LocalTime now = LocalTime.now();
+        if (arrivalTime != null) {
+            LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
+            final DateTime arrivalDateTime;
+            if (localTime.isBefore(now)) {
+                arrivalDateTime = localTime.toDateTimeToday().plusDays(1);
+            } else {
+                arrivalDateTime = localTime.toDateTimeToday();
             }
 
-            LocalTime now = LocalTime.now();
-            if (arrivalTime != null) {
-                LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
-                final DateTime arrivalDateTime;
-                if (localTime.isBefore(now)) {
-                    arrivalDateTime = localTime.toDateTimeToday().plusDays(1);
-                } else {
-                    arrivalDateTime = localTime.toDateTimeToday();
-                }
-
-                if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
-                    currentBestTrain = new CurrentBestTrain(rowToUpdate, details, arrivalDateTime);
-                }
+            if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
+                currentBestTrain = new CurrentBestTrain(rowToUpdate, details, arrivalDateTime);
             }
+        }
 
-            if (navigatorState.type == NavigatorState.Type.FastestTrain)
-            {
-                progressBar.incrementProgressBy(1);
-                if (progressBar.getProgress() == progressBar.getMax()) {
-                    alertDialog.hide();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Fastest Train");
-                    TextView textView = new TextView(this);
-                    TextView dueView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(0);
-                    TextView platformView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(2);
-                    String platformText = (platformView.getText().length() > 0)
-                            ? " from platform " + platformView.getText()
-                            : "";
-                    builder.setMessage("The fastest train from " + navigatorState.stationOne.get().fullName()
-                            + " to " + navigatorState.stationTwo.get().fullName()
-                            + " leaves at " + dueView.getText()
-                            + platformText
-                            + ". It is expected to arrive at "
-                            + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
-                    builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            alertDialog.hide();
-                        }
-                    });
-                    this.alertDialog = builder.create();
-                    alertDialog.show();
-                }
+        if (navigatorState.type == NavigatorState.Type.FastestTrain)
+        {
+            progressBar.incrementProgressBy(1);
+            if (progressBar.getProgress() == progressBar.getMax()) {
+                alertDialog.hide();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Fastest Train");
+                TextView textView = new TextView(this);
+                TextView dueView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(0);
+                TextView platformView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(2);
+                String platformText = (platformView.getText().length() > 0)
+                        ? " from platform " + platformView.getText()
+                        : "";
+                builder.setMessage("The fastest train from " + navigatorState.stationOne.get().fullName()
+                        + " to " + navigatorState.stationTwo.get().fullName()
+                        + " leaves at " + dueView.getText()
+                        + platformText
+                        + ". It is expected to arrive at "
+                        + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
+                builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        alertDialog.hide();
+                    }
+                });
+                this.alertDialog = builder.create();
+                alertDialog.show();
             }
         }
     }
@@ -197,7 +194,7 @@ public class ShowTrainsActivity extends Activity {
 
                 table.addView(row);
                 if (stationTwoSpecified)
-                    new Tasks.FetchDetailsTask(this, row).execute(train);
+                    this.onDetails(row, train.serviceDetails());
             }
         }
     }
