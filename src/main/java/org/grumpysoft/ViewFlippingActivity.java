@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ViewFlippingActivity extends FragmentActivity {
     private List<Fragment> fragments = Lists.newArrayList();
-    private String[] titles = {"Directory", "Favourites", "Search"};
+    private static final String[] titles = {"Favourites", "Search"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +29,10 @@ public class ViewFlippingActivity extends FragmentActivity {
         final SharedPreferences preferences = getPreferences(0);
         Favourites.deserializeFrom(preferences);
 
-        StationSelectorFragment fragment = new StationSelectorFragment();
-        StationSearchFragment fragmentTwo = new StationSearchFragment();
-        FavouriteStationFragment fragmentThree = new FavouriteStationFragment();
-        addFragment(fragment, extras);
-        addFragment(fragmentThree, extras);
-        addFragment(fragmentTwo, extras);
+        FavouriteStationFragment favouriteFragment = new FavouriteStationFragment();
+        StationSearchFragment searchFragment = new StationSearchFragment();
+        addFragment(favouriteFragment, extras);
+        addFragment(searchFragment, extras);
 
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {

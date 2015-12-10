@@ -12,7 +12,6 @@
         <activity android:name="ViewFlippingActivity" android:theme="@android:style/Theme.NoTitleBar">
 
         </activity>
-        <activity android:name="SelectorTabsActivity" android:theme="@android:style/Theme.NoTitleBar"/>
         <activity android:name="NavigatorActivity" android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
