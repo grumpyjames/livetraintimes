@@ -25,7 +25,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
             new Function<WWHCallingPoint, CallingPoint>() {
                 @Override
                 public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
-                    return new CallingPoint(wwhCallingPoint.locationName, wwhCallingPoint.st);
+                    return CallingPoint.singlePoint(wwhCallingPoint.locationName, wwhCallingPoint.st);
                 }
             };
     private static final Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>> CallingPointsExtractor =

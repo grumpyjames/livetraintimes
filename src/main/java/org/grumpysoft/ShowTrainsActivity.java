@@ -93,17 +93,14 @@ public class ShowTrainsActivity extends Activity {
         return "";
     }
 
-    private void onDetails(TableRow rowToUpdate, ServiceDetails details) {
-        String arrivalTime = null;
-        for (CallingPoint point: details) {
-            if (point.stationName().equals(navigatorState.stationTwo.get().fullName())) {
-                arrivalTime = point.scheduledTime();
-                TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
-                arrivingAt.setText(arrivalTime);
-            }
+    private void onDetails(final TableRow rowToUpdate, ServiceDetails details) {
+        MyCallingPointConsumer callingPointConsumer = new MyCallingPointConsumer(rowToUpdate);
+        for (final CallingPoint point: details) {
+            point.consume(callingPointConsumer);
         }
 
         LocalTime now = LocalTime.now();
+        String arrivalTime = callingPointConsumer.getArrivalTime();
         if (arrivalTime != null) {
             LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
             final DateTime arrivalDateTime;
@@ -114,7 +111,7 @@ public class ShowTrainsActivity extends Activity {
             }
 
             if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
-                currentBestTrain = new CurrentBestTrain(rowToUpdate, details, arrivalDateTime);
+                currentBestTrain = new CurrentBestTrain(rowToUpdate, arrivalDateTime);
             }
         }
     }
@@ -190,17 +187,47 @@ public class ShowTrainsActivity extends Activity {
 
     private class CurrentBestTrain {
         private final TableRow rowToUpdate;
-        private final ServiceDetails details;
         private final DateTime arrivalDateTime;
 
-        public CurrentBestTrain(TableRow rowToUpdate, ServiceDetails details, DateTime arrivalDateTime) {
+        public CurrentBestTrain(TableRow rowToUpdate, DateTime arrivalDateTime) {
             this.rowToUpdate = rowToUpdate;
-            this.details = details;
             this.arrivalDateTime = arrivalDateTime;
         }
 
         public boolean arrivesAfter(DateTime arrivalDateTime) {
             return arrivalDateTime.isBefore(this.arrivalDateTime);
+        }
+    }
+
+    private class MyCallingPointConsumer implements CallingPoint.CallingPointConsumer {
+        private final TableRow rowToUpdate;
+        private String arrivalTime;
+
+        public MyCallingPointConsumer(TableRow rowToUpdate) {
+            this.rowToUpdate = rowToUpdate;
+        }
+
+        @Override
+        public void onSinglePoint(String stationName, String scheduledAtTime) {
+            if (stationName.equals(navigatorState.stationTwo.get().fullName())) {
+                arrivalTime = scheduledAtTime;
+                TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
+                arrivingAt.setText(arrivalTime);
+            }
+        }
+
+        @Override
+        public void splitStart() {
+
+        }
+
+        @Override
+        public void splitEnd() {
+
+        }
+
+        public String getArrivalTime() {
+            return arrivalTime;
         }
     }
 }
