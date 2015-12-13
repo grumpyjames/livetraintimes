@@ -115,48 +115,7 @@ class SoapLiveTrainsService implements LiveTrainsService {
     }
 
     private DepartureBoard toDepartureBoard(final WWHStationBoardWithDetails wwhStationBoard, Station toStation) {
-        return new MyDepartureBoard(wwhStationBoard, toStation);
-    }
-
-    private static class MyDepartureBoard implements DepartureBoard {
-        private final WWHStationBoardWithDetails wwhStationBoard;
-        private final Station toStation;
-
-        public MyDepartureBoard(WWHStationBoardWithDetails wwhStationBoard, Station toStation) {
-            this.wwhStationBoard = wwhStationBoard;
-            this.toStation = toStation;
-        }
-
-        @Override
-        public Iterable<? extends DepartingTrain> departingTrains() {
-            return transform(wwhStationBoard.trainServices, ExtractDepartingTrain);
-        }
-
-        @Override
-        public boolean hasToStation() {
-            return toStation != null;
-        }
-
-        @Override
-        public Station toStation() {
-            return toStation;
-        }
-
-        @Override
-        public Station station() {
-            return null;
-        }
-
-        @Override
-        public String generatedTime() {
-            return "now";
-        }
-
-        @Override
-        public String updateText() {
-            return "huh?";
-        }
-
+        return new DepartureBoard(transform(wwhStationBoard.trainServices, ExtractDepartingTrain));
     }
 
     private static Iterable<CallingPoint> convertCallingPoints(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
