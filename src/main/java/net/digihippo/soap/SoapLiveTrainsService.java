@@ -8,6 +8,7 @@ import org.grumpysoft.*;
 import java.io.IOException;
 import java.util.List;
 
+import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
@@ -119,7 +120,7 @@ class SoapLiveTrainsService implements LiveTrainsService {
 
             @Override
             public List<String> viaDestinations() {
-                return ImmutableList.copyOf(
+                return copyOf(
                         filter(transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
                             @Override
                             public String apply(WWHServiceLocation wwhServiceLocation) {
@@ -135,7 +136,7 @@ class SoapLiveTrainsService implements LiveTrainsService {
 
             @Override
             public List<String> destinationList() {
-                return ImmutableList.copyOf(
+                return copyOf(
                         transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
                             @Override
                             public String apply(WWHServiceLocation wwhServiceLocation) {
@@ -179,32 +180,36 @@ class SoapLiveTrainsService implements LiveTrainsService {
         }
 
         private static Iterable<CallingPoint> convertCallingPoints(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
-            return concat(transform(wwhServiceDetails, new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
-                @Override
-                public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
-                    return transform(wwhArrayOfCallingPoints.callingPoint, new Function<WWHCallingPoint, CallingPoint>() {
+            return copyOf(concat(transform(
+                    wwhServiceDetails,
+                    new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
                         @Override
-                        public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
-                            return new CallingPoint() {
-                                @Override
-                                public String stationName() {
-                                    return wwhCallingPoint.locationName;
-                                }
+                        public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
+                            return transform(
+                                    wwhArrayOfCallingPoints.callingPoint,
+                                    new Function<WWHCallingPoint, CallingPoint>() {
+                                        @Override
+                                        public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
+                                            return new CallingPoint() {
+                                                @Override
+                                                public String stationName() {
+                                                    return wwhCallingPoint.locationName;
+                                                }
 
-                                @Override
-                                public String scheduledTime() {
-                                    return wwhCallingPoint.st;
-                                }
+                                                @Override
+                                                public String scheduledTime() {
+                                                    return wwhCallingPoint.st;
+                                                }
 
-                                @Override
-                                public PointStatus status() {
-                                    return PointStatus.NO_REPORT;
-                                }
-                            };
+                                                @Override
+                                                public PointStatus status() {
+                                                    return PointStatus.NO_REPORT;
+                                                }
+                                            };
+                                        }
+                                    });
                         }
-                    });
-                }
-            }));
+                    })));
         }
     }
 
