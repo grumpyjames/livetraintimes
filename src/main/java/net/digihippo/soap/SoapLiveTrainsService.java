@@ -2,10 +2,10 @@ package net.digihippo.soap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import org.grumpysoft.*;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Iterables.concat;
@@ -42,6 +42,42 @@ class SoapLiveTrainsService implements LiveTrainsService {
                     return transform(wwhArrayOfCallingPoints.callingPoint, CallingPointExtractor);
                 }
             };
+
+    private static final Function<WWHServiceLocation, String> ExtractViaDestination =
+            new Function<WWHServiceLocation, String>() {
+                @Override
+                public String apply(WWHServiceLocation wwhServiceLocation) {
+                    return wwhServiceLocation.via;
+                }
+            };
+    private static final Function<WWHServiceLocation, String> ExtractLocationName = new Function<WWHServiceLocation, String>() {
+        @Override
+        public String apply(WWHServiceLocation wwhServiceLocation) {
+            return wwhServiceLocation.locationName;
+        }
+    };
+    private static final Function<WWHServiceItemWithCallingPoints, DepartingTrain> ExtractDepartingTrain =
+            new Function<WWHServiceItemWithCallingPoints, DepartingTrain>() {
+                @Override
+                public DepartingTrain apply(final WWHServiceItemWithCallingPoints wwhServiceItem) {
+                    boolean isCircularRoute =
+                            wwhServiceItem.isCircularRoute == null ? false : wwhServiceItem.isCircularRoute;
+                    ImmutableList<String> destinations =
+                            copyOf(transform(wwhServiceItem.destination, ExtractLocationName));
+                    ImmutableList<String> viaDestinations = copyOf(
+                            filter(transform(wwhServiceItem.destination, ExtractViaDestination), Predicates.notNull()));
+                    String expectedDepartureTime =
+                            wwhServiceItem.etd.equals("On time") ? wwhServiceItem.std : wwhServiceItem.etd;
+                    return new DepartingTrain(
+                            isCircularRoute,
+                            destinations,
+                            viaDestinations,
+                            wwhServiceItem.platform,
+                            expectedDepartureTime,
+                            convertCallingPoints(wwhServiceItem.subsequentCallingPoints));
+                }
+            };
+
     private final WWHLDBServiceSoap wwhldbServiceSoap;
     private final WWHAccessToken accessToken;
 
@@ -93,12 +129,7 @@ class SoapLiveTrainsService implements LiveTrainsService {
 
         @Override
         public Iterable<? extends DepartingTrain> departingTrains() {
-            return transform(wwhStationBoard.trainServices, new Function<WWHServiceItemWithCallingPoints, DepartingTrain>() {
-                @Override
-                public DepartingTrain apply(final WWHServiceItemWithCallingPoints wwhServiceItem) {
-                    return new MyDepartingTrain(wwhServiceItem);
-                }
-            });
+            return transform(wwhStationBoard.trainServices, ExtractDepartingTrain);
         }
 
         @Override
@@ -126,82 +157,9 @@ class SoapLiveTrainsService implements LiveTrainsService {
             return "huh?";
         }
 
-        private ServiceDetails toServiceDetails(
-                final WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
-            return new ServiceDetails(convertCallingPoints(wwhServiceDetails));
-        }
-
-        private class MyDepartingTrain implements DepartingTrain {
-            private final WWHServiceItemWithCallingPoints wwhServiceItem;
-
-            public MyDepartingTrain(WWHServiceItemWithCallingPoints wwhServiceItem) {
-                this.wwhServiceItem = wwhServiceItem;
-            }
-
-            @Override
-            public List<String> viaDestinations() {
-                return copyOf(
-                        filter(transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
-                            @Override
-                            public String apply(WWHServiceLocation wwhServiceLocation) {
-                                return wwhServiceLocation.via;
-                            }
-                        }), Predicates.notNull()));
-            }
-
-            @Override
-            public boolean isCircularRoute() {
-                return wwhServiceItem.isCircularRoute == null ? false : wwhServiceItem.isCircularRoute;
-            }
-
-            @Override
-            public List<String> destinationList() {
-                return copyOf(
-                        transform(wwhServiceItem.destination, new Function<WWHServiceLocation, String>() {
-                            @Override
-                            public String apply(WWHServiceLocation wwhServiceLocation) {
-                                return wwhServiceLocation.locationName;
-                            }
-                        })
-                );
-            }
-
-            @Override
-            public String platform() {
-                return wwhServiceItem.platform;
-            }
-
-            @Override
-            public String scheduledAt() {
-                return wwhServiceItem.sta;
-            }
-
-            @Override
-            public TrainStatus status() {
-                // FIXME: lies
-                return TrainStatus.ON_TIME;
-            }
-
-            @Override
-            public String expectedAt() {
-                return wwhServiceItem.etd.equals("On time") ?
-                        wwhServiceItem.std : wwhServiceItem.etd;
-            }
-
-            @Override
-            public String serviceId() {
-                return wwhServiceItem.serviceID;
-            }
-
-            @Override
-            public ServiceDetails serviceDetails() {
-                return toServiceDetails(wwhServiceItem.subsequentCallingPoints);
-            }
-        }
-
-        private static Iterable<CallingPoint> convertCallingPoints(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
-            return copyOf(concat(transform(wwhServiceDetails, CallingPointsExtractor)));
-        }
     }
 
+    private static Iterable<CallingPoint> convertCallingPoints(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
+        return copyOf(concat(transform(wwhServiceDetails, CallingPointsExtractor)));
+    }
 }
