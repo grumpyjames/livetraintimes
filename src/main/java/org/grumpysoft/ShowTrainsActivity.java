@@ -56,6 +56,14 @@ public class ShowTrainsActivity extends Activity {
         Favourites.save(getPreferences(0));
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
+    }
+
     public void onBoardOrError(Tasks.BoardOrError boardOrError) {
         if (alertDialog != null) {
             alertDialog.hide();
@@ -85,7 +93,7 @@ public class ShowTrainsActivity extends Activity {
         return "";
     }
 
-    public void onDetails(TableRow rowToUpdate, ServiceDetails details) {
+    private void onDetails(TableRow rowToUpdate, ServiceDetails details) {
         String arrivalTime = null;
         for (CallingPoint point: details) {
             if (point.stationName().equals(navigatorState.stationTwo.get().fullName())) {
@@ -115,6 +123,7 @@ public class ShowTrainsActivity extends Activity {
         if (navigatorState.type == NavigatorState.Type.FastestTrain)
         {
             alertDialog.hide();
+            alertDialog.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Fastest Train");
             TextView dueView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(0);

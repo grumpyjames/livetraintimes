@@ -2,12 +2,12 @@ package org.grumpysoft;
 
 import android.os.AsyncTask;
 import net.digihippo.soap.SoapLiveTrainsService;
-import net.digihippo.soap.WWHLDBServiceSoap;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 public final class Tasks implements Serializable {
+    private static final DepartureBoardService service = SoapLiveTrainsService.departureBoardService();
+
     public static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;
@@ -36,9 +36,6 @@ public final class Tasks implements Serializable {
         }
     }
 
-    static final DepartureBoardService service =
-            SoapLiveTrainsService.departureBoardService();
-
     private static class GetBoardsTask extends AsyncTask<NavigatorState, Integer, BoardOrError> {
         private final ShowTrainsActivity context;
 
@@ -50,17 +47,11 @@ public final class Tasks implements Serializable {
         protected BoardOrError doInBackground(NavigatorState... states) {
             try {
                 final NavigatorState navigatorState = states[0];
-                if (!navigatorState.stationTwo.isPresent())
-                    return new BoardOrError(
-                            service.boardFor(
-                                    navigatorState.stationOne.get().threeLetterCode()));
-                else
-                    return new BoardOrError(
-                            service.boardForJourney(
-                                    navigatorState.stationOne.get().threeLetterCode(),
-                                    navigatorState.stationTwo.get().threeLetterCode()
-                            ));
-            } catch (IOException e) {
+                return new BoardOrError(
+                        service.boardFor(
+                                navigatorState.stationOne.get(),
+                                navigatorState.stationTwo));
+            } catch (Exception e) {
                 return new BoardOrError(e);
             }
         }

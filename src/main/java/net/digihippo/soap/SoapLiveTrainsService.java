@@ -1,11 +1,10 @@
 package net.digihippo.soap;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import org.grumpysoft.*;
-
-import java.io.IOException;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Iterables.concat;
@@ -96,29 +95,22 @@ public class SoapLiveTrainsService implements DepartureBoardService {
     }
 
     @Override
-    public DepartureBoard boardFor(String crsFrom) throws IOException {
-        try {
-            return toDepartureBoard(
-                    wwhldbServiceSoap.GetDepBoardWithDetails(20, crsFrom, null, null, null, null, accessToken),
-                    null);
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
+    public DepartureBoard boardFor(final Station from, final Optional<Station> to) throws Exception {
+
+        return toDepartureBoard(
+                wwhldbServiceSoap.GetDepBoardWithDetails(
+                        20,
+                        from.threeLetterCode(),
+                        to.isPresent() ? to.get().threeLetterCode() : null,
+                        null,
+                        null,
+                        null,
+                        accessToken)
+        );
+
     }
 
-    @Override
-    public DepartureBoard boardForJourney(String crsFrom, String crsTo) throws IOException {
-        try {
-            return toDepartureBoard(
-                    wwhldbServiceSoap.GetDepBoardWithDetails(
-                            20, crsFrom, crsTo, null, null, null, accessToken),
-                    Stations.lookup(crsTo));
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
-    }
-
-    private DepartureBoard toDepartureBoard(final WWHStationBoardWithDetails wwhStationBoard, Station toStation) {
+    private DepartureBoard toDepartureBoard(final WWHStationBoardWithDetails wwhStationBoard) {
         return new DepartureBoard(transform(wwhStationBoard.trainServices, ExtractDepartingTrain));
     }
 
