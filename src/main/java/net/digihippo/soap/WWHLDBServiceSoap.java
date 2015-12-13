@@ -15,10 +15,7 @@ package net.digihippo.soap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import org.grumpysoft.*;
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
@@ -28,28 +25,13 @@ import org.ksoap2.transport.HttpsTransportSE;
 import org.ksoap2.transport.Transport;
 import org.kxml2.kdom.Element;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-
-import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.transform;
 
 
 public class WWHLDBServiceSoap
 {
-    public static LiveTrainsService liveTrainsService() {
-        final WWHLDBServiceSoap wwhldbServiceSoap = new WWHLDBServiceSoap();
-
-        final WWHAccessToken accessToken = new WWHAccessToken();
-        accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
-
-        return new SoapLiveTrainsService(wwhldbServiceSoap, accessToken);
-    }
-
     interface WWHIWcfMethod
     {
         WWHExtendedSoapSerializationEnvelope CreateSoapEnvelope() throws Exception;

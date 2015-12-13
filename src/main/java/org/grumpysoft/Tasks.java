@@ -1,6 +1,7 @@
 package org.grumpysoft;
 
 import android.os.AsyncTask;
+import net.digihippo.soap.SoapLiveTrainsService;
 import net.digihippo.soap.WWHLDBServiceSoap;
 
 import java.io.IOException;
@@ -35,8 +36,8 @@ public final class Tasks implements Serializable {
         }
     }
 
-    static final LiveTrainsService service =
-            WWHLDBServiceSoap.liveTrainsService();
+    static final DepartureBoardService service =
+            SoapLiveTrainsService.departureBoardService();
 
     private static class GetBoardsTask extends AsyncTask<NavigatorState, Integer, BoardOrError> {
         private final ShowTrainsActivity context;

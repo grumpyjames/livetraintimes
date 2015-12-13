@@ -12,7 +12,16 @@ import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
-class SoapLiveTrainsService implements LiveTrainsService {
+public class SoapLiveTrainsService implements DepartureBoardService {
+    public static DepartureBoardService departureBoardService() {
+        final WWHLDBServiceSoap wwhldbServiceSoap = new WWHLDBServiceSoap();
+
+        final WWHAccessToken accessToken = new WWHAccessToken();
+        accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
+
+        return new SoapLiveTrainsService(wwhldbServiceSoap, accessToken);
+    }
+
     private static final Function<WWHCallingPoint, CallingPoint> CallingPointExtractor =
             new Function<WWHCallingPoint, CallingPoint>() {
                 @Override
@@ -84,11 +93,6 @@ class SoapLiveTrainsService implements LiveTrainsService {
     public SoapLiveTrainsService(WWHLDBServiceSoap wwhldbServiceSoap, WWHAccessToken accessToken) {
         this.wwhldbServiceSoap = wwhldbServiceSoap;
         this.accessToken = accessToken;
-    }
-
-    @Override
-    public ArrivalBoard arrivalsAt(String crsAt) throws IOException {
-        return null;
     }
 
     @Override
