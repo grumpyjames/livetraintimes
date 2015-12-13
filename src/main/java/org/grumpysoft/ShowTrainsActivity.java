@@ -183,7 +183,7 @@ public class ShowTrainsActivity extends Activity {
 
                 table.addView(row);
                 if (stationTwoSpecified)
-                    this.onDetails(row, train.serviceDetails());
+                    onDetails(row, train.serviceDetails());
             }
             showFastestTrain();
         }
