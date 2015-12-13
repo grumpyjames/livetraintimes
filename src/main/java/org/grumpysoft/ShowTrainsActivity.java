@@ -94,7 +94,8 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private void onDetails(final TableRow rowToUpdate, ServiceDetails details) {
-        MyCallingPointConsumer callingPointConsumer = new MyCallingPointConsumer(rowToUpdate);
+        FindArrivalTime callingPointConsumer =
+                new FindArrivalTime(navigatorState.stationTwo.get());
         for (final CallingPoint point: details) {
             point.consume(callingPointConsumer);
         }
@@ -102,6 +103,9 @@ public class ShowTrainsActivity extends Activity {
         LocalTime now = LocalTime.now();
         String arrivalTime = callingPointConsumer.getArrivalTime();
         if (arrivalTime != null) {
+            TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
+            arrivingAt.setText(arrivalTime);
+
             LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
             final DateTime arrivalDateTime;
             if (localTime.isBefore(now)) {
@@ -199,20 +203,19 @@ public class ShowTrainsActivity extends Activity {
         }
     }
 
-    private class MyCallingPointConsumer implements CallingPoint.CallingPointConsumer {
-        private final TableRow rowToUpdate;
+    private static class FindArrivalTime implements CallingPoint.CallingPointConsumer {
+        private final Station soughtStation;
+
         private String arrivalTime;
 
-        public MyCallingPointConsumer(TableRow rowToUpdate) {
-            this.rowToUpdate = rowToUpdate;
+        public FindArrivalTime(Station soughtStation) {
+            this.soughtStation = soughtStation;
         }
 
         @Override
         public void onSinglePoint(String stationName, String scheduledAtTime) {
-            if (stationName.equals(navigatorState.stationTwo.get().fullName())) {
+            if (arrivalTime == null && stationName.equals(soughtStation.fullName())) {
                 arrivalTime = scheduledAtTime;
-                TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
-                arrivingAt.setText(arrivalTime);
             }
         }
 
