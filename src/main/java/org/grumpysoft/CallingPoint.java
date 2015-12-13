@@ -1,21 +1,19 @@
 package org.grumpysoft;
 
-public interface CallingPoint {
-    String stationName();
+public class CallingPoint {
+    private final String locationName;
+    private final String scheduledAtTime;
 
-    String scheduledTime();
+    public CallingPoint(String locationName, String scheduledAtTime) {
+        this.locationName = locationName;
+        this.scheduledAtTime = scheduledAtTime;
+    }
 
-    /** The possible statuses of a given calling point **/
-    enum PointStatus {
-        /** The service has departed from this point **/
-        DEPARTED,
-        /** The service is on its way to this point **/
-        IN_MOTION,
-        /** The service is at this station **/
-        AT_STATION,
-        /** The service has been cancelled and will no longer call at this point **/
-        CANCELLED,
-        /** The status is yet to have been reported **/
-        NO_REPORT
+    public String stationName() {
+        return locationName;
+    }
+
+    public String scheduledTime() {
+        return scheduledAtTime;
     }
 }
