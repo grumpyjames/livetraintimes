@@ -108,16 +108,16 @@ class SoapLiveTrainsService implements LiveTrainsService {
         private ServiceDetails toServiceDetails(
                 final String serviceId,
                 final WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
-            return new MyServiceDetails(serviceId, wwhServiceDetails);
+            return new MyServiceDetails(serviceId, convertCallingPoints(wwhServiceDetails));
         }
 
         private static class MyServiceDetails implements ServiceDetails {
             private final String serviceId;
-            private final WWHArrayOfArrayOfCallingPoints subsequentCallingPoints;
+            private Iterable<CallingPoint> callingPoints;
 
-            public MyServiceDetails(String serviceId, WWHArrayOfArrayOfCallingPoints subsequentCallingPoints) {
+            public MyServiceDetails(String serviceId, Iterable<CallingPoint> callingPoints) {
                 this.serviceId = serviceId;
-                this.subsequentCallingPoints = subsequentCallingPoints;
+                this.callingPoints = callingPoints;
             }
 
             @Override
@@ -142,32 +142,7 @@ class SoapLiveTrainsService implements LiveTrainsService {
 
             @Override
             public Iterator<CallingPoint> iterator() {
-                return concat(transform(subsequentCallingPoints, new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
-                    @Override
-                    public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
-                        return transform(wwhArrayOfCallingPoints.callingPoint, new Function<WWHCallingPoint, CallingPoint>() {
-                            @Override
-                            public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
-                                return new CallingPoint() {
-                                    @Override
-                                    public String stationName() {
-                                        return wwhCallingPoint.locationName;
-                                    }
-
-                                    @Override
-                                    public String scheduledTime() {
-                                        return wwhCallingPoint.st;
-                                    }
-
-                                    @Override
-                                    public PointStatus status() {
-                                        return PointStatus.NO_REPORT;
-                                    }
-                                };
-                            }
-                        });
-                    }
-                })).iterator();
+                return callingPoints.iterator();
             }
         }
 
@@ -237,6 +212,35 @@ class SoapLiveTrainsService implements LiveTrainsService {
             public ServiceDetails serviceDetails() {
                 return toServiceDetails(serviceId(), wwhServiceItem.subsequentCallingPoints);
             }
+        }
+
+        private static Iterable<CallingPoint> convertCallingPoints(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
+            return concat(transform(wwhServiceDetails, new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
+                @Override
+                public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
+                    return transform(wwhArrayOfCallingPoints.callingPoint, new Function<WWHCallingPoint, CallingPoint>() {
+                        @Override
+                        public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
+                            return new CallingPoint() {
+                                @Override
+                                public String stationName() {
+                                    return wwhCallingPoint.locationName;
+                                }
+
+                                @Override
+                                public String scheduledTime() {
+                                    return wwhCallingPoint.st;
+                                }
+
+                                @Override
+                                public PointStatus status() {
+                                    return PointStatus.NO_REPORT;
+                                }
+                            };
+                        }
+                    });
+                }
+            }));
         }
     }
 
