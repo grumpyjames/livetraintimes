@@ -23,7 +23,6 @@ public class ShowTrainsActivity extends Activity {
 
     private AlertDialog alertDialog;
     private NavigatorState navigatorState;
-    private ProgressBar progressBar;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm");
     private CurrentBestTrain currentBestTrain;
 
@@ -65,10 +64,6 @@ public class ShowTrainsActivity extends Activity {
 
         // FIXME: handle the error case
         if (boardOrError.hasBoard()) {
-            if (navigatorState.type == NavigatorState.Type.FastestTrain) {
-                showFastestTrainDialog(boardOrError.board());
-            }
-
             populateBoard(table, boardOrError.board());
         }
     }
@@ -88,20 +83,6 @@ public class ShowTrainsActivity extends Activity {
             return message + stationTwo.get().fullName();
         }
         return "";
-    }
-
-    private void showFastestTrainDialog(DepartureBoard board) {
-        List<? extends DepartingTrain> departingTrains = ImmutableList.copyOf(board.departingTrains());
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Fetching calling points to ascertain fastest train");
-        progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-        progressBar.setIndeterminate(false);
-        progressBar.setMax(departingTrains.size());
-        progressBar.setProgress(0);
-        builder.setView(progressBar);
-
-        alertDialog = builder.create();
-        alertDialog.show();
     }
 
     public void onDetails(TableRow rowToUpdate, ServiceDetails details) {
@@ -128,35 +109,33 @@ public class ShowTrainsActivity extends Activity {
                 currentBestTrain = new CurrentBestTrain(rowToUpdate, details, arrivalDateTime);
             }
         }
+    }
 
+    private void showFastestTrain() {
         if (navigatorState.type == NavigatorState.Type.FastestTrain)
         {
-            progressBar.incrementProgressBy(1);
-            if (progressBar.getProgress() == progressBar.getMax()) {
-                alertDialog.hide();
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Fastest Train");
-                TextView textView = new TextView(this);
-                TextView dueView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(0);
-                TextView platformView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(2);
-                String platformText = (platformView.getText().length() > 0)
-                        ? " from platform " + platformView.getText()
-                        : "";
-                builder.setMessage("The fastest train from " + navigatorState.stationOne.get().fullName()
-                        + " to " + navigatorState.stationTwo.get().fullName()
-                        + " leaves at " + dueView.getText()
-                        + platformText
-                        + ". It is expected to arrive at "
-                        + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
-                builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        alertDialog.hide();
-                    }
-                });
-                this.alertDialog = builder.create();
-                alertDialog.show();
-            }
+            alertDialog.hide();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Fastest Train");
+            TextView dueView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(0);
+            TextView platformView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(2);
+            String platformText = (platformView.getText().length() > 0)
+                    ? " from platform " + platformView.getText()
+                    : "";
+            builder.setMessage("The fastest train from " + navigatorState.stationOne.get().fullName()
+                    + " to " + navigatorState.stationTwo.get().fullName()
+                    + " leaves at " + dueView.getText()
+                    + platformText
+                    + ". It is expected to arrive at "
+                    + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
+            builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    alertDialog.hide();
+                }
+            });
+            this.alertDialog = builder.create();
+            alertDialog.show();
         }
     }
 
@@ -196,6 +175,7 @@ public class ShowTrainsActivity extends Activity {
                 if (stationTwoSpecified)
                     this.onDetails(row, train.serviceDetails());
             }
+            showFastestTrain();
         }
     }
 

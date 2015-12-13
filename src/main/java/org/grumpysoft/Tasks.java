@@ -1,7 +1,6 @@
 package org.grumpysoft;
 
 import android.os.AsyncTask;
-import android.widget.TableRow;
 import net.digihippo.soap.WWHLDBServiceSoap;
 
 import java.io.IOException;
@@ -78,31 +77,4 @@ public final class Tasks implements Serializable {
     }
 
     private Tasks() {}
-
-    public static class ServiceDetailsOrError {
-        private ServiceDetails serviceDetails;
-        private String exceptionText;
-
-        public ServiceDetailsOrError(ServiceDetails serviceDetails) {
-            this.serviceDetails = serviceDetails;
-        }
-
-        private ServiceDetailsOrError(String exceptionText) {
-            this.exceptionText = exceptionText;
-            System.out.println(exceptionText);
-        }
-
-        public boolean hasDetails() {
-            return serviceDetails != null;
-        }
-
-        public ServiceDetails details() {
-            return serviceDetails;
-        }
-
-        @SuppressWarnings("UnusedDeclaration")
-        public String errorMsg() {
-            return exceptionText;
-        }
-    }
 }
