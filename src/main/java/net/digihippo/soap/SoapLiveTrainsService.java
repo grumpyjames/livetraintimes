@@ -2,7 +2,6 @@ package net.digihippo.soap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableList;
 import org.grumpysoft.*;
 
 import java.io.IOException;
@@ -14,6 +13,35 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
 class SoapLiveTrainsService implements LiveTrainsService {
+    private static final Function<WWHCallingPoint, CallingPoint> CallingPointExtractor =
+            new Function<WWHCallingPoint, CallingPoint>() {
+                @Override
+                public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
+                    return new CallingPoint() {
+                        @Override
+                        public String stationName() {
+                            return wwhCallingPoint.locationName;
+                        }
+
+                        @Override
+                        public String scheduledTime() {
+                            return wwhCallingPoint.st;
+                        }
+
+                        @Override
+                        public PointStatus status() {
+                            return PointStatus.NO_REPORT;
+                        }
+                    };
+                }
+            };
+    private static final Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>> CallingPointsExtractor =
+            new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
+                @Override
+                public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
+                    return transform(wwhArrayOfCallingPoints.callingPoint, CallingPointExtractor);
+                }
+            };
     private final WWHLDBServiceSoap wwhldbServiceSoap;
     private final WWHAccessToken accessToken;
 
@@ -51,22 +79,15 @@ class SoapLiveTrainsService implements LiveTrainsService {
     }
 
     private DepartureBoard toDepartureBoard(final WWHStationBoardWithDetails wwhStationBoard, Station toStation) {
-        return new MyDepartureBoard(wwhStationBoard, wwhldbServiceSoap, accessToken, toStation);
+        return new MyDepartureBoard(wwhStationBoard, toStation);
     }
 
     private static class MyDepartureBoard implements DepartureBoard {
         private final WWHStationBoardWithDetails wwhStationBoard;
-        private final WWHLDBServiceSoap wwhldbServiceSoap;
-        private final WWHAccessToken accessToken;
         private final Station toStation;
 
-        public MyDepartureBoard(WWHStationBoardWithDetails wwhStationBoard,
-                                WWHLDBServiceSoap wwhldbServiceSoap,
-                                WWHAccessToken accessToken,
-                                Station toStation) {
+        public MyDepartureBoard(WWHStationBoardWithDetails wwhStationBoard, Station toStation) {
             this.wwhStationBoard = wwhStationBoard;
-            this.wwhldbServiceSoap = wwhldbServiceSoap;
-            this.accessToken = accessToken;
             this.toStation = toStation;
         }
 
@@ -106,7 +127,6 @@ class SoapLiveTrainsService implements LiveTrainsService {
         }
 
         private ServiceDetails toServiceDetails(
-                final String serviceId,
                 final WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
             return new ServiceDetails(convertCallingPoints(wwhServiceDetails));
         }
@@ -175,41 +195,12 @@ class SoapLiveTrainsService implements LiveTrainsService {
 
             @Override
             public ServiceDetails serviceDetails() {
-                return toServiceDetails(serviceId(), wwhServiceItem.subsequentCallingPoints);
+                return toServiceDetails(wwhServiceItem.subsequentCallingPoints);
             }
         }
 
         private static Iterable<CallingPoint> convertCallingPoints(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
-            return copyOf(concat(transform(
-                    wwhServiceDetails,
-                    new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
-                        @Override
-                        public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
-                            return transform(
-                                    wwhArrayOfCallingPoints.callingPoint,
-                                    new Function<WWHCallingPoint, CallingPoint>() {
-                                        @Override
-                                        public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
-                                            return new CallingPoint() {
-                                                @Override
-                                                public String stationName() {
-                                                    return wwhCallingPoint.locationName;
-                                                }
-
-                                                @Override
-                                                public String scheduledTime() {
-                                                    return wwhCallingPoint.st;
-                                                }
-
-                                                @Override
-                                                public PointStatus status() {
-                                                    return PointStatus.NO_REPORT;
-                                                }
-                                            };
-                                        }
-                                    });
-                        }
-                    })));
+            return copyOf(concat(transform(wwhServiceDetails, CallingPointsExtractor)));
         }
     }
 
