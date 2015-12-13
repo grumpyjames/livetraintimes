@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import org.grumpysoft.*;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.concat;
@@ -108,42 +107,7 @@ class SoapLiveTrainsService implements LiveTrainsService {
         private ServiceDetails toServiceDetails(
                 final String serviceId,
                 final WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
-            return new MyServiceDetails(serviceId, convertCallingPoints(wwhServiceDetails));
-        }
-
-        private static class MyServiceDetails implements ServiceDetails {
-            private final String serviceId;
-            private Iterable<CallingPoint> callingPoints;
-
-            public MyServiceDetails(String serviceId, Iterable<CallingPoint> callingPoints) {
-                this.serviceId = serviceId;
-                this.callingPoints = callingPoints;
-            }
-
-            @Override
-            public Location currentLocation() {
-                return new Location() {
-                    @Override
-                    public LocationStatus status() {
-                        return LocationStatus.UNKNOWN;
-                    }
-
-                    @Override
-                    public List<String> stations() {
-                        return ImmutableList.of();
-                    }
-                };
-            }
-
-            @Override
-            public String serviceId() {
-                return serviceId;
-            }
-
-            @Override
-            public Iterator<CallingPoint> iterator() {
-                return callingPoints.iterator();
-            }
+            return new ServiceDetails(serviceId, convertCallingPoints(wwhServiceDetails));
         }
 
         private class MyDepartingTrain implements DepartingTrain {
