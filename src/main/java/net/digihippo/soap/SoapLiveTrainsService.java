@@ -107,7 +107,7 @@ class SoapLiveTrainsService implements LiveTrainsService {
         private ServiceDetails toServiceDetails(
                 final String serviceId,
                 final WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
-            return new ServiceDetails(serviceId, convertCallingPoints(wwhServiceDetails));
+            return new ServiceDetails(convertCallingPoints(wwhServiceDetails));
         }
 
         private class MyDepartingTrain implements DepartingTrain {
