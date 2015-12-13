@@ -5,8 +5,6 @@ public interface CallingPoint {
 
     String scheduledTime();
 
-    PointStatus status();
-
     /** The possible statuses of a given calling point **/
     enum PointStatus {
         /** The service has departed from this point **/

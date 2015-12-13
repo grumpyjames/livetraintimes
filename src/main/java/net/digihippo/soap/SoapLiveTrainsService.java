@@ -35,11 +35,6 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                         public String scheduledTime() {
                             return wwhCallingPoint.st;
                         }
-
-                        @Override
-                        public PointStatus status() {
-                            return PointStatus.NO_REPORT;
-                        }
                     };
                 }
             };
