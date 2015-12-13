@@ -140,7 +140,7 @@ public class ShowTrainsActivity extends Activity {
                     alertDialog.hide();
                 }
             });
-            this.alertDialog = builder.create();
+            alertDialog = builder.create();
             alertDialog.show();
         }
     }
