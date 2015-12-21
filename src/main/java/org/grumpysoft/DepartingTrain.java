@@ -2,9 +2,10 @@ package org.grumpysoft;
 
 import com.google.common.collect.ImmutableList;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class DepartingTrain {
+public class DepartingTrain implements Serializable {
     private final boolean isCircularRoute;
     private final ImmutableList<String> destinations;
     private final ImmutableList<String> viaDestinations;

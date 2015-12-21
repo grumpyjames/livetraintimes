@@ -1,6 +1,8 @@
 package org.grumpysoft;
 
-public abstract class CallingPoint {
+import java.io.Serializable;
+
+public abstract class CallingPoint implements Serializable {
 
     public abstract void consume(final CallingPointConsumer callingPointConsumer);
 

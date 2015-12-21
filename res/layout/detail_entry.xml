@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:weightSum="1"
+          android:id="@+id/detailRow" android:gravity="center_vertical">
+
+    <TextView
+            android:layout_width="45dip"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="00:00"
+            android:id="@+id/scheduledAt"
+            android:lines="1"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textStyle="bold"
+    />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="London Waterloo via Richmond &amp; Hounslow (circular route)"
+            android:id="@+id/station_name"
+            android:lines="3"
+            android:gravity="center_vertical"/>
+</TableRow>

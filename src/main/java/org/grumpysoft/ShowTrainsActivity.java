@@ -3,6 +3,7 @@ package org.grumpysoft;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class ShowTrainsActivity extends Activity {
 
+    private static final String TRAIN = "train";
     private AlertDialog alertDialog;
     private NavigatorState navigatorState;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm");
@@ -162,7 +164,7 @@ public class ShowTrainsActivity extends Activity {
             table.removeAllViews();
             table.addView(View.inflate(this, R.layout.board_header, null));
 
-            for (DepartingTrain train: board.departingTrains()) {
+            for (final DepartingTrain train: board.departingTrains()) {
                 TableRow row = (TableRow) View.inflate(this, R.layout.board_entry, null);
 
                 TextView due = (TextView) row.findViewById(R.id.due);
@@ -182,6 +184,15 @@ public class ShowTrainsActivity extends Activity {
                 platform.setText(train.platform());
 
                 table.addView(row);
+                row.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final Intent intent = new Intent(ShowTrainsActivity.this, ShowDetailsActivity.class);
+                        intent.putExtra(NavigatorActivity.NAVIGATOR_STATE, navigatorState);
+                        intent.putExtra(TRAIN, train);
+                        ShowTrainsActivity.this.startActivity(intent);
+                    }
+                });
                 if (stationTwoSpecified)
                     onDetails(row, train.serviceDetails());
             }
