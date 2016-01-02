@@ -2,52 +2,23 @@ package org.grumpysoft;
 
 import java.io.Serializable;
 
-public abstract class CallingPoint implements Serializable {
-
-    public abstract void consume(final CallingPointConsumer callingPointConsumer);
-
-    public static CallingPoint singlePoint(final String stationName, final String scheduledAtTime) {
-        return new OneCallingPoint(stationName, scheduledAtTime);
+public class CallingPoint implements Serializable {
+    public static CallingPoint singlePoint(
+            final String stationName,
+            final String scheduledAtTime) {
+        return new CallingPoint(stationName, scheduledAtTime);
     }
 
-    private static class OneCallingPoint extends CallingPoint {
-        private final String locationName;
-        private final String scheduledAtTime;
+    public final String locationName;
+    public final String scheduledAtTime;
 
-        private OneCallingPoint(String locationName, String scheduledAtTime) {
-            this.locationName = locationName;
-            this.scheduledAtTime = scheduledAtTime;
-        }
-
-        @Override
-        public void consume(CallingPointConsumer callingPointConsumer) {
-            callingPointConsumer.onSinglePoint(locationName, scheduledAtTime);
-        }
+    private CallingPoint(String locationName, String scheduledAtTime) {
+        this.locationName = locationName;
+        this.scheduledAtTime = scheduledAtTime;
     }
 
-    private static class Split extends CallingPoint {
-        private final CallingPoint callingPointOne;
-        private final CallingPoint callingPointTwo;
-
-        private Split(CallingPoint callingPointOne, CallingPoint callingPointTwo) {
-            this.callingPointOne = callingPointOne;
-            this.callingPointTwo = callingPointTwo;
-        }
-
-        @Override
-        public void consume(CallingPointConsumer callingPointConsumer) {
-            callingPointConsumer.splitStart();
-            callingPointOne.consume(callingPointConsumer);
-            callingPointTwo.consume(callingPointConsumer);
-            callingPointConsumer.splitEnd();
-        }
-    }
-
-    public interface CallingPointConsumer {
-        void onSinglePoint(String stationName, String scheduledAtTime);
-
-        void splitStart();
-
-        void splitEnd();
+    @Override
+    public String toString() {
+        return locationName + "@" + scheduledAtTime;
     }
 }

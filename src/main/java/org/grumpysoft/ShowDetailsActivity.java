@@ -18,18 +18,17 @@ public class ShowDetailsActivity extends Activity {
         MyCallingPointConsumer callingPointConsumer =
                 new MyCallingPointConsumer(findViewById(R.id.detailsTable));
         for (CallingPoint callingPoint : departingTrain.serviceDetails()) {
-            callingPoint.consume(callingPointConsumer);
+            callingPointConsumer.onSinglePoint(callingPoint.locationName, callingPoint.scheduledAtTime);
         }
     }
 
-    private class MyCallingPointConsumer implements CallingPoint.CallingPointConsumer {
+    private class MyCallingPointConsumer {
         private final TableLayout table;
 
         public MyCallingPointConsumer(View viewById) {
             this.table = (TableLayout) viewById;
         }
 
-        @Override
         public void onSinglePoint(String stationName, String scheduledAtTime) {
             TableRow row = (TableRow) View.inflate(ShowDetailsActivity.this, R.layout.detail_entry, null);
 
@@ -39,16 +38,6 @@ public class ShowDetailsActivity extends Activity {
             stationView.setText(stationName);
 
             table.addView(row);
-        }
-
-        @Override
-        public void splitStart() {
-
-        }
-
-        @Override
-        public void splitEnd() {
-
         }
     }
 }

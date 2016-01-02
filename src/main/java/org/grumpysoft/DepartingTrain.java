@@ -3,6 +3,7 @@ package org.grumpysoft;
 import com.google.common.collect.ImmutableList;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 public class DepartingTrain implements Serializable {
@@ -11,7 +12,7 @@ public class DepartingTrain implements Serializable {
     private final ImmutableList<String> viaDestinations;
     private final String platform;
     private final String expectedAt;
-    private final Iterable<CallingPoint> callingPoints;
+    private final Collection<Collection<CallingPoint>> callingPoints;
 
     public DepartingTrain(
             boolean isCircularRoute,
@@ -19,7 +20,7 @@ public class DepartingTrain implements Serializable {
             ImmutableList<String> viaDestinations,
             String platform,
             String expectedDepartureTime,
-            Iterable<CallingPoint> callingPoints) {
+            Collection<Collection<CallingPoint>> callingPoints) {
         this.isCircularRoute = isCircularRoute;
         this.destinations = destinations;
         this.viaDestinations = viaDestinations;

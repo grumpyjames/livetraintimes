@@ -99,7 +99,7 @@ public class ShowTrainsActivity extends Activity {
         FindArrivalTime callingPointConsumer =
                 new FindArrivalTime(navigatorState.stationTwo.get());
         for (final CallingPoint point: details) {
-            point.consume(callingPointConsumer);
+            callingPointConsumer.onSinglePoint(point.locationName, point.scheduledAtTime);
         }
 
         LocalTime now = LocalTime.now();
@@ -214,7 +214,7 @@ public class ShowTrainsActivity extends Activity {
         }
     }
 
-    private static class FindArrivalTime implements CallingPoint.CallingPointConsumer {
+    private static class FindArrivalTime {
         private final Station soughtStation;
 
         private String arrivalTime;
@@ -223,21 +223,10 @@ public class ShowTrainsActivity extends Activity {
             this.soughtStation = soughtStation;
         }
 
-        @Override
         public void onSinglePoint(String stationName, String scheduledAtTime) {
             if (arrivalTime == null && stationName.equals(soughtStation.fullName())) {
                 arrivalTime = scheduledAtTime;
             }
-        }
-
-        @Override
-        public void splitStart() {
-
-        }
-
-        @Override
-        public void splitEnd() {
-
         }
 
         public String getArrivalTime() {

@@ -15,6 +15,7 @@ package net.digihippo.soap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.serialization.PropertyInfo;
@@ -25,6 +26,7 @@ import org.ksoap2.transport.HttpsTransportSE;
 import org.ksoap2.transport.Transport;
 import org.kxml2.kdom.Element;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,11 +66,11 @@ public class WWHLDBServiceSoap
         WWHAccessToken accessToken = new WWHAccessToken();
         accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
         WWHStationBoardWithDetails board = wwhldbServiceSoap.GetDepBoardWithDetails(
-                10, "VIC", null, null, null, null, accessToken
+                20, "VIC", null, null, null, null, accessToken
         );
 
         WWHArrayOfServiceItemsWithCallingPoints trainServices = board.trainServices;
-        for (WWHServiceItem trainService : trainServices) {
+        for (WWHServiceItemWithCallingPoints trainService : trainServices) {
             System.out.println(
                     Joiner.on(", ").join(
                             Lists.transform(trainService.destination, new Function<WWHServiceLocation, String>() {
@@ -79,6 +81,16 @@ public class WWHLDBServiceSoap
                             })
 
             ));
+            for (WWHArrayOfCallingPoints subsequentCallingPoint : trainService.subsequentCallingPoints) {
+                Iterable<String> callingPoint =
+                        Iterables.transform(subsequentCallingPoint.callingPoint, new Function<WWHCallingPoint, String>() {
+                            @Override
+                            public String apply(WWHCallingPoint wwhCallingPoint) {
+                                return wwhCallingPoint.locationName + " @ " + wwhCallingPoint.st;
+                            }
+                        });
+                System.out.println("CP: " + Joiner.on(", ").join(callingPoint));
+            }
         }
     }
 
