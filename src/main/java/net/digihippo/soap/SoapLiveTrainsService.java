@@ -14,11 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Iterables.*;
 import static java.util.Collections.singleton;
-import static org.grumpysoft.CallingPoint.singlePoint;
 
 public class SoapLiveTrainsService implements DepartureBoardService {
     public static DepartureBoardService departureBoardService() {
@@ -29,22 +26,6 @@ public class SoapLiveTrainsService implements DepartureBoardService {
 
         return new SoapLiveTrainsService(wwhldbServiceSoap, accessToken);
     }
-
-    private static final Function<WWHCallingPoint, CallingPoint> CallingPointExtractor =
-            new Function<WWHCallingPoint, CallingPoint>() {
-                @Override
-                public CallingPoint apply(final WWHCallingPoint wwhCallingPoint) {
-                    return singlePoint(wwhCallingPoint.locationName, wwhCallingPoint.st);
-                }
-            };
-    private static final Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>> CallingPointsExtractor =
-            new Function<WWHArrayOfCallingPoints, Iterable<CallingPoint>>() {
-                @Override
-                public Iterable<CallingPoint> apply(final WWHArrayOfCallingPoints wwhArrayOfCallingPoints) {
-                    return transform(wwhArrayOfCallingPoints.callingPoint, CallingPointExtractor);
-                }
-            };
-
     private static final Function<WWHServiceLocation, String> ExtractViaDestination =
             new Function<WWHServiceLocation, String>() {
                 @Override
