@@ -7,7 +7,7 @@
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
                   android:id="@+id/detailsHeader"
-                  android:orientation="vertical"/>
+                  android:orientation="vertical" android:layout_gravity="center"/>
     <ScrollView android:layout_height="wrap_content"
                 android:layout_width="fill_parent">
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
