@@ -43,8 +43,7 @@ public class ShowDetailsActivity extends Activity {
             }
             header.addView(linearLayout);
         } else {
-            TextView textView = new TextView(this);
-            textView.setText("This train calls at: ");
+            addTextView(header, "This train calls at: ");
         }
 
         MyCallingPointConsumer callingPointConsumer =
