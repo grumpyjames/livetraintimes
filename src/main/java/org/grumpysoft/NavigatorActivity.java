@@ -44,10 +44,10 @@ public class NavigatorActivity extends Activity {
         }
 
         setContentView(R.layout.navigator);
-        renderState(navigatorState);
+        render();
     }
 
-    private void renderState(NavigatorState navigatorState) {
+    private void render() {
         attachButtonListeners();
         switch (navigatorState.type) {
             case Departing:
@@ -69,7 +69,7 @@ public class NavigatorActivity extends Activity {
 
     private void switchTypeTo(NavigatorState.Type type) {
         navigatorState.type = type;
-        renderState(navigatorState);
+        render();
     }
 
     private void renderFastestTrain(Optional<Station> stationOne, Optional<Station> stationTwo) {
@@ -165,7 +165,7 @@ public class NavigatorActivity extends Activity {
                     new Intent(NavigatorActivity.this, ViewFlippingActivity.class);
             selectStationIntent.putExtra(CHOICE_ID, choiceId);
             selectStationIntent.putExtra(NAVIGATOR_STATE, NavigatorActivity.this.navigatorState);
-            NavigatorActivity.this.startActivity(selectStationIntent);
+            startActivity(selectStationIntent);
         }
     }
 
