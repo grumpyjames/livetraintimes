@@ -9,8 +9,7 @@
                   android:id="@+id/detailsHeader"
                   android:orientation="vertical"
                   android:layout_gravity="center"
-                  android:gravity="center_horizontal"
-    />
+                  android:gravity="center_horizontal"/>
     <ScrollView android:layout_height="wrap_content"
                 android:layout_width="fill_parent">
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"

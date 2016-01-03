@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -69,6 +70,8 @@ public class ShowDetailsActivity extends Activity {
                              View.OnClickListener onClickListener,
                              boolean bold) {
         TextView textView = new TextView(this);
+        textView.setLayoutParams(
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView.setText(text);
         textView.setOnClickListener(onClickListener);
         if (bold) {
