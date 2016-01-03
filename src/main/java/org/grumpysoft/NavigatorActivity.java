@@ -129,10 +129,10 @@ public class NavigatorActivity extends Activity {
         findViewById(R.id.go).setEnabled(false);
     }
 
-    private void populateStationChoice(Station fromStation, View stationOneView, String labelOneText) {
-        TextView labelOne = (TextView) stationOneView.findViewById(R.id.label);
-        labelOne.setText(labelOneText);
-        StationView.initialiseStationView(stationOneView, fromStation, new NoOpClickListener());
+    private void populateStationChoice(Station fromStation, View stationView, String labelText) {
+        TextView label = (TextView) stationView.findViewById(R.id.label);
+        label.setText(labelText);
+        StationView.initialiseStationView(stationView, fromStation, new NoOpClickListener());
     }
 
     private static class NoOpClickListener implements View.OnClickListener {
