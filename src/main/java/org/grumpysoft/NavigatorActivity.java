@@ -44,11 +44,11 @@ public class NavigatorActivity extends Activity {
         }
 
         setContentView(R.layout.navigator);
+        attachButtonListeners();
         render();
     }
 
     private void render() {
-        attachButtonListeners();
         switch (navigatorState.type) {
             case Departing:
                 renderDeparting(navigatorState.stationOne, navigatorState.stationTwo);
