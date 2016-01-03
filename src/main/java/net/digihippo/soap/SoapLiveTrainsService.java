@@ -10,13 +10,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.grumpysoft.*;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Iterables.*;
-import static java.util.Collections.singleton;
 
 public class SoapLiveTrainsService implements DepartureBoardService {
     public static DepartureBoardService departureBoardService() {
@@ -125,11 +123,11 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                 forkLocations.build(),
                 copyOf(
                         concat(
-                                singleton(callingPoints.build()),
+                                ImmutableList.<List<CallingPoint>>of(callingPoints.build()),
                                 transform(forks,
-                                        new Function<CallingPointBuilder, Collection<CallingPoint>>() {
+                                        new Function<CallingPointBuilder, List<CallingPoint>>() {
                                             @Override
-                                            public Collection<CallingPoint> apply(CallingPointBuilder cpb) {
+                                            public List<CallingPoint> apply(CallingPointBuilder cpb) {
                                                 return cpb.build();
                                             }
                                         }))));
@@ -147,10 +145,10 @@ public class SoapLiveTrainsService implements DepartureBoardService {
             this.callingPoints.addAll(callingPoints.build());
         }
 
-        public Collection<CallingPoint> build() {
+        public List<CallingPoint> build() {
             while (iterator.hasNext()) {
                 WWHCallingPoint next = iterator.next();
-                callingPoints.add(CallingPoint.singlePoint(next.st, next.locationName));
+                callingPoints.add(CallingPoint.singlePoint(next.locationName, next.st));
             }
             return callingPoints.build();
         }

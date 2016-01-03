@@ -5,12 +5,13 @@ import com.google.common.collect.ImmutableSet;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class ServiceDetails implements Iterable<CallingPoint>, Serializable {
     private final ImmutableSet<String> splitLocations;
-    private final Collection<Collection<CallingPoint>> callingPoints;
+    private final List<List<CallingPoint>> callingPoints;
 
-    public ServiceDetails(ImmutableSet<String> splitLocations, Collection<Collection<CallingPoint>> callingPoints) {
+    public ServiceDetails(ImmutableSet<String> splitLocations, List<List<CallingPoint>> callingPoints) {
         this.splitLocations = splitLocations;
         this.callingPoints = callingPoints;
     }
@@ -20,7 +21,11 @@ public class ServiceDetails implements Iterable<CallingPoint>, Serializable {
         return callingPoints.iterator().next().iterator();
     }
 
-    public Collection<Collection<CallingPoint>> allParts() {
+    public List<List<CallingPoint>> allParts() {
         return callingPoints;
+    }
+
+    public Iterable<String> splitPoints() {
+        return splitLocations;
     }
 }
