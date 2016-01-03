@@ -119,6 +119,9 @@ public class NavigatorActivity extends Activity {
     }
 
     private void readyToGo() {
+        TextView errorView = (TextView) findViewById(R.id.error);
+        errorView.setText("");
+
         findViewById(R.id.go).setEnabled(true);
     }
 

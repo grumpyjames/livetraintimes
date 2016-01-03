@@ -2,10 +2,11 @@ package org.grumpysoft;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class ServiceDetails implements Iterable<CallingPoint> {
+public class ServiceDetails implements Iterable<CallingPoint>, Serializable {
     private final ImmutableSet<String> splitLocations;
     private final Collection<Collection<CallingPoint>> callingPoints;
 
