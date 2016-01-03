@@ -1,12 +1,16 @@
 package org.grumpysoft;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.util.Collection;
 import java.util.Iterator;
 
 public class ServiceDetails implements Iterable<CallingPoint> {
-    private Collection<Collection<CallingPoint>> callingPoints;
+    private final ImmutableSet<String> splitLocations;
+    private final Collection<Collection<CallingPoint>> callingPoints;
 
-    public ServiceDetails(Collection<Collection<CallingPoint>> callingPoints) {
+    public ServiceDetails(ImmutableSet<String> splitLocations, Collection<Collection<CallingPoint>> callingPoints) {
+        this.splitLocations = splitLocations;
         this.callingPoints = callingPoints;
     }
 

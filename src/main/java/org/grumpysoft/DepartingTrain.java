@@ -12,7 +12,7 @@ public class DepartingTrain implements Serializable {
     private final ImmutableList<String> viaDestinations;
     private final String platform;
     private final String expectedAt;
-    private final Collection<Collection<CallingPoint>> callingPoints;
+    private final ServiceDetails serviceDetails;
 
     public DepartingTrain(
             boolean isCircularRoute,
@@ -20,13 +20,13 @@ public class DepartingTrain implements Serializable {
             ImmutableList<String> viaDestinations,
             String platform,
             String expectedDepartureTime,
-            Collection<Collection<CallingPoint>> callingPoints) {
+            ServiceDetails serviceDetails) {
         this.isCircularRoute = isCircularRoute;
         this.destinations = destinations;
         this.viaDestinations = viaDestinations;
         this.platform = platform;
         this.expectedAt = expectedDepartureTime;
-        this.callingPoints = callingPoints;
+        this.serviceDetails = serviceDetails;
     }
 
     // FIXME: this is probably littered with 'via' already, parse it.
@@ -51,6 +51,6 @@ public class DepartingTrain implements Serializable {
     }
 
     public ServiceDetails serviceDetails() {
-        return new ServiceDetails(callingPoints);
+        return serviceDetails;
     }
 }

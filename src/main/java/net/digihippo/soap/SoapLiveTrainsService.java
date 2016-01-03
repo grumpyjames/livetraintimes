@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.grumpysoft.*;
@@ -57,7 +58,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                             viaDestinations,
                             wwhServiceItem.platform,
                             expectedDepartureTime,
-                            convertCallingPoints(wwhServiceItem.subsequentCallingPoints));
+                            toServiceDetails(wwhServiceItem.subsequentCallingPoints));
                 }
             };
 
@@ -89,7 +90,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
         return new DepartureBoard(transform(wwhStationBoard.trainServices, ExtractDepartingTrain));
     }
 
-    private static Collection<Collection<CallingPoint>> convertCallingPoints(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
+    private static ServiceDetails toServiceDetails(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
         final ImmutableList.Builder<CallingPoint> callingPoints = ImmutableList.builder();
 
         // Know: first list is the 'master' (what about if we query from the 'split' station?)
@@ -98,6 +99,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
         final Iterable<WWHArrayOfCallingPoints> otherBranches = Iterables.skip(wwhServiceDetails, 1);
         final List<CallingPointBuilder> forks =
                 Lists.newArrayListWithCapacity(wwhServiceDetails.size());
+        final ImmutableSet.Builder<String> forkLocations = ImmutableSet.builder();
 
         for (final WWHCallingPoint next : masterBranch.callingPoint) {
             Iterable<WWHArrayOfCallingPoints> journeysStartingHere =
@@ -107,24 +109,30 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                             return callingPoints.callingPoint.get(0).locationName.equals(next.locationName);
                         }
                     });
+
             for (WWHArrayOfCallingPoints wwhArrayOfCallingPoints : journeysStartingHere) {
                 CallingPointBuilder cpb = new CallingPointBuilder(wwhArrayOfCallingPoints.callingPoint.iterator());
                 cpb.addAll(callingPoints);
                 forks.add(cpb);
+                forkLocations.add(next.locationName);
             }
 
             callingPoints.add(CallingPoint.singlePoint(next.locationName, next.st));
         }
 
 
-        return copyOf(concat(
-                singleton(callingPoints.build()),
-                transform(forks, new Function<CallingPointBuilder, Collection<CallingPoint>>() {
-                    @Override
-                    public Collection<CallingPoint> apply(CallingPointBuilder callingPointBuilder) {
-                        return callingPointBuilder.build();
-                    }
-                })));
+        return new ServiceDetails(
+                forkLocations.build(),
+                copyOf(
+                        concat(
+                                singleton(callingPoints.build()),
+                                transform(forks,
+                                        new Function<CallingPointBuilder, Collection<CallingPoint>>() {
+                                            @Override
+                                            public Collection<CallingPoint> apply(CallingPointBuilder cpb) {
+                                                return cpb.build();
+                                            }
+                                        }))));
     }
 
     private static final class CallingPointBuilder {
