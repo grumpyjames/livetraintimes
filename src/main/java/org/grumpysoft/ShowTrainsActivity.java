@@ -39,16 +39,7 @@ public class ShowTrainsActivity extends Activity {
 
         this.navigatorState = navigatorState;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message(navigatorState));
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setIndeterminate(true);
-        builder.setView(progressBar);
-
-        alertDialog = builder.create();
-        alertDialog.show();
-
-        Tasks.fetchTrains(this, navigatorState);
+        attemptToFetchTrains();
     }
 
     @Override
@@ -72,10 +63,39 @@ public class ShowTrainsActivity extends Activity {
         }
         final TableLayout table = (TableLayout) findViewById(R.id.board);
 
-        // FIXME: handle the error case
         if (boardOrError.hasBoard()) {
             populateBoard(table, boardOrError.board());
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Unable to retrieve trains - are you connected to the internet?");
+            builder.setNeutralButton("Retry", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    attemptToFetchTrains();
+                }
+            });
+            builder.setCancelable(true);
+            alertDialog = builder.create();
+            alertDialog.show();
         }
+    }
+
+    private void attemptToFetchTrains() {
+        if (alertDialog != null)
+        {
+            alertDialog.hide();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message(navigatorState));
+        ProgressBar progressBar = new ProgressBar(this);
+        progressBar.setIndeterminate(true);
+        builder.setView(progressBar);
+
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        Tasks.fetchTrains(this, navigatorState);
     }
 
     private String message(NavigatorState navigatorState) {
