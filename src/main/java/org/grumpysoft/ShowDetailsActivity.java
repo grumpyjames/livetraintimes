@@ -14,8 +14,6 @@ import com.google.common.collect.Iterables;
 
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.copyOf;
-
 public class ShowDetailsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,15 +23,15 @@ public class ShowDetailsActivity extends Activity {
         final DepartingTrain departingTrain = (DepartingTrain) getIntent().getExtras().get("train");
         assert departingTrain != null;
 
-        LinearLayout header = (LinearLayout) findViewById(R.id.detailsHeader);
+        final LinearLayout header = (LinearLayout) findViewById(R.id.detailsHeader);
+        final TextView mainHeaderText = (TextView) header.findViewById(R.id.headerTextMain);
         if (departingTrain.destinationList().size() > 1) {
-            addTextView(header, "This train splits at " + Joiner.on(", ").join(departingTrain.serviceDetails().splitPoints()));
-            addTextView(header, "Show the portion to: ");
-            final LinearLayout linearLayout =
-                    (LinearLayout) View.inflate(this, R.layout.choose_portion, null);
-            final List<List<CallingPoint>> portions =
-                    departingTrain.serviceDetails().allParts();
-            final List<CallingPoint> callingPoints = copyOf(portions.get(0));
+            mainHeaderText.setText(
+                    "This train splits at " + Joiner.on(", ").join(departingTrain.serviceDetails().splitPoints()) + "\n" +
+                    "Show the portion to: ");
+            final LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.portions);
+            final List<List<CallingPoint>> portions = departingTrain.serviceDetails().allParts();
+            final List<CallingPoint> masterCallingPoints = portions.get(0);
             final View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -52,14 +50,13 @@ public class ShowDetailsActivity extends Activity {
                     }
                 }
             };
-            addTextView(linearLayout, last(callingPoints).locationName, onClickListener, true);
-            for (List<CallingPoint> callingPoint : Iterables.skip(portions, 1)) {
+            addTextView(linearLayout, last(masterCallingPoints).locationName, onClickListener, true);
+            for (List<CallingPoint> branchCallingPoints : Iterables.skip(portions, 1)) {
                 addTextView(linearLayout, " | ");
-                addTextView(linearLayout, last(callingPoint).locationName, onClickListener, false);
+                addTextView(linearLayout, last(branchCallingPoints).locationName, onClickListener, false);
             }
-            header.addView(linearLayout);
         } else {
-            addTextView(header, "This train calls at: ");
+            mainHeaderText.setText("This train calls at:");
         }
 
         showCallingPoints(departingTrain.serviceDetails());
