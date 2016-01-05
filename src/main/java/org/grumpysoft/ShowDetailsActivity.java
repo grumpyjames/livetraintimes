@@ -25,22 +25,29 @@ public class ShowDetailsActivity extends Activity {
 
         final LinearLayout header = (LinearLayout) findViewById(R.id.detailsHeader);
         final TextView mainHeaderText = (TextView) header.findViewById(R.id.headerTextMain);
+        final TextView secondaryHeaderText = (TextView) header.findViewById(R.id.headerTextSecondary);
         if (departingTrain.destinationList().size() > 1) {
             mainHeaderText.setText(
-                    "This train splits at " + Joiner.on(", ").join(departingTrain.serviceDetails().splitPoints()) + "\n" +
-                    "Show the portion to: ");
+                    "This train splits at " + Joiner.on(", ").join(departingTrain.serviceDetails().splitPoints()));
+            secondaryHeaderText.setText("Show the portion to: ");
             final LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.portions);
             final List<List<CallingPoint>> portions = departingTrain.serviceDetails().allParts();
             final List<CallingPoint> masterCallingPoints = portions.get(0);
             final View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    TextView tv = (TextView) view;
+                    if (tv.getTypeface() != null && tv.getTypeface().isBold()) {
+                        // this is a horrible, horrible way to do this
+                        // and you should feel very bad indeed.
+                        return;
+                    }
+
                     for (int i = 0; i < linearLayout.getChildCount(); i++) {
                         TextView child = (TextView) linearLayout.getChildAt(i);
                         child.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
                     }
 
-                    TextView tv = (TextView) view;
                     tv.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
                     String text = tv.getText().toString();
                     for (List<CallingPoint> branch : portions) {
@@ -57,6 +64,7 @@ public class ShowDetailsActivity extends Activity {
             }
         } else {
             mainHeaderText.setText("This train calls at:");
+            secondaryHeaderText.setText("");
         }
 
         showCallingPoints(departingTrain.serviceDetails());
@@ -67,6 +75,7 @@ public class ShowDetailsActivity extends Activity {
                              View.OnClickListener onClickListener,
                              boolean bold) {
         TextView textView = new TextView(this);
+        textView.setTextAppearance(this, android.R.style.TextAppearance_Medium);
         textView.setLayoutParams(
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView.setText(text);
