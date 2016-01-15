@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -27,6 +29,7 @@ public class ShowTrainsActivity extends Activity {
     private NavigatorState navigatorState;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm");
     private CurrentBestTrain currentBestTrain;
+    private boolean fetchingTrains = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,23 @@ public class ShowTrainsActivity extends Activity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 0, 0, "Refresh")
+                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        attemptToFetchTrains();
+                        return true;
+                    }
+                })
+                .setIcon(R.drawable.ic_menu_refresh)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+
+        return true;
+    }
+
     public void onBoardOrError(Tasks.BoardOrError boardOrError) {
         if (alertDialog != null) {
             alertDialog.hide();
@@ -78,9 +98,16 @@ public class ShowTrainsActivity extends Activity {
             alertDialog = builder.create();
             alertDialog.show();
         }
+
+        fetchingTrains = false;
     }
 
     private void attemptToFetchTrains() {
+        if (fetchingTrains) {
+            return;
+        }
+
+        fetchingTrains = true;
         if (alertDialog != null)
         {
             alertDialog.hide();
