@@ -35,4 +35,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/error" android:layout_gravity="center_horizontal" android:textColor="#FF8888"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/nre_powered_logo"/>
 </LinearLayout>
