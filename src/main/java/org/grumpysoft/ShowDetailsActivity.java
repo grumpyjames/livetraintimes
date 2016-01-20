@@ -64,7 +64,7 @@ public class ShowDetailsActivity extends Activity {
             }
         } else {
             mainHeaderText.setText("This train calls at:");
-            secondaryHeaderText.setText("");
+            header.removeView(secondaryHeaderText);
         }
 
         showCallingPoints(departingTrain.serviceDetails());
