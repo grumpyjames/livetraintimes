@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import org.joda.time.DateTime;
@@ -228,15 +227,8 @@ public class ShowTrainsActivity extends Activity {
                     alert.setBackgroundColor(Color.TRANSPARENT);
                 }
 
-                final String circularPart = train.isCircularRoute() ? " (circular route)" : "";
-                final String viaPart = train.viaDestinations().isEmpty()
-                                ? "" : " " + Joiner.on(" & ").join(train.viaDestinations());
-
-                final String destination =
-                        Joiner.on(" & ").join(train.destinationList()) + viaPart + circularPart;
-
                 TextView destinationView = (TextView) row.findViewById(R.id.destination);
-                destinationView.setText(destination);
+                destinationView.setText(destinationText(train));
 
                 TextView platform = (TextView) row.findViewById(R.id.platform);
                 platform.setText(train.platform());
@@ -290,5 +282,31 @@ public class ShowTrainsActivity extends Activity {
         public String getArrivalTime() {
             return arrivalTime;
         }
+    }
+
+    private String destinationText(final DepartingTrain departingTrain) {
+        List<String> endPoints = departingTrain.destinationList();
+        List<String> via = departingTrain.viaDestinations();
+        String destinationText = "";
+        boolean addComma = false;
+        for (int i = 0; i < endPoints.size(); i++) {
+            if (addComma) {
+                destinationText += ", ";
+            } else {
+                addComma = true;
+            }
+
+            if (i < via.size()) {
+                destinationText += (endPoints.get(i) + " " + via.get(i));
+            } else {
+                destinationText += endPoints.get(i);
+            }
+        }
+
+        if (departingTrain.isCircularRoute()) {
+            destinationText += " (circular route)";
+        }
+
+        return destinationText;
     }
 }
