@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -142,7 +142,7 @@ public class ShowTrainsActivity extends Activity {
         return "";
     }
 
-    private void onDetails(final TableRow rowToUpdate, ServiceDetails details) {
+    private void onDetails(final View rowToUpdate, ServiceDetails details) {
         FindArrivalTime callingPointConsumer =
                 new FindArrivalTime(navigatorState.stationTwo.get());
         for (final CallingPoint point: details) {
@@ -176,8 +176,8 @@ public class ShowTrainsActivity extends Activity {
             alertDialog.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Fastest Train");
-            TextView dueView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(0);
-            TextView platformView = (TextView) currentBestTrain.rowToUpdate.getVirtualChildAt(2);
+            TextView dueView = (TextView) currentBestTrain.rowToUpdate.findViewById(R.id.due);
+            TextView platformView = (TextView) currentBestTrain.rowToUpdate.findViewById(R.id.platform);
             String platformText = (platformView.getText().length() > 0)
                     ? " from platform " + platformView.getText()
                     : "";
@@ -212,10 +212,22 @@ public class ShowTrainsActivity extends Activity {
             table.addView(View.inflate(this, R.layout.board_header, null));
 
             for (final DepartingTrain train: board.departingTrains()) {
-                TableRow row = (TableRow) View.inflate(this, R.layout.board_entry, null);
+                View row = View.inflate(this, R.layout.board_entry, null);
 
+
+                String text = train.expectedAt();
                 TextView due = (TextView) row.findViewById(R.id.due);
-                due.setText(train.expectedAt());
+                TextView alert = (TextView) row.findViewById(R.id.alert);
+                if (text.equals("Cancelled") || text.equals("Delayed")) {
+                    alert.setText(text);
+                    due.setText("--:--");
+                }
+                else {
+                    due.setText(text);
+                    alert.setText("");
+                    alert.setBackgroundColor(Color.TRANSPARENT);
+                }
+
                 final String circularPart = train.isCircularRoute() ? " (circular route)" : "";
                 final String viaPart = train.viaDestinations().isEmpty()
                                 ? "" : " " + Joiner.on(" & ").join(train.viaDestinations());
@@ -225,7 +237,6 @@ public class ShowTrainsActivity extends Activity {
 
                 TextView destinationView = (TextView) row.findViewById(R.id.destination);
                 destinationView.setText(destination);
-
 
                 TextView platform = (TextView) row.findViewById(R.id.platform);
                 platform.setText(train.platform());
@@ -248,10 +259,10 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private class CurrentBestTrain {
-        private final TableRow rowToUpdate;
+        private final View rowToUpdate;
         private final DateTime arrivalDateTime;
 
-        public CurrentBestTrain(TableRow rowToUpdate, DateTime arrivalDateTime) {
+        public CurrentBestTrain(View rowToUpdate, DateTime arrivalDateTime) {
             this.rowToUpdate = rowToUpdate;
             this.arrivalDateTime = arrivalDateTime;
         }
