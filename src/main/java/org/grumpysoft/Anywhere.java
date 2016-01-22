@@ -10,6 +10,6 @@ public enum Anywhere implements Station {
 
     @Override
     public String fullName() {
-        return "Anywhere!";
+        return "Anywhere";
     }
 }

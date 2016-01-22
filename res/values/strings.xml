@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Trains</string>
-    <string name="from">From Station</string>
-    <string name="to">To Station</string>
-    <string name="submit_msg">Find trains!</string>
-    <string name="select">=</string>
-    <string name="anywhere">Anywhere!</string>
     <string name="searchHint">Start typing the station name…</string>
-    <string name="dir">Directory</string>
     <string name="fav">Favourites</string>
     <string name="search">Search</string>
 </resources>
