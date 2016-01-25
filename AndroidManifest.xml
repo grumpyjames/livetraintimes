@@ -7,7 +7,7 @@
     <uses-sdk android:minSdkVersion="15"
               android:targetSdkVersion="24"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <application android:label="@string/app_name" android:icon="@drawable/icon_small">
+    <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <activity
                 android:name="ShowTrainsActivity"
                 android:configChanges="orientation|screenSize"
