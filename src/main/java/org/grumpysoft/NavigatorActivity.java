@@ -34,10 +34,10 @@ public class NavigatorActivity extends Activity {
 
                 if (choiceId != null && station != null) {
                     if (choiceId.equals(CHOICE_ONE)) {
-                        navigatorState.stationOne = Optional.of(Stations.reverseLookup(station));
+                        navigatorState.stationOne = toMaybeStation(station);
                     }
                     if (choiceId.equals(CHOICE_TWO)) {
-                        navigatorState.stationTwo = Optional.of(Stations.reverseLookup(station));
+                        navigatorState.stationTwo = toMaybeStation(station);
                     }
                 }
             }
@@ -46,6 +46,14 @@ public class NavigatorActivity extends Activity {
         setContentView(R.layout.navigator);
         attachButtonListeners();
         render();
+    }
+
+    private Optional<Station> toMaybeStation(String station) {
+        if (station.equals(Anywhere.INSTANCE.fullName())) {
+            return Optional.<Station>of(Anywhere.INSTANCE);
+        }
+
+        return Optional.of(Stations.reverseLookup(station));
     }
 
     private void render() {
@@ -76,7 +84,7 @@ public class NavigatorActivity extends Activity {
         setSelectedType(R.id.fastest);
 
         renderCommon(stationOne, stationTwo, "From: ", "To: ");
-        if (stationOne.isPresent() && stationTwo.isPresent()) {
+        if (selected(stationOne) && selected(stationTwo)) {
             readyToGo();
         } else {
             error("Please select a 'from' and a 'to' station");
@@ -88,11 +96,15 @@ public class NavigatorActivity extends Activity {
 
         renderCommon(stationOne, stationTwo, "From: ", "To: ");
 
-        if (!stationOne.isPresent()) {
+        if (selected(stationOne)) {
             error("Please select a 'from' station");
         } else {
             readyToGo();
         }
+    }
+
+    private boolean selected(Optional<Station> stationOne) {
+        return !stationOne.isPresent() || stationOne.get().equals(Anywhere.INSTANCE);
     }
 
     private void setSelectedType(int id) {

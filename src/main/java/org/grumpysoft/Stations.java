@@ -1,6 +1,7 @@
 package org.grumpysoft;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -37,7 +38,9 @@ public final class Stations {
     }
 
     public static Station reverseLookup(String stationFullName) {
-        return new BasicStation(allReverseStations.get(stationFullName), stationFullName);
+        String threeLetterCode = allReverseStations.get(stationFullName);
+        Preconditions.checkNotNull(threeLetterCode, "How did we get to a full name that doesn't lookup?");
+        return new BasicStation(threeLetterCode, stationFullName);
     }
 
     private static Map<String, String> allStations = Maps.newHashMap();
