@@ -14,11 +14,17 @@ import java.util.List;
 class StationAdapter extends BaseAdapter {
     private final Context context;
     private final List<Station> stations;
+    private final FavouriteListener favouriteListener;
     private final TextView.OnClickListener clickListener;
 
-    public StationAdapter(final Context context, final List<Station> stations, final Bundle state) {
+    public StationAdapter(
+            final Context context,
+            final List<Station> stations,
+            final Bundle state,
+            final FavouriteListener favouriteListener) {
         this.context = context;
         this.stations = stations;
+        this.favouriteListener = favouriteListener;
         this.clickListener = new TextView.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +57,11 @@ class StationAdapter extends BaseAdapter {
         final View stationView = layoutInflater.inflate(R.layout.station, null);
         final Station station = (Station) getItem(position);
 
-        StationView.initialiseStationView(stationView, station, clickListener);
+        StationView.initialiseStationView(
+                stationView,
+                station,
+                clickListener,
+                favouriteListener);
 
         return stationView;
     }

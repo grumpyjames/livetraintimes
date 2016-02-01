@@ -1,5 +1,6 @@
 package org.grumpysoft;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,10 +15,11 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class StationSearchFragment extends Fragment {
+public class StationSearchFragment extends Fragment implements FavouriteListener {
     private ListView resultView;
     private EditText editView;
     private Bundle state;
+    private FavouriteListener favouriteListener;
 
     @Override
     public void setArguments(Bundle args) {
@@ -25,7 +27,12 @@ public class StationSearchFragment extends Fragment {
     }
 
     public void initialize(Context context) {
-        final StationAdapter adapter = new StationAdapter(context, Lists.<Station>newArrayList(), this.state);
+        final StationAdapter adapter =
+                new StationAdapter(
+                        context,
+                        Lists.<Station>newArrayList(),
+                        this.state,
+                        this);
         resultView.setAdapter(adapter);
         attachEditListener(editView, resultView, context);
     }
@@ -51,7 +58,7 @@ public class StationSearchFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 2) {
                     final List<Station> results = Stations.find(charSequence.toString());
-                    resultView.setAdapter(new StationAdapter(context, results, state));
+                    resultView.setAdapter(new StationAdapter(context, results, state, StationSearchFragment.this));
                 }
             }
 
@@ -61,5 +68,19 @@ public class StationSearchFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.favouriteListener = (FavouriteListener) activity;
+    }
 
+    @Override
+    public void favouriteAdded(Station station) {
+        if (favouriteListener != null) favouriteListener.favouriteAdded(station);
+    }
+
+    @Override
+    public void favouriteRemoved(Station station) {
+        if (favouriteListener != null) favouriteListener.favouriteRemoved(station);
+    }
 }

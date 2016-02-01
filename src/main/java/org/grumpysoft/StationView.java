@@ -12,7 +12,8 @@ public final class StationView {
     public static TextView initialiseStationView(
             final View stationView,
             final Station station,
-            final View.OnClickListener clickListener) {
+            final View.OnClickListener clickListener,
+            final FavouriteListener favouriteListener) {
         final TextView textView = (TextView) stationView.findViewById(R.id.station_name);
 
         textView.setText(station.fullName());
@@ -27,8 +28,14 @@ public final class StationView {
             public void onCheckedChanged(CompoundButton compoundButton, boolean newValue) {
                 if (station.equals(Anywhere.INSTANCE))
                     compoundButton.setChecked(true);
-                else
-                    Favourites.toggleFavourite(station, newValue);
+                else {
+                    if (newValue) {
+                        favouriteListener.favouriteAdded(station);
+                    } else {
+                        favouriteListener.favouriteRemoved(station);
+                    }
+
+                }
             }
         });
         return textView;

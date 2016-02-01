@@ -15,9 +15,10 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class ViewFlippingActivity extends FragmentActivity {
+public class ViewFlippingActivity extends FragmentActivity implements FavouriteListener {
     private List<Fragment> fragments = Lists.newArrayList();
     private static final String[] titles = {"Favourites", "Search"};
+    private FavouriteStationFragment favouriteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class ViewFlippingActivity extends FragmentActivity {
         final SharedPreferences preferences = getPreferences(0);
         Favourites.deserializeFrom(preferences);
 
-        FavouriteStationFragment favouriteFragment = new FavouriteStationFragment();
+        favouriteFragment = new FavouriteStationFragment();
         StationSearchFragment searchFragment = new StationSearchFragment();
         addFragment(favouriteFragment, extras);
         addFragment(searchFragment, extras);
@@ -69,6 +70,18 @@ public class ViewFlippingActivity extends FragmentActivity {
         super.onStop();
 
         Favourites.save(getPreferences(0));
+    }
+
+    @Override
+    public void favouriteAdded(Station station) {
+        favouriteFragment.favouriteAdded(station);
+        Favourites.getFavourites().add(station);
+    }
+
+    @Override
+    public void favouriteRemoved(Station station) {
+        favouriteFragment.favouriteRemoved(station);
+        Favourites.getFavourites().remove(station);
     }
 
     private void addFragment(Fragment fragment, Bundle extras) {

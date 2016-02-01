@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
-public class NavigatorActivity extends Activity {
+public class NavigatorActivity extends Activity implements FavouriteListener {
     private static final String CHOICE_ID = "choiceId";
     static final String NAVIGATOR_STATE = "navigatorState";
     private static final String CHOICE_ONE = "choiceOne";
@@ -147,7 +147,24 @@ public class NavigatorActivity extends Activity {
     private void populateStationChoice(Station fromStation, View stationView, String labelText) {
         TextView label = (TextView) stationView.findViewById(R.id.label);
         label.setText(labelText);
-        StationView.initialiseStationView(stationView, fromStation, new NoOpClickListener());
+        StationView.initialiseStationView(stationView, fromStation, new NoOpClickListener(), this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Favourites.save(getPreferences(0));
+    }
+
+    @Override
+    public void favouriteAdded(Station station) {
+        Favourites.getFavourites().add(station);
+    }
+
+    @Override
+    public void favouriteRemoved(Station station) {
+        Favourites.getFavourites().remove(station);
     }
 
     private static class NoOpClickListener implements View.OnClickListener {

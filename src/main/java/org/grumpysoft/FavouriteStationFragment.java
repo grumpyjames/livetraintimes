@@ -6,11 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import com.google.common.collect.ImmutableList;
 
-public class FavouriteStationFragment extends Fragment {
+import java.util.Set;
+
+import static com.google.common.collect.ImmutableList.copyOf;
+
+public class FavouriteStationFragment extends Fragment implements FavouriteListener {
     private ListView stationView;
     private Bundle state;
+    private Set<Station> favourites;
 
     @Override
     public void setArguments(Bundle args) {
@@ -27,9 +31,29 @@ public class FavouriteStationFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final StationAdapter adapter =
-                new StationAdapter(getActivity(), ImmutableList.copyOf(Favourites.getFavourites()), this.state);
-        stationView.setAdapter(adapter);
+        favourites = Favourites.getFavourites();
+        resetAdapter();
     }
 
+    @Override
+    public void favouriteAdded(Station station) {
+        favourites.add(station);
+        resetAdapter();
+    }
+
+    @Override
+    public void favouriteRemoved(Station station) {
+        favourites.remove(station);
+        resetAdapter();
+    }
+
+    private void resetAdapter() {
+        stationView.setAdapter(
+                new StationAdapter(
+                        getActivity(),
+                        copyOf(favourites),
+                        this.state,
+                        this)
+        );
+    }
 }
