@@ -43,7 +43,7 @@ public class WWHLDBServiceSoap
 
     String url="http://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb7.asmx";
 
-    int timeOut=60000;
+    int timeOut=15000;
     public List< HeaderProperty> httpHeaders;
     public boolean enableLogging;
 
