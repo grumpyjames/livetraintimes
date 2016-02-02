@@ -1,6 +1,7 @@
 package net.digihippo;
 
 import android.os.AsyncTask;
+import com.google.common.base.Optional;
 import net.digihippo.soap.SoapLiveTrainsService;
 
 import java.io.Serializable;
@@ -50,10 +51,17 @@ public final class Tasks implements Serializable {
                 return new BoardOrError(
                         service.boardFor(
                                 navigatorState.stationOne.get(),
-                                navigatorState.stationTwo));
+                                filterAnywhere(navigatorState.stationTwo)));
             } catch (Exception e) {
                 return new BoardOrError(e);
             }
+        }
+
+        private Optional<Station> filterAnywhere(Optional<Station> station) {
+            if (station.isPresent() && station.get() == Anywhere.INSTANCE) {
+                return Optional.absent();
+            }
+            return station;
         }
 
         @Override
