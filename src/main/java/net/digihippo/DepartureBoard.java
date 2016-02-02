@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 public class DepartureBoard {
     private final Iterable<DepartingTrain> departingTrains;

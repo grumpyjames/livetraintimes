@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 import java.io.Serializable;
 
@@ -26,7 +26,7 @@ final class BasicStation implements Station, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        org.grumpysoft.BasicStation that = (org.grumpysoft.BasicStation) o;
+        BasicStation that = (BasicStation) o;
 
         if (fullname != null ? !fullname.equals(that.fullname) : that.fullname != null) return false;
         if (threeLetterCode != null ? !threeLetterCode.equals(that.threeLetterCode) : that.threeLetterCode != null)

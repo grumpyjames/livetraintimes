@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 import android.view.View;
 import android.widget.CheckBox;

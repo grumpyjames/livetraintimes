@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 /**
  * Represents a valid station in the National Rail network

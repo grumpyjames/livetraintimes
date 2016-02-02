@@ -1,9 +1,8 @@
-package org.grumpysoft;
+package net.digihippo;
 
 import com.google.common.collect.ImmutableList;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 public class DepartingTrain implements Serializable {

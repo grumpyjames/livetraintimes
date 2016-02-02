@@ -23,7 +23,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import org.grumpysoft.R;
+import net.digihippo.R;
 
 import java.util.ArrayList;
 

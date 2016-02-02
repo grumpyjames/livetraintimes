@@ -1,9 +1,8 @@
-package org.grumpysoft;
+package net.digihippo;
 
 import com.google.common.collect.ImmutableSet;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 

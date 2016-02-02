@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 import android.os.AsyncTask;
 import net.digihippo.soap.SoapLiveTrainsService;

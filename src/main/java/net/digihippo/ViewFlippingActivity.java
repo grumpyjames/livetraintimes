@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

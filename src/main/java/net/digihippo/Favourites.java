@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 import android.content.SharedPreferences;
 import com.google.common.base.Function;
@@ -6,7 +6,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 

@@ -1,4 +1,4 @@
-package org.grumpysoft;
+package net.digihippo;
 
 /**
  * Common features of both departure and arrival boards.
