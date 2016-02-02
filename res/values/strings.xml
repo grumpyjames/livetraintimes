@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Trains</string>
+    <string name="app_name">Live Train Times</string>
     <string name="searchHint">Start typing the station name…</string>
     <string name="fav">Favourites</string>
     <string name="search">Search</string>
