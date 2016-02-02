@@ -84,7 +84,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
         setSelectedType(R.id.fastest);
 
         renderCommon(stationOne, stationTwo, "From: ", "To: ");
-        if (selected(stationOne) && selected(stationTwo)) {
+        if (present(stationOne) && present(stationTwo)) {
             readyToGo();
         } else {
             error("Please select a 'from' and a 'to' station");
@@ -96,15 +96,15 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
 
         renderCommon(stationOne, stationTwo, "From: ", "To: ");
 
-        if (selected(stationOne)) {
-            error("Please select a 'from' station");
-        } else {
+        if (present(stationOne)) {
             readyToGo();
+        } else {
+            error("Please select a 'from' station");
         }
     }
 
-    private boolean selected(Optional<Station> stationOne) {
-        return !stationOne.isPresent() || stationOne.get().equals(Anywhere.INSTANCE);
+    private boolean present(Optional<Station> stationOne) {
+        return stationOne.isPresent() && !stationOne.get().equals(Anywhere.INSTANCE);
     }
 
     private void setSelectedType(int id) {

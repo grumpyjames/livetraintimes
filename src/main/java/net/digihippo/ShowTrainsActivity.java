@@ -140,8 +140,16 @@ public class ShowTrainsActivity extends Activity {
         return "";
     }
 
+    private Optional<Station> filterAnywhere(Optional<Station> station) {
+        if (station.isPresent() && station.get() == Anywhere.INSTANCE) {
+            return Optional.absent();
+        }
+        return station;
+    }
+
     private void onDetails(final View rowToUpdate, DepartingTrain train) {
-        Station endpoint = navigatorState.stationTwo.or(Stations.reverseLookup(train.destinationList().get(0)));
+        final Station endpoint =
+                filterAnywhere(navigatorState.stationTwo).or(Stations.reverseLookup(train.destinationList().get(0)));
         FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
         for (final CallingPoint point: train.serviceDetails()) {
             callingPointConsumer.onSinglePoint(point.locationName, point.scheduledAtTime);
