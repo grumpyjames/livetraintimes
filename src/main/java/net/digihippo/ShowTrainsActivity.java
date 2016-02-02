@@ -22,7 +22,6 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ShowTrainsActivity extends Activity {
-
     private static final String TRAIN = "train";
     private AlertDialog alertDialog;
     private NavigatorState navigatorState;
@@ -141,10 +140,10 @@ public class ShowTrainsActivity extends Activity {
         return "";
     }
 
-    private void onDetails(final View rowToUpdate, ServiceDetails details) {
-        FindArrivalTime callingPointConsumer =
-                new FindArrivalTime(navigatorState.stationTwo.get());
-        for (final CallingPoint point: details) {
+    private void onDetails(final View rowToUpdate, DepartingTrain train) {
+        Station endpoint = navigatorState.stationTwo.or(Stations.reverseLookup(train.destinationList().get(0)));
+        FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
+        for (final CallingPoint point: train.serviceDetails()) {
             callingPointConsumer.onSinglePoint(point.locationName, point.scheduledAtTime);
         }
 
@@ -202,10 +201,6 @@ public class ShowTrainsActivity extends Activity {
         table.setColumnShrinkable(0, false);
         table.setColumnStretchable(1, true);
         table.setColumnShrinkable(2, false);
-        boolean stationTwoSpecified = navigatorState.stationTwo.isPresent();
-        if (!stationTwoSpecified) {
-            table.setColumnCollapsed(3, true);
-        }
         if (trains.size() > 0) {
             table.removeAllViews();
             table.addView(View.inflate(this, R.layout.board_header, null));
@@ -243,8 +238,7 @@ public class ShowTrainsActivity extends Activity {
                         ShowTrainsActivity.this.startActivity(intent);
                     }
                 });
-                if (stationTwoSpecified)
-                    onDetails(row, train.serviceDetails());
+                onDetails(row, train);
             }
             showFastestTrain();
         }
