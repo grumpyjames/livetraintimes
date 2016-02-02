@@ -297,7 +297,7 @@ public class ShowTrainsActivity extends Activity {
             }
 
             if (i < via.size()) {
-                destinationText += (endPoints.get(i) + " " + via.get(i));
+                destinationText += (endPoints.get(i) + " " + via.get(i).trim());
             } else {
                 destinationText += endPoints.get(i);
             }
