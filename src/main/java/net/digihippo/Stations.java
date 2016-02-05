@@ -28,7 +28,7 @@ public final class Stations {
             @Override
             public boolean apply(Station station) {
                 return station.threeLetterCode().startsWith(upperCaseSearch)
-                        || station.fullName().toLowerCase().startsWith(lowerCaseSearch);
+                        || station.fullName().toLowerCase().contains(lowerCaseSearch);
             }
         }));
     }
