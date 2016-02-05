@@ -2,11 +2,11 @@ package net.digihippo;
 
 import java.io.Serializable;
 
-final class BasicStation implements Station, Serializable {
+public final class BasicStation implements Station, Serializable {
     private final String threeLetterCode;
     private final String fullname;
 
-    BasicStation(String threeLetterCode, String fullname) {
+    public BasicStation(String threeLetterCode, String fullname) {
         this.threeLetterCode = threeLetterCode;
         this.fullname = fullname;
     }

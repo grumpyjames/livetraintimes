@@ -34,8 +34,8 @@ public class SoapLiveTrainsService implements DepartureBoardService {
             };
     private static final Function<WWHServiceLocation, Station> ExtractLocationName = new Function<WWHServiceLocation, Station>() {
         @Override
-        public Station apply(WWHServiceLocation wwhServiceLocation) {
-            return Stations.lookup(wwhServiceLocation.crs);
+        public Station apply(final WWHServiceLocation wwhServiceLocation) {
+            return new BasicStation(wwhServiceLocation.crs, wwhServiceLocation.locationName);
         }
     };
     private static final Function<WWHServiceItemWithCallingPoints, DepartingTrain> ExtractDepartingTrain =
