@@ -169,7 +169,8 @@ public class ShowTrainsActivity extends Activity {
                 arrivalDateTime = localTime.toDateTimeToday();
             }
 
-            if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
+            if (!fubar(train.expectedAt()) &&
+                    (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime))) {
                 currentBestTrain = new CurrentBestTrain(rowToUpdate, arrivalDateTime);
             }
         }
@@ -217,15 +218,15 @@ public class ShowTrainsActivity extends Activity {
                 View row = View.inflate(this, R.layout.board_entry, null);
 
 
-                String text = train.expectedAt();
+                final String expectedAt = train.expectedAt();
                 TextView due = (TextView) row.findViewById(R.id.due);
                 TextView alert = (TextView) row.findViewById(R.id.alert);
-                if (text.equals("Cancelled") || text.equals("Delayed")) {
-                    alert.setText(text);
+                if (fubar(expectedAt)) {
+                    alert.setText(expectedAt);
                     due.setText("--:--");
                 }
                 else {
-                    due.setText(text);
+                    due.setText(expectedAt);
                     alert.setText("");
                     alert.setBackgroundColor(Color.TRANSPARENT);
                 }
@@ -250,6 +251,10 @@ public class ShowTrainsActivity extends Activity {
             }
             showFastestTrain();
         }
+    }
+
+    private boolean fubar(String text) {
+        return text.equals("Cancelled") || text.equals("Delayed");
     }
 
     private class CurrentBestTrain {
