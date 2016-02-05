@@ -152,7 +152,7 @@ public class ShowTrainsActivity extends Activity {
                 filterAnywhere(navigatorState.stationTwo).or(Stations.reverseLookup(train.destinationList().get(0)));
         FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
         for (final CallingPoint point: train.serviceDetails()) {
-            callingPointConsumer.onSinglePoint(point.locationName, point.scheduledAtTime);
+            callingPointConsumer.onSinglePoint(point.locationName, point.et);
         }
 
         final LocalTime now = LocalTime.now();
@@ -233,7 +233,7 @@ public class ShowTrainsActivity extends Activity {
             table.addView(View.inflate(this, R.layout.board_header, null));
 
             for (final DepartingTrain train: board.departingTrains()) {
-                View row = View.inflate(this, R.layout.board_entry, null);
+                final View row = View.inflate(this, R.layout.board_entry, null);
 
                 final TextView due = (TextView) row.findViewById(R.id.due);
                 final TextView alert = (TextView) row.findViewById(R.id.alert);
@@ -272,6 +272,7 @@ public class ShowTrainsActivity extends Activity {
                         ShowTrainsActivity.this.startActivity(intent);
                     }
                 });
+
                 onDetails(row, train);
             }
             showFastestTrain();
@@ -301,9 +302,19 @@ public class ShowTrainsActivity extends Activity {
             this.soughtStation = soughtStation;
         }
 
-        public void onSinglePoint(String stationName, String scheduledAtTime) {
+        public void onSinglePoint(String stationName, Either<BadTrainState, String> scheduledAtTime) {
             if (arrivalTime == null && stationName.equals(soughtStation.fullName())) {
-                arrivalTime = scheduledAtTime;
+                scheduledAtTime.consume(new Consumer<BadTrainState>() {
+                    @Override
+                    public void consume(BadTrainState badTrainState) {
+
+                    }
+                }, new Consumer<String>() {
+                    @Override
+                    public void consume(String arrival) {
+                        arrivalTime = arrival;
+                    }
+                });
             }
         }
 

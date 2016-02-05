@@ -92,8 +92,19 @@ public class ShowDetailsActivity extends Activity {
         for (CallingPoint callingPoint : callingPoints) {
             TableRow row = (TableRow) View.inflate(ShowDetailsActivity.this, R.layout.detail_entry, null);
 
-            TextView scheduledAt = (TextView) row.findViewById(R.id.scheduledAt);
-            scheduledAt.setText(callingPoint.scheduledAtTime);
+            final TextView scheduledAt = (TextView) row.findViewById(R.id.scheduledAt);
+            callingPoint.et
+                    .consume(new Consumer<BadTrainState>() {
+                        @Override
+                        public void consume(BadTrainState badTrainState) {
+                            scheduledAt.setText(badTrainState.name());
+                        }
+                    }, new Consumer<String>() {
+                        @Override
+                        public void consume(String t) {
+                            scheduledAt.setText(t);
+                        }
+                    });
             TextView stationView = (TextView) row.findViewById(R.id.station_name);
             stationView.setText(callingPoint.locationName);
 

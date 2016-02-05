@@ -132,7 +132,11 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                 forkLocations.add(next.locationName);
             }
 
-            callingPoints.add(CallingPoint.singlePoint(next.locationName, next.st));
+            callingPoints.add(
+                    CallingPoint.singlePoint(
+                            next.locationName,
+                            next.st,
+                            infer(next.et, next.st)));
         }
 
 
@@ -165,7 +169,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
         public List<CallingPoint> build() {
             while (iterator.hasNext()) {
                 WWHCallingPoint next = iterator.next();
-                callingPoints.add(CallingPoint.singlePoint(next.locationName, next.st));
+                callingPoints.add(CallingPoint.singlePoint(next.locationName, next.st, infer(next.et, next.st)));
             }
             return callingPoints.build();
         }
