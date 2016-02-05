@@ -55,10 +55,27 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                             destinations,
                             viaDestinations,
                             wwhServiceItem.platform,
-                            expectedDepartureTime,
-                            toServiceDetails(wwhServiceItem.subsequentCallingPoints));
+                            toServiceDetails(wwhServiceItem.subsequentCallingPoints),
+                            infer(wwhServiceItem.etd, wwhServiceItem.std));
                 }
             };
+
+    private static Either<BadTrainState, String> infer(String etd, String std) {
+        // Three cases:
+        // On time => scheduled time = estimated time
+        // Delayed or Cancelled => exactly that
+        // Otherwise, etd is actually a usable time string.
+        if (etd.equals("On time")) {
+            return Either.right(std);
+        }
+        for (BadTrainState badTrainState: BadTrainState.values()) {
+            if (badTrainState.name().equals(etd)) {
+                return Either.left(badTrainState);
+            }
+        }
+
+        return Either.right(etd);
+    }
 
     private final WWHLDBServiceSoap wwhldbServiceSoap;
     private final WWHAccessToken accessToken;

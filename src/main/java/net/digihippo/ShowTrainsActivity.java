@@ -147,7 +147,7 @@ public class ShowTrainsActivity extends Activity {
         return station;
     }
 
-    private void onDetails(final View rowToUpdate, DepartingTrain train) {
+    private void onDetails(final View rowToUpdate, final DepartingTrain train) {
         final Station endpoint =
                 filterAnywhere(navigatorState.stationTwo).or(Stations.reverseLookup(train.destinationList().get(0)));
         FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
@@ -155,25 +155,43 @@ public class ShowTrainsActivity extends Activity {
             callingPointConsumer.onSinglePoint(point.locationName, point.scheduledAtTime);
         }
 
-        LocalTime now = LocalTime.now();
-        String arrivalTime = callingPointConsumer.getArrivalTime();
+        final LocalTime now = LocalTime.now();
+        final String arrivalTime = callingPointConsumer.getArrivalTime();
         if (arrivalTime != null) {
-            TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
-            arrivingAt.setText(arrivalTime);
+            train.getDepartureTime()
+                    .consume(
+                            this.<BadTrainState>noOp(),
+                            new Consumer<String>() {
+                                @Override
+                                public void consume(String etd) {
+                                    TextView arrivingAt = (TextView) rowToUpdate.findViewById(R.id.arrivingAt);
+                                    arrivingAt.setText(arrivalTime);
 
-            LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
-            final DateTime arrivalDateTime;
-            if (localTime.isBefore(now)) {
-                arrivalDateTime = localTime.toDateTimeToday().plusDays(1);
-            } else {
-                arrivalDateTime = localTime.toDateTimeToday();
-            }
+                                    LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
+                                    final DateTime arrivalDateTime;
+                                    if (localTime.isBefore(now)) {
+                                        arrivalDateTime = localTime.toDateTimeToday().plusDays(1);
+                                    } else {
+                                        arrivalDateTime = localTime.toDateTimeToday();
+                                    }
 
-            if (!fubar(train.expectedAt()) &&
-                    (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime))) {
-                currentBestTrain = new CurrentBestTrain(rowToUpdate, arrivalDateTime);
-            }
+
+                                    if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
+                                        currentBestTrain = new CurrentBestTrain(rowToUpdate, arrivalDateTime);
+                                    }
+                                }
+                            }
+                    );
         }
+    }
+
+    private <T> Consumer<T> noOp() {
+        return new Consumer<T>() {
+            @Override
+            public void consume(T t) {
+
+            }
+        };
     }
 
     private void showFastestTrain() {
@@ -217,19 +235,26 @@ public class ShowTrainsActivity extends Activity {
             for (final DepartingTrain train: board.departingTrains()) {
                 View row = View.inflate(this, R.layout.board_entry, null);
 
-
-                final String expectedAt = train.expectedAt();
-                TextView due = (TextView) row.findViewById(R.id.due);
-                TextView alert = (TextView) row.findViewById(R.id.alert);
-                if (fubar(expectedAt)) {
-                    alert.setText(expectedAt);
-                    due.setText("--:--");
-                }
-                else {
-                    due.setText(expectedAt);
-                    alert.setText("");
-                    alert.setBackgroundColor(Color.TRANSPARENT);
-                }
+                final TextView due = (TextView) row.findViewById(R.id.due);
+                final TextView alert = (TextView) row.findViewById(R.id.alert);
+                train.getDepartureTime()
+                        .consume(
+                                new Consumer<BadTrainState>() {
+                                    @Override
+                                    public void consume(BadTrainState badTrainState) {
+                                        alert.setText(badTrainState.name());
+                                        due.setText("--:--");
+                                    }
+                                },
+                                new Consumer<String>() {
+                                    @Override
+                                    public void consume(String expectedAt) {
+                                        due.setText(expectedAt);
+                                        alert.setText("");
+                                        alert.setBackgroundColor(Color.TRANSPARENT);
+                                    }
+                                }
+                        );
 
                 TextView destinationView = (TextView) row.findViewById(R.id.destination);
                 destinationView.setText(destinationText(train));
@@ -251,10 +276,6 @@ public class ShowTrainsActivity extends Activity {
             }
             showFastestTrain();
         }
-    }
-
-    private boolean fubar(String text) {
-        return text.equals("Cancelled") || text.equals("Delayed");
     }
 
     private class CurrentBestTrain {
