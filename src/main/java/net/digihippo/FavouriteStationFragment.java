@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 
@@ -48,6 +48,14 @@ public class FavouriteStationFragment extends Fragment implements FavouriteListe
     }
 
     private void resetAdapter() {
+        final List<Station> stations = new ArrayList<Station>(favourites.size());
+        Collections.sort(stations, new Comparator<Station>() {
+            @Override
+            public int compare(Station s1, Station s2) {
+                return s1.fullName().compareTo(s2.fullName());
+            }
+        });
+
         stationView.setAdapter(
                 new StationAdapter(
                         getActivity(),
