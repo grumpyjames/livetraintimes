@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -149,7 +151,7 @@ public class ShowTrainsActivity extends Activity {
 
     private void onDetails(final View rowToUpdate, final DepartingTrain train) {
         final Station endpoint =
-                filterAnywhere(navigatorState.stationTwo).or(Stations.reverseLookup(train.destinationList().get(0)));
+                filterAnywhere(navigatorState.stationTwo).or(train.destinationList().get(0));
         FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
         for (final CallingPoint point: train.serviceDetails()) {
             callingPointConsumer.onSinglePoint(point.locationName, point.et);
@@ -324,7 +326,13 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private String destinationText(final DepartingTrain departingTrain) {
-        List<String> endPoints = departingTrain.destinationList();
+        List<String> endPoints =
+                Lists.transform(departingTrain.destinationList(), new Function<Station, String>() {
+                    @Override
+                    public String apply(Station station) {
+                        return station.fullName();
+                    }
+                });
         List<String> via = departingTrain.viaDestinations();
         String destinationText = "";
         boolean addComma = false;

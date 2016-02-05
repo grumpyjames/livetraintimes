@@ -32,10 +32,10 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                     return wwhServiceLocation.via;
                 }
             };
-    private static final Function<WWHServiceLocation, String> ExtractLocationName = new Function<WWHServiceLocation, String>() {
+    private static final Function<WWHServiceLocation, Station> ExtractLocationName = new Function<WWHServiceLocation, Station>() {
         @Override
-        public String apply(WWHServiceLocation wwhServiceLocation) {
-            return wwhServiceLocation.locationName;
+        public Station apply(WWHServiceLocation wwhServiceLocation) {
+            return Stations.lookup(wwhServiceLocation.crs);
         }
     };
     private static final Function<WWHServiceItemWithCallingPoints, DepartingTrain> ExtractDepartingTrain =
@@ -44,12 +44,10 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                 public DepartingTrain apply(final WWHServiceItemWithCallingPoints wwhServiceItem) {
                     boolean isCircularRoute =
                             wwhServiceItem.isCircularRoute == null ? false : wwhServiceItem.isCircularRoute;
-                    ImmutableList<String> destinations =
+                    ImmutableList<Station> destinations =
                             copyOf(transform(wwhServiceItem.destination, ExtractLocationName));
                     ImmutableList<String> viaDestinations = copyOf(
                             filter(transform(wwhServiceItem.destination, ExtractViaDestination), Predicates.notNull()));
-                    String expectedDepartureTime =
-                            wwhServiceItem.etd.equals("On time") ? wwhServiceItem.std : wwhServiceItem.etd;
                     return new DepartingTrain(
                             isCircularRoute,
                             destinations,

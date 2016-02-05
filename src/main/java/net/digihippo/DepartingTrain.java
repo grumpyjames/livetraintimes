@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DepartingTrain implements Serializable {
     private final boolean isCircularRoute;
-    private final ImmutableList<String> destinations;
+    private final ImmutableList<Station> destinations;
     private final ImmutableList<String> viaDestinations;
     private final String platform;
     private final ServiceDetails serviceDetails;
@@ -15,7 +15,7 @@ public class DepartingTrain implements Serializable {
 
     public DepartingTrain(
             boolean isCircularRoute,
-            ImmutableList<String> destinations,
+            ImmutableList<Station> destinations,
             ImmutableList<String> viaDestinations,
             String platform,
             ServiceDetails serviceDetails,
@@ -37,7 +37,7 @@ public class DepartingTrain implements Serializable {
         return isCircularRoute;
     }
 
-    public List<String> destinationList() {
+    public List<Station> destinationList() {
         return destinations;
     }
 
