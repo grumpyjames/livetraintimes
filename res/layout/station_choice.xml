@@ -9,7 +9,7 @@
             android:layout_width="50dip"
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="From:"
+            android:text="@string/from"
             android:id="@+id/label"
             android:gravity="left|center_vertical"
             android:textAlignment="textEnd"/>
@@ -19,9 +19,11 @@
              layout="@layout/station"
              android:layout_gravity="center"/>
     <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select"
+            android:text="@string/select"
             android:id="@+id/select_action"
-            android:gravity="center_vertical|right" android:textAlignment="gravity"/>
+            android:gravity="center_vertical|right"
+            android:textAlignment="gravity"/>
 </LinearLayout>

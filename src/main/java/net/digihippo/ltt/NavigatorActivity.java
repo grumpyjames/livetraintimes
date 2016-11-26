@@ -16,7 +16,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private static final String CHOICE_TWO = "choiceTwo";
 
     private final ImmutableSet<Integer> typeIds =
-            ImmutableSet.of(net.digihippo.ltt.R.id.departures, net.digihippo.ltt.R.id.fastest);
+            ImmutableSet.of(R.id.departures, R.id.fastest);
 
     private NavigatorState navigatorState = new NavigatorState();
 
@@ -43,8 +43,14 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
             }
         }
 
-        setContentView(net.digihippo.ltt.R.layout.navigator);
+        setContentView(R.layout.navigator);
         attachButtonListeners();
+        render();
+    }
+
+
+    private void switchDirection() {
+        navigatorState.switchDirection();
         render();
     }
 
@@ -68,11 +74,12 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     }
 
     private void attachButtonListeners() {
-        findViewById(net.digihippo.ltt.R.id.departures).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.Departing));
-        findViewById(net.digihippo.ltt.R.id.fastest).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.FastestTrain));
-        findViewById(net.digihippo.ltt.R.id.choice_one).findViewById(net.digihippo.ltt.R.id.select_action).setOnClickListener(new SelectStationListener(CHOICE_ONE));
-        findViewById(net.digihippo.ltt.R.id.choice_two).findViewById(net.digihippo.ltt.R.id.select_action).setOnClickListener(new SelectStationListener(CHOICE_TWO));
-        findViewById(net.digihippo.ltt.R.id.go).setOnClickListener(new ShowTrainsListener());
+        findViewById(R.id.departures).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.Departing));
+        findViewById(R.id.fastest).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.FastestTrain));
+        findViewById(R.id.choice_one).findViewById(R.id.select_action).setOnClickListener(new SelectStationListener(CHOICE_ONE));
+        findViewById(R.id.choice_two).findViewById(R.id.select_action).setOnClickListener(new SelectStationListener(CHOICE_TWO));
+        findViewById(R.id.reverse_direction).setOnClickListener(new ReverseDirectionListener());
+        findViewById(R.id.go).setOnClickListener(new ShowTrainsListener());
     }
 
     private void switchTypeTo(NavigatorState.Type type) {
@@ -81,7 +88,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     }
 
     private void renderFastestTrain(Optional<Station> stationOne, Optional<Station> stationTwo) {
-        setSelectedType(net.digihippo.ltt.R.id.fastest);
+        setSelectedType(R.id.fastest);
 
         renderCommon(stationOne, stationTwo, "From: ", "To: ");
         if (present(stationOne) && present(stationTwo)) {
@@ -92,7 +99,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     }
 
     private void renderDeparting(Optional<Station> stationOne, Optional<Station> stationTwo) {
-        setSelectedType(net.digihippo.ltt.R.id.departures);
+        setSelectedType(R.id.departures);
 
         renderCommon(stationOne, stationTwo, "From: ", "To: ");
 
@@ -124,28 +131,28 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
             String labelOneText,
             String labelTwoText) {
         Station firstStation = stationOne.or(Anywhere.INSTANCE);
-        populateStationChoice(firstStation, findViewById(net.digihippo.ltt.R.id.choice_one), labelOneText);
+        populateStationChoice(firstStation, findViewById(R.id.choice_one), labelOneText);
 
         Station secondStation = stationTwo.or(Anywhere.INSTANCE);
-        populateStationChoice(secondStation, findViewById(net.digihippo.ltt.R.id.choice_two), labelTwoText);
+        populateStationChoice(secondStation, findViewById(R.id.choice_two), labelTwoText);
     }
 
     private void readyToGo() {
-        TextView errorView = (TextView) findViewById(net.digihippo.ltt.R.id.error);
+        TextView errorView = (TextView) findViewById(R.id.error);
         errorView.setText("");
 
-        findViewById(net.digihippo.ltt.R.id.go).setEnabled(true);
+        findViewById(R.id.go).setEnabled(true);
     }
 
     private void error(String errorText) {
-        TextView errorView = (TextView) findViewById(net.digihippo.ltt.R.id.error);
+        TextView errorView = (TextView) findViewById(R.id.error);
         errorView.setText(errorText);
 
-        findViewById(net.digihippo.ltt.R.id.go).setEnabled(false);
+        findViewById(R.id.go).setEnabled(false);
     }
 
     private void populateStationChoice(Station fromStation, View stationView, String labelText) {
-        TextView label = (TextView) stationView.findViewById(net.digihippo.ltt.R.id.label);
+        TextView label = (TextView) stationView.findViewById(R.id.label);
         label.setText(labelText);
         StationView.initialiseStationView(stationView, fromStation, new NoOpClickListener(), this);
     }
@@ -208,6 +215,13 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
             intent.putExtra(NAVIGATOR_STATE, navigatorState);
 
             startActivity(intent);
+        }
+    }
+
+    private class ReverseDirectionListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            NavigatorActivity.this.switchDirection();
         }
     }
 }

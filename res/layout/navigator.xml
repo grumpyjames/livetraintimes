@@ -9,7 +9,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Show me:"
+                android:text="@string/i_know_kung_fu"
                 android:id="@+id/show"/>
         <include android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
@@ -26,21 +26,41 @@
                  layout="@layout/station_choice"
                  android:layout_gravity="center_horizontal"
                  android:id="@+id/choice_two"/>
-        <Button
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Go!"
-                android:id="@+id/go" android:layout_gravity="center_horizontal"/>
+                android:gravity="center_vertical|center_horizontal">
+            <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/swap_from_to"
+                    android:id="@+id/reverse_direction"
+                    android:layout_gravity="center_horizontal"/>
+            <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/go"
+                    android:id="@+id/go"
+                    android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/error" android:layout_gravity="center_horizontal" android:textColor="#FF8888"
+                android:id="@+id/error"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#FF8888"
                 android:paddingBottom="50dp"/>
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/rsz_nre_powered_logo" android:scaleType="fitXY"
-                android:background="#232F67" android:padding="2dp"/>
+                android:src="@drawable/rsz_nre_powered_logo"
+                android:scaleType="fitXY"
+                android:background="#232F67"
+                android:padding="2dp"
+                android:contentDescription="@string/nre_logo"/>
     </LinearLayout>
 </merge>
