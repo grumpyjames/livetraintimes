@@ -3,3 +3,6 @@ gen/
 out/
 bin/
 .idea/*
+buck-out/
+.buckd/
+*.iml
