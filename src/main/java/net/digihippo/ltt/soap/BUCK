@@ -1,0 +1,8 @@
+java_library(
+  name = 'soap-trains',
+  srcs = glob(['*.java']),
+  deps = [
+    '//:ksoap',
+  ],
+  visibility = [ 'PUBLIC' ],
+)

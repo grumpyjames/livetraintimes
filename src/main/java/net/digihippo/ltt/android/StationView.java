@@ -1,9 +1,13 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import net.digihippo.ltt.Anywhere;
+import net.digihippo.ltt.FavouriteListener;
+import net.digihippo.ltt.Station;
+import net.digihippo.ltt.android.Favourites;
 
 public final class StationView {
 

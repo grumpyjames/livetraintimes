@@ -1,0 +1,9 @@
+android_library(
+  name = 'tabs',
+  srcs = glob(['*.java']),
+  deps = [
+    '//:android-support',
+    '//:res',
+  ],
+  visibility = [ 'PUBLIC' ],
+)

@@ -1,4 +1,4 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.google.common.collect.Lists;
+import net.digihippo.ltt.FavouriteListener;
+import net.digihippo.ltt.Station;
+import net.digihippo.ltt.Stations;
 
 import java.util.List;
 

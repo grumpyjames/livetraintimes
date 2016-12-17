@@ -540,21 +540,21 @@ public class WWHLDBServiceSoap12
         Transport __httpTransport=createTransport();
         __httpTransport.debug=enableLogging;
         WWHExtendedSoapSerializationEnvelope __envelope=wcfMethod.CreateSoapEnvelope();
-        try
-        {
+//        try
+//        {
             sendRequest(methodName, __envelope, __httpTransport);
             
-        }
-        finally {
-            if (__httpTransport.debug) {
-                if (__httpTransport.requestDump != null) {
-                    android.util.Log.i("requestDump",__httpTransport.requestDump);
-                }
-                if (__httpTransport.responseDump != null) {
-                    android.util.Log.i("responseDump",__httpTransport.responseDump);
-                }
-            }
-        }
+//        }
+//        finally {
+//            if (__httpTransport.debug) {
+//                if (__httpTransport.requestDump != null) {
+//                    android.util.Log.i("requestDump",__httpTransport.requestDump);
+//                }
+//                if (__httpTransport.responseDump != null) {
+//                    android.util.Log.i("responseDump",__httpTransport.responseDump);
+//                }
+//            }
+//        }
         Object __retObj = __envelope.bodyIn;
         if (__retObj instanceof org.ksoap2.SoapFault){
             org.ksoap2.SoapFault __fault = (org.ksoap2.SoapFault)__retObj;

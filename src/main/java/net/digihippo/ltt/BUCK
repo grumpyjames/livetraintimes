@@ -1,0 +1,12 @@
+java_library(
+  name = 'live-trains-api',
+  srcs = glob(['*.java']),
+  deps = [
+    '//src/main/java/net/digihippo/ltt/soap:soap-trains',
+    '//:guava',
+    '//:jsr-305',
+    '//:jodatime',
+    '//:ksoap',
+  ],
+  visibility = [ 'PUBLIC' ],
+)

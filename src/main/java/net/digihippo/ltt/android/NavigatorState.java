@@ -1,6 +1,7 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import com.google.common.base.Optional;
+import net.digihippo.ltt.Station;
 
 import java.io.Serializable;
 

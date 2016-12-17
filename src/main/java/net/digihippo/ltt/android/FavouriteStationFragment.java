@@ -1,4 +1,4 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import net.digihippo.ltt.FavouriteListener;
+import net.digihippo.ltt.Station;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import android.content.SharedPreferences;
 import com.google.common.base.Function;
@@ -8,6 +8,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.digihippo.ltt.Anywhere;
+import net.digihippo.ltt.Station;
+import net.digihippo.ltt.Stations;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;

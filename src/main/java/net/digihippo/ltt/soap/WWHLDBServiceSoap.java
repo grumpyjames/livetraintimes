@@ -13,10 +13,6 @@ package net.digihippo.ltt.soap;
 //---------------------------------------------------
 
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
@@ -57,40 +53,6 @@ public class WWHLDBServiceSoap
     {
         this.url = url;
         this.timeOut=timeOut;
-    }
-
-    public static void main(String[] args) throws Exception {
-        WWHLDBServiceSoap wwhldbServiceSoap = new WWHLDBServiceSoap();
-
-        WWHAccessToken accessToken = new WWHAccessToken();
-        accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
-        WWHStationBoardWithDetails board = wwhldbServiceSoap.GetDepBoardWithDetails(
-                20, "VIC", null, null, null, null, accessToken
-        );
-
-        WWHArrayOfServiceItemsWithCallingPoints trainServices = board.trainServices;
-        for (WWHServiceItemWithCallingPoints trainService : trainServices) {
-            System.out.println(
-                    Joiner.on(", ").join(
-                            Lists.transform(trainService.destination, new Function<WWHServiceLocation, String>() {
-                                @Override
-                                public String apply(WWHServiceLocation wwhServiceLocation) {
-                                    return wwhServiceLocation.locationName;
-                                }
-                            })
-
-            ));
-            for (WWHArrayOfCallingPoints subsequentCallingPoint : trainService.subsequentCallingPoints) {
-                Iterable<String> callingPoint =
-                        Iterables.transform(subsequentCallingPoint.callingPoint, new Function<WWHCallingPoint, String>() {
-                            @Override
-                            public String apply(WWHCallingPoint wwhCallingPoint) {
-                                return wwhCallingPoint.locationName + " @ " + wwhCallingPoint.st;
-                            }
-                        });
-                System.out.println("CP: " + Joiner.on(", ").join(callingPoint));
-            }
-        }
     }
 
     protected Transport createTransport()
@@ -578,21 +540,21 @@ public class WWHLDBServiceSoap
         Transport __httpTransport=createTransport();
         __httpTransport.debug=enableLogging;
         WWHExtendedSoapSerializationEnvelope __envelope=wcfMethod.CreateSoapEnvelope();
-        try
-        {
+//        try
+//        {
             sendRequest(methodName, __envelope, __httpTransport);
-            
-        }
-        finally {
-            if (__httpTransport.debug) {
-                if (__httpTransport.requestDump != null) {
-                    android.util.Log.i("requestDump",__httpTransport.requestDump);
-                }
-                if (__httpTransport.responseDump != null) {
-                    android.util.Log.i("responseDump",__httpTransport.responseDump);
-                }
-            }
-        }
+//
+//        }
+//        finally {
+//            if (__httpTransport.debug) {
+//                if (__httpTransport.requestDump != null) {
+//                    android.util.Log.i("requestDump",__httpTransport.requestDump);
+//                }
+//                if (__httpTransport.responseDump != null) {
+//                    android.util.Log.i("responseDump",__httpTransport.responseDump);
+//                }
+//            }
+//        }
         Object __retObj = __envelope.bodyIn;
         if (__retObj instanceof org.ksoap2.SoapFault){
             org.ksoap2.SoapFault __fault = (org.ksoap2.SoapFault)__retObj;

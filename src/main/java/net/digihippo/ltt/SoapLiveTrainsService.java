@@ -1,4 +1,4 @@
-package net.digihippo.ltt.soap;
+package net.digihippo.ltt;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.digihippo.ltt.*;
+import net.digihippo.ltt.soap.*;
 
 import java.util.Iterator;
 import java.util.List;

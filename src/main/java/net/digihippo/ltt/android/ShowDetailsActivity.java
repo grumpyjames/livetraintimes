@@ -1,4 +1,4 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -11,6 +11,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import net.digihippo.ltt.BadTrainState;
+import net.digihippo.ltt.CallingPoint;
+import net.digihippo.ltt.Consumer;
+import net.digihippo.ltt.DepartingTrain;
 
 import java.util.List;
 

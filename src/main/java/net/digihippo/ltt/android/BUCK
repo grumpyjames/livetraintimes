@@ -1,0 +1,14 @@
+android_library(
+  name = 'livetraintimes',
+  srcs = glob(['*.java']),
+  deps = [
+    '//:res',
+    '//:guava',
+    '//:jsr-305',
+    '//:jodatime',
+    '//src/main/java/net/digihippo/ltt:live-trains-api',
+    '//src/main/java/com/astuetz/viewpager/extensions:tabs',
+    '//:android-support'
+  ],
+  visibility = [ 'PUBLIC' ],
+)

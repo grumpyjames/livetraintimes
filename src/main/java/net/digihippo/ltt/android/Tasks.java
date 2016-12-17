@@ -1,8 +1,12 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import android.os.AsyncTask;
 import com.google.common.base.Optional;
-import net.digihippo.ltt.soap.SoapLiveTrainsService;
+import net.digihippo.ltt.Anywhere;
+import net.digihippo.ltt.DepartureBoard;
+import net.digihippo.ltt.DepartureBoardService;
+import net.digihippo.ltt.Station;
+import net.digihippo.ltt.SoapLiveTrainsService;
 
 import java.io.Serializable;
 

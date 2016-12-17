@@ -1,4 +1,4 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
+import net.digihippo.ltt.*;
 
 public class NavigatorActivity extends Activity implements FavouriteListener {
     private static final String CHOICE_ID = "choiceId";
