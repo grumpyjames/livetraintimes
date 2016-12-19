@@ -50,6 +50,6 @@ android_binary(
   package_type = 'debug',
   deps = [
     ':res',
-    '//src/main/java/net/digihippo/ltt/android:livetraintimes',
+    '//src/net/digihippo/ltt/android:livetraintimes',
   ],
 )

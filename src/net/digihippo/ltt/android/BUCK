@@ -6,8 +6,8 @@ android_library(
     '//:guava',
     '//:jsr-305',
     '//:jodatime',
-    '//src/main/java/net/digihippo/ltt:live-trains-api',
-    '//src/main/java/com/astuetz/viewpager/extensions:tabs',
+    '//src/net/digihippo/ltt:live-trains-api',
+    '//src/com/astuetz/viewpager/extensions:tabs',
     '//:android-support'
   ],
   visibility = [ 'PUBLIC' ],
