@@ -1491,7 +1491,7 @@ public final class Stations {
         allStations.put("LRB", "London Road (Brighton)");
         allStations.put("LRD", "London Road (Guildford)");
         allStations.put("STP", "London St Pancras International");
-        allStations.put("SPX", "London St Pancras (Intl)");
+        //allStations.put("SPX", "London St Pancras (Intl)");
         allStations.put("VIC", "London Victoria");
         allStations.put("WAT", "London Waterloo");
         allStations.put("WAE", "London Waterloo East");
