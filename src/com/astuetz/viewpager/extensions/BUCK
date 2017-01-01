@@ -1,9 +1,16 @@
 android_library(
   name = 'tabs',
   srcs = glob(['*.java']),
+  manifest = 'AndroidManifest.xml',
   deps = [
     '//:android-support',
-    '//:res',
+    ':res',
   ],
   visibility = [ 'PUBLIC' ],
+)
+
+android_resource(
+  name = 'res',
+  res = 'res',
+  package = 'com.astuetz.viewpager.extensions'
 )

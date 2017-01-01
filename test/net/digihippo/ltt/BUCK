@@ -1,0 +1,13 @@
+java_test(
+  name = 'livetraintimes',
+  srcs = glob(['*.java']),
+  deps = [
+    '//:guava',
+
+    '//src/net/digihippo/ltt:live-trains-api',
+
+    '//test/libs:junit',
+    '//test/libs:hamcrest-core',
+    '//test/libs:hamcrest-library',
+  ]
+)

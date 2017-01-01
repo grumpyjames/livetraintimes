@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.Button;
-import net.digihippo.ltt.R;
 
 public class ViewPagerTabButton extends Button {
 

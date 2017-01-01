@@ -1,10 +1,3 @@
-android_resource(
-  name = 'res',
-  res = 'res',
-  package = 'net.digihippo.ltt',
-  visibility = [ 'PUBLIC' ],
-)
-
 prebuilt_jar(
   name = 'guava',
   binary_jar = 'libs/guava.jar',
@@ -16,7 +9,6 @@ prebuilt_jar(
   binary_jar = 'libs/joda-time-2.7.jar',
   visibility = [ 'PUBLIC' ],
 )
-
 
 prebuilt_jar(
   name = 'android-support',
@@ -39,17 +31,6 @@ prebuilt_jar(
 keystore(
   name = 'keystore',
   store = 'livetraintimesii.jks',
-  properties = '../../keystore.properties'
-)
-
-# Building this rule will produce a file named messenger.apk.
-android_binary(
-  name = 'livetraintimes',
-  manifest = 'AndroidManifest.xml',
-  keystore = ':keystore',
-  package_type = 'debug',
-  deps = [
-    ':res',
-    '//src/net/digihippo/ltt/android:livetraintimes',
-  ],
+  properties = '../../keystore.properties',
+  visibility = [ 'PUBLIC' ],
 )

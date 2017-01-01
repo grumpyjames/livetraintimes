@@ -1,8 +1,14 @@
+android_resource(
+  name = 'res',
+  res = 'res',
+  package = 'net.digihippo.ltt',
+)
+
 android_library(
-  name = 'livetraintimes',
+  name = 'livetraintimes-lib',
   srcs = glob(['*.java']),
   deps = [
-    '//:res',
+    ':res',
     '//:guava',
     '//:jsr-305',
     '//:jodatime',
@@ -10,5 +16,14 @@ android_library(
     '//src/com/astuetz/viewpager/extensions:tabs',
     '//:android-support'
   ],
-  visibility = [ 'PUBLIC' ],
+)
+
+android_binary(
+  name = 'livetraintimes',
+  manifest = 'AndroidManifest.xml',
+  keystore = '//:keystore',
+  package_type = 'debug',
+  deps = [
+    ':livetraintimes-lib',
+  ],
 )

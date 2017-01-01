@@ -11,18 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
+import net.digihippo.ltt.StationIndex;
 import net.digihippo.ltt.Stations;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import static com.google.common.collect.ImmutableList.copyOf;
 
 public class StationSearchFragment extends Fragment implements FavouriteListener {
     private ListView resultView;
     private EditText editView;
     private Bundle state;
     private FavouriteListener favouriteListener;
+    private StationIndex<Station> stationIndex;
 
     @Override
     public void setArguments(Bundle args) {
@@ -37,7 +43,31 @@ public class StationSearchFragment extends Fragment implements FavouriteListener
                         this.state,
                         this);
         resultView.setAdapter(adapter);
+        stationIndex = buildStationIndex();
         attachEditListener(editView, resultView, context);
+    }
+
+    private StationIndex<Station> buildStationIndex() {
+        try {
+            //noinspection unchecked
+            return StationIndex.parse(
+                    Stations.allStations(),
+                    new Function<Station, String>() {
+                        @Override
+                        public String apply(Station station) {
+                            return station.fullName();
+                        }
+                    },
+                    new Function<Station, String>() {
+                        @Override
+                        public String apply(Station station) {
+                            return station.threeLetterCode();
+                        }
+                    }
+            );
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -60,7 +90,7 @@ public class StationSearchFragment extends Fragment implements FavouriteListener
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 2) {
-                    final List<Station> results = Stations.find(charSequence.toString());
+                    final List<Station> results = copyOf(stationIndex.search(charSequence.toString()));
                     resultView.setAdapter(new StationAdapter(context, results, state, StationSearchFragment.this));
                 }
             }

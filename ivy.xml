@@ -1,6 +1,0 @@
-<ivy-module version="2.0">
-    <info organisation="net.digihippo" module="livetraintimes"/>
-    <dependencies>
-        <dependency org="net.digihippo" name="traintimes_2.9.1" rev="0.1" conf="default->runtime"/>
-    </dependencies>
-</ivy-module>
