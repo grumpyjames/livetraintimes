@@ -22,18 +22,9 @@ public class StationIndex<T> {
     {
         if (expression.length() < 3) return Collections.emptyList();
         final String lowerCaseExpr = expression.toLowerCase();
-        byte[] bytes = lowerCaseExpr.getBytes();
-
-        byte indexOne = (byte) (bytes[0] - 97);
-        byte indexTwo = (byte) (bytes[1] - 97);
-        byte indexThree = (byte) (bytes[2] - 97);
-        if (outsideAtoZ(indexOne) || outsideAtoZ(indexTwo) || outsideAtoZ(indexThree))
-        {
-            return Collections.emptyList();
-        }
 
         Set<T> set =
-                structure.get(new String(new byte[]{indexOne, indexTwo, indexThree}));
+                structure.get(expression.toLowerCase().substring(0, 3));
         if (set == null)
         {
             return Collections.emptyList();
@@ -51,24 +42,33 @@ public class StationIndex<T> {
             final Function<T, String> toString,
             final Function<T, String> ... canonicalPrefixes) throws UnsupportedEncodingException {
         final Builder<T> builder = new Builder<T>(toString);
-        final byte[] prefix = new byte[3];
+        final char[] prefix = new char[3];
         for (T expression : expressions) {
             for (Function<T, String> canonicalPrefix : canonicalPrefixes) {
                 builder.prefixFound(
-                        canonicalPrefix.apply(expression).toLowerCase().getBytes("US-ASCII"),
+                        canonicalPrefix.apply(expression).toLowerCase().toCharArray(),
                         expression);
             }
             try {
                 int index = 0;
-                for (byte b : toString.apply(expression).toLowerCase().getBytes("US-ASCII")) {
-                    byte moved = (byte)(b - 97);
-                    if (outsideAtoZ(moved)) {
+
+                String expressionStr = toString.apply(expression).toLowerCase();
+                for (int i = 0; i < expressionStr.length(); i++)
+                {
+                    char c = expressionStr.charAt(i);
+                    if (outsideAtoZ(c)) {
                         if (index > 2) {
+                            builder.prefixFound(prefix, expression);
+                        }
+                        // special case to allow searching for words like 'St' or 'St.'
+                        if (index == 2 && c == ' ' || c == '.')
+                        {
+                            prefix[index] = c;
                             builder.prefixFound(prefix, expression);
                         }
                         index = 0;
                     } else if (index < 3) {
-                        prefix[index] = moved;
+                        prefix[index] = c;
                         index++;
                     }
                 }
@@ -93,7 +93,7 @@ public class StationIndex<T> {
             this.toString = toString;
         }
 
-        public void prefixFound(byte[] prefix, T expression) {
+        public void prefixFound(char[] prefix, T expression) {
             String prefixStr = new String(prefix);
             @SuppressWarnings("unchecked")
             Set<T> set =
@@ -114,8 +114,8 @@ public class StationIndex<T> {
         }
     }
 
-    private static boolean outsideAtoZ(byte moved) {
-        return moved < 0 || 25 < moved;
+    private static boolean outsideAtoZ(char c) {
+        return c < 'a' || 'z' < c;
     }
 
 }
