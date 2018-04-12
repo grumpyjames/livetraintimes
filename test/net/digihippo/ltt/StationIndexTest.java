@@ -62,6 +62,24 @@ public class StationIndexTest
     }
 
     @Test
+    public void londonWaterloo() throws UnsupportedEncodingException {
+        @SuppressWarnings("unchecked") StationIndex<String> stationIndex = StationIndex.parse(
+            Arrays.asList(
+                "London Waterloo",
+                "London Marylebone"
+            ), new Function<String, String>() {
+                @Override
+                public String apply(String s) {
+                    return s;
+                }
+            });
+
+        assertThat(
+            stationIndex.search("London W"),
+            containsInAnyOrder("London Waterloo"));
+    }
+
+    @Test
     public void beNiceWithTwoByteWords() throws UnsupportedEncodingException {
         @SuppressWarnings("unchecked") StationIndex<String> stationIndex = StationIndex.parse(
                 Arrays.asList(
