@@ -1,0 +1,6 @@
+#!/bin/bash
+
+buck test
+buck build src/net/digihippo/ltt/android:livetraintimes
+rm -f *.apk
+${ANDROID_SDK}/build-tools/23.0.2/zipalign 4 buck-out/gen/src/net/digihippo/ltt/android/livetraintimes.apk livetraintimes.signed.aligned.apk

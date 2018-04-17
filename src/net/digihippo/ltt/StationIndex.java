@@ -44,7 +44,7 @@ public class StationIndex<T>
                 {
                     for (Function<T, String> canonicalPrefix : canonicalPrefixes)
                     {
-                        if (canonicalPrefix.apply(s).equals(lowerCaseExpr))
+                        if (canonicalPrefix.apply(s).toLowerCase().equals(lowerCaseExpr))
                         {
                             return true;
                         }
