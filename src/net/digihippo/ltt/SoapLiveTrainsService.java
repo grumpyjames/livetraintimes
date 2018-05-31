@@ -54,7 +54,10 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                             viaDestinations,
                             wwhServiceItem.platform,
                             toServiceDetails(wwhServiceItem.subsequentCallingPoints),
-                            infer(wwhServiceItem.etd, wwhServiceItem.std));
+                            infer(wwhServiceItem.etd, wwhServiceItem.std),
+                            wwhServiceItem.std,
+                            "On time".equals(wwhServiceItem.etd)
+                        );
                 }
             };
 

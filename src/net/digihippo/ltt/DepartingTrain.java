@@ -12,6 +12,8 @@ public class DepartingTrain implements Serializable {
     private final String platform;
     private final ServiceDetails serviceDetails;
     private final Either<BadTrainState, String> departureTime;
+    private final String scheduledTime;
+    private final boolean onTime;
 
     public DepartingTrain(
             boolean isCircularRoute,
@@ -19,7 +21,9 @@ public class DepartingTrain implements Serializable {
             ImmutableList<String> viaDestinations,
             String platform,
             ServiceDetails serviceDetails,
-            Either<BadTrainState, String> departureTime)
+            Either<BadTrainState, String> departureTime,
+            String scheduledTime,
+            boolean onTime)
     {
         this.isCircularRoute = isCircularRoute;
         this.destinations = destinations;
@@ -27,6 +31,8 @@ public class DepartingTrain implements Serializable {
         this.platform = platform;
         this.serviceDetails = serviceDetails;
         this.departureTime = departureTime;
+        this.scheduledTime = scheduledTime;
+        this.onTime = onTime;
     }
 
     public List<String> viaDestinations() {
@@ -52,4 +58,15 @@ public class DepartingTrain implements Serializable {
     public Either<BadTrainState, String> getDepartureTime() {
         return departureTime;
     }
+
+    public String getScheduledTime()
+    {
+        return scheduledTime;
+    }
+
+    public boolean onTime()
+    {
+        return onTime;
+    }
+
 }
