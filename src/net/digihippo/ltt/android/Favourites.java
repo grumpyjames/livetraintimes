@@ -6,13 +6,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import net.digihippo.ltt.Anywhere;
 import net.digihippo.ltt.Station;
 import net.digihippo.ltt.Stations;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
@@ -52,8 +51,8 @@ public final class Favourites implements Serializable {
         final Set<Station> favourites = Favourites.getFavourites();
         return copyOf(transform(filter(favourites, new Predicate<Station>() {
             @Override
-            public boolean apply(@Nullable Station station) {
-                return station != Anywhere.INSTANCE;
+            public boolean apply(Station station) {
+                return station != Anywhere.INSTANCE && station.fullName() != null;
             }
         }), new Function<Station, String>() {
             @Override
@@ -77,16 +76,22 @@ public final class Favourites implements Serializable {
     }
 
     private static List<Station> deserializeFavouritesFrom(Iterable<String> favourites) {
-        return Lists.transform(ImmutableList.copyOf(favourites), new Function<CharSequence, Station>() {
+        return ImmutableList.copyOf(Iterables.filter(Iterables.transform(favourites, new Function<CharSequence, Station>() {
             @Override
             public Station apply(CharSequence charSequence) {
                 return Stations.lookup(charSequence.toString());
             }
-        });
+        }), new Predicate<Station>() {
+
+            @Override
+            public boolean apply(Station station)
+            {
+                return station.fullName() != null;
+            }
+        }));
     }
 
     public static void save(SharedPreferences preferences) {
-
         final SharedPreferences.Editor editor = preferences.edit();
         editor.putString(FAVOURITES_KEY, Joiner.on(SEPARATOR).join(currentFavouritesAsStrings()));
 
