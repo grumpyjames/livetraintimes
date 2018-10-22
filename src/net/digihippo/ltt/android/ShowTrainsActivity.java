@@ -97,7 +97,12 @@ public class ShowTrainsActivity extends Activity {
             });
             builder.setCancelable(true);
             alertDialog = builder.create();
-            alertDialog.show();
+            // Avoid android.view.WindowManager$BadTokenException, according to
+            // https://stackoverflow.com/questions/18662239
+            if (!isFinishing())
+            {
+                alertDialog.show();
+            }
         }
 
         fetchingTrains = false;

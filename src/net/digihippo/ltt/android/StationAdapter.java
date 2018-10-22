@@ -31,7 +31,15 @@ class StationAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 final Intent intent = new Intent(context, NavigatorActivity.class);
-                intent.putExtras(state);
+                // Android 9 is less permissive of passing null to putExtras
+                if (state != null)
+                {
+                    intent.putExtras(state);
+                }
+                else
+                {
+                    intent.putExtras(new Bundle());
+                }
                 intent.putExtra("station", ((TextView) view).getText().toString());
                 context.startActivity(intent);
             }
