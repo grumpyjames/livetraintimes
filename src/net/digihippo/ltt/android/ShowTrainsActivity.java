@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,9 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 
 public class ShowTrainsActivity extends Activity {
@@ -78,7 +82,7 @@ public class ShowTrainsActivity extends Activity {
         return true;
     }
 
-    public void onBoardOrError(Tasks.BoardOrError boardOrError) {
+    public void onBoardOrError(final Tasks.BoardOrError boardOrError) {
         if (alertDialog != null) {
             alertDialog.hide();
         }
@@ -88,13 +92,44 @@ public class ShowTrainsActivity extends Activity {
             populateBoard(table, boardOrError.board());
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Unable to retrieve trains - are you connected to the internet?");
-            builder.setNeutralButton("Retry", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    attemptToFetchTrains();
-                }
-            });
+            if (boardOrError.isNetworkConnectivityPresent())
+            {
+                builder.setMessage(
+                    "Failed to retrieve trains, even though this device has internet connectivity. " +
+                        "Please send a bug report so this can be fixed :-)");
+                builder.setNeutralButton("Send bug report", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        Writer writer = new StringWriter();
+                        //noinspection ThrowableResultOfMethodCallIgnored
+                        boardOrError.error().printStackTrace(new PrintWriter(writer));
+                        String exceptionText = writer.toString();
+
+                        Intent intent = new Intent(Intent.ACTION_SENDTO);
+                        intent.setType("message/rfc822");
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "A live train times bug");
+                        intent.putExtra(Intent.EXTRA_TEXT,
+                            "Please investigate the below exception: \n" + exceptionText);
+                        intent.setData(Uri.parse("mailto:james.byatt@digihippo.net"));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        ShowTrainsActivity.this.startActivity(intent);
+                    }
+                });
+            }
+            else
+            {
+                builder.setMessage("Unable to retrieve trains - are you connected to the internet?");
+                builder.setNeutralButton("Retry", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        attemptToFetchTrains();
+                    }
+                });
+            }
             builder.setCancelable(true);
             alertDialog = builder.create();
             // Avoid android.view.WindowManager$BadTokenException, according to

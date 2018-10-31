@@ -2,13 +2,13 @@ package net.digihippo.ltt.android;
 
 import android.os.AsyncTask;
 import com.google.common.base.Optional;
-import net.digihippo.ltt.Anywhere;
-import net.digihippo.ltt.DepartureBoard;
-import net.digihippo.ltt.DepartureBoardService;
-import net.digihippo.ltt.Station;
-import net.digihippo.ltt.SoapLiveTrainsService;
+import net.digihippo.ltt.*;
+import org.joda.time.Instant;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 public final class Tasks implements Serializable {
     private static final DepartureBoardService service = SoapLiveTrainsService.departureBoardService();
@@ -16,14 +16,17 @@ public final class Tasks implements Serializable {
     public static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;
+        private final boolean networkConnectivityPresent;
 
         private BoardOrError(DepartureBoard board) {
             this.board = board;
             this.error = null;
+            this.networkConnectivityPresent = true;
         }
 
-        private BoardOrError(Exception exc) {
+        private BoardOrError(Exception exc, boolean networkConnectivityPresent) {
             error = exc;
+            this.networkConnectivityPresent = networkConnectivityPresent;
             board = null;
         }
 
@@ -31,13 +34,17 @@ public final class Tasks implements Serializable {
             return board != null;
         }
 
-        @SuppressWarnings("UnusedDeclaration")
-        private Exception error() {
+        public Exception error() {
             return error;
         }
 
         public DepartureBoard board() {
             return board;
+        }
+
+        public boolean isNetworkConnectivityPresent()
+        {
+            return networkConnectivityPresent;
         }
     }
 
@@ -50,14 +57,27 @@ public final class Tasks implements Serializable {
 
         @Override
         protected BoardOrError doInBackground(NavigatorState... states) {
+            final NavigatorState navigatorState = states[0];
             try {
-                final NavigatorState navigatorState = states[0];
                 return new BoardOrError(
                         service.boardFor(
                                 navigatorState.stationOne.get(),
                                 filterAnywhere(navigatorState.stationTwo)));
             } catch (Exception e) {
-                return new BoardOrError(e);
+                Exception withHelpfulMessage =
+                    new Exception("At " + Instant.now() + ", failed to retrieve trains: " + navigatorState, e);
+                // see if we can reach Google's public DNS
+                Socket sock = new Socket();
+                try
+                {
+                    sock.connect(new InetSocketAddress("8.8.8.8", 53), 1500);
+                    sock.close();
+                    return new BoardOrError(withHelpfulMessage, true);
+                }
+                catch (IOException ioe)
+                {
+                    return new BoardOrError(withHelpfulMessage, false);
+                }
             }
         }
 

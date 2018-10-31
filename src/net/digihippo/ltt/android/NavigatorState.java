@@ -20,4 +20,10 @@ final class NavigatorState implements Serializable {
     public Type type = Type.Departing;
     public Optional<Station> stationOne = Optional.absent();
     public Optional<Station> stationTwo = Optional.absent();
+
+    @Override
+    public String toString()
+    {
+        return type.toString() + " from " + stationOne + " to " + stationTwo;
+    }
 }

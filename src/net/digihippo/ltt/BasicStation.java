@@ -41,4 +41,10 @@ public final class BasicStation implements Station, Serializable {
         result = 31 * result + (fullname != null ? fullname.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString()
+    {
+        return fullName();
+    }
 }
