@@ -190,7 +190,7 @@ public class ShowTrainsActivity extends Activity {
         return station;
     }
 
-    private void onDetails(final View rowToUpdate, final DepartingTrain train) {
+    private void onDetails(final View rowToUpdate, final DepartingTrain train, final CharSequence due) {
         final Station endpoint =
                 filterAnywhere(navigatorState.stationTwo).or(train.destinationList().get(0));
         FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
@@ -218,9 +218,12 @@ public class ShowTrainsActivity extends Activity {
                                         arrivalDateTime = localTime.toDateTimeToday();
                                     }
 
-
                                     if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
-                                        currentBestTrain = new CurrentBestTrain(rowToUpdate, arrivalDateTime);
+                                        currentBestTrain =
+                                            new CurrentBestTrain(
+                                                arrivalDateTime,
+                                                train.platform(),
+                                                due.toString());
                                     }
                                 }
                             }
@@ -244,14 +247,10 @@ public class ShowTrainsActivity extends Activity {
             alertDialog.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Fastest Train");
-            TextView dueView = (TextView) currentBestTrain.rowToUpdate.findViewById(net.digihippo.ltt.R.id.due);
-            TextView platformView = (TextView) currentBestTrain.rowToUpdate.findViewById(net.digihippo.ltt.R.id.platform);
-            String platformText = (platformView.getText().length() > 0)
-                    ? " from platform " + platformView.getText()
-                    : "";
+            String platformText = currentBestTrain.platformText();
             builder.setMessage("The fastest train from " + navigatorState.stationOne.get().fullName()
                     + " to " + navigatorState.stationTwo.get().fullName()
-                    + " leaves at " + dueView.getText()
+                    + " leaves at " + currentBestTrain.leavingAt()
                     + platformText
                     + ". It is expected to arrive at "
                     + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
@@ -332,23 +331,38 @@ public class ShowTrainsActivity extends Activity {
                     }
                 });
 
-                onDetails(row, train);
+                onDetails(row, train, due.getText());
             }
             showFastestTrain();
         }
     }
 
-    private class CurrentBestTrain {
-        private final View rowToUpdate;
+    private static final class CurrentBestTrain {
         private final DateTime arrivalDateTime;
+        private final String platform;
+        private final String due;
 
-        public CurrentBestTrain(View rowToUpdate, DateTime arrivalDateTime) {
-            this.rowToUpdate = rowToUpdate;
+        public CurrentBestTrain(
+            DateTime arrivalDateTime,
+            String platform,
+            String due) {
             this.arrivalDateTime = arrivalDateTime;
+            this.platform = platform;
+            this.due = due;
         }
 
         public boolean arrivesAfter(DateTime arrivalDateTime) {
             return arrivalDateTime.isBefore(this.arrivalDateTime);
+        }
+
+        public String platformText()
+        {
+            return (platform != null && platform.length() > 0) ? " from platform " + platform : "";
+        }
+
+        public String leavingAt()
+        {
+            return due;
         }
     }
 

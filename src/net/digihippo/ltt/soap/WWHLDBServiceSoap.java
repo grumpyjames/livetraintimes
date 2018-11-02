@@ -36,7 +36,7 @@ public class WWHLDBServiceSoap
         Object ProcessResult(WWHExtendedSoapSerializationEnvelope __envelope, Object result) throws Exception;
     }
 
-    String url="http://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb7.asmx";
+    String url="https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb7.asmx";
 
     int timeOut=15000;
     public List< HeaderProperty> httpHeaders;
