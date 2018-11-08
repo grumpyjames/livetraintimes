@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eou pipefail
+
 buck test
 buck build src/net/digihippo/ltt/android:livetraintimes
 rm -f *.apk
