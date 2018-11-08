@@ -58,26 +58,43 @@ public final class Tasks implements Serializable {
         @Override
         protected BoardOrError doInBackground(NavigatorState... states) {
             final NavigatorState navigatorState = states[0];
+            final Station from = navigatorState.stationOne.get();
+            final Optional<Station> to = filterAnywhere(navigatorState.stationTwo);
             try {
-                return new BoardOrError(
-                        service.boardFor(
-                                navigatorState.stationOne.get(),
-                                filterAnywhere(navigatorState.stationTwo)));
+                return new BoardOrError(service.boardFor(from, to));
             } catch (Exception e) {
-                Exception withHelpfulMessage =
-                    new Exception("At " + Instant.now() + ", failed to retrieve trains: " + navigatorState, e);
-                // see if we can reach Google's public DNS
-                Socket sock = new Socket();
-                try
+                if (e.getMessage().contains("Trust anchor"))
                 {
-                    sock.connect(new InetSocketAddress("8.8.8.8", 53), 1500);
-                    sock.close();
-                    return new BoardOrError(withHelpfulMessage, true);
+                    service.httpsIsBroken();
+                    // don't recurse in case, magically, the http version throws the same error.
+                    try
+                    {
+                        return new BoardOrError(service.boardFor(from, to));
+                    } catch (Exception again)
+                    {
+                        return handleError(navigatorState, again);
+                    }
                 }
-                catch (IOException ioe)
-                {
-                    return new BoardOrError(withHelpfulMessage, false);
-                }
+
+                return handleError(navigatorState, e);
+            }
+        }
+
+        private BoardOrError handleError(NavigatorState navigatorState, Exception e)
+        {
+            Exception withHelpfulMessage =
+                new Exception("At " + Instant.now() + ", failed to retrieve trains: " + navigatorState, e);
+            // see if we can reach Google's public DNS
+            Socket sock = new Socket();
+            try
+            {
+                sock.connect(new InetSocketAddress("8.8.8.8", 53), 1500);
+                sock.close();
+                return new BoardOrError(withHelpfulMessage, true);
+            }
+            catch (IOException ioe)
+            {
+                return new BoardOrError(withHelpfulMessage, false);
             }
         }
 

@@ -29,6 +29,11 @@ import java.util.List;
 
 public class WWHLDBServiceSoap
 {
+    public void httpsIsBroken()
+    {
+        url = url.replace("https://", "http://");
+    }
+
     interface WWHIWcfMethod
     {
         WWHExtendedSoapSerializationEnvelope CreateSoapEnvelope() throws Exception;

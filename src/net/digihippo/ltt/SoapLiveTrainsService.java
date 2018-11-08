@@ -102,6 +102,12 @@ public class SoapLiveTrainsService implements DepartureBoardService {
 
     }
 
+    @Override
+    public void httpsIsBroken()
+    {
+        wwhldbServiceSoap.httpsIsBroken();
+    }
+
     private DepartureBoard toDepartureBoard(final WWHStationBoardWithDetails wwhStationBoard) {
         return new DepartureBoard(transform(wwhStationBoard.trainServices, ExtractDepartingTrain));
     }
