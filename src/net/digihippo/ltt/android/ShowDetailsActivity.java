@@ -3,6 +3,7 @@ package net.digihippo.ltt.android;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -61,10 +62,11 @@ public class ShowDetailsActivity extends Activity {
                     }
                 }
             };
-            addTextView(linearLayout, last(masterCallingPoints).locationName, onClickListener, true);
+            final float weight = 1F / ((float) portions.size());
+
+            addTextView(linearLayout, last(masterCallingPoints).locationName, onClickListener, true, weight);
             for (List<CallingPoint> branchCallingPoints : Iterables.skip(portions, 1)) {
-                addTextView(linearLayout, " | ");
-                addTextView(linearLayout, last(branchCallingPoints).locationName, onClickListener, false);
+                addTextView(linearLayout, last(branchCallingPoints).locationName, onClickListener, false, weight);
             }
         } else {
             mainHeaderText.setText("This train calls at:");
@@ -74,16 +76,23 @@ public class ShowDetailsActivity extends Activity {
         showCallingPoints(departingTrain.serviceDetails());
     }
 
-    private void addTextView(LinearLayout linearLayout,
-                             String text,
-                             View.OnClickListener onClickListener,
-                             boolean bold) {
+    private void addTextView(
+        LinearLayout linearLayout,
+        String text,
+        View.OnClickListener onClickListener,
+        boolean bold,
+        float weight)
+    {
         TextView textView = new TextView(this);
         textView.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-        textView.setLayoutParams(
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView.setText(text);
         textView.setOnClickListener(onClickListener);
+        LinearLayout.LayoutParams params =
+            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.weight = weight;
+        textView.setLayoutParams(params);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+
         if (bold) {
             textView.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
         }
@@ -118,11 +127,5 @@ public class ShowDetailsActivity extends Activity {
 
     private CallingPoint last(List<CallingPoint> callingPoints) {
         return callingPoints.get(callingPoints.size() - 1);
-    }
-
-    private void addTextView(LinearLayout header, String text) {
-        TextView one = new TextView(this);
-        one.setText(text);
-        header.addView(one);
     }
 }

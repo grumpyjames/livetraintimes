@@ -91,7 +91,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private void renderFastestTrain(Optional<Station> stationOne, Optional<Station> stationTwo) {
         setSelectedType(R.id.fastest);
 
-        renderCommon(stationOne, stationTwo, "From: ", "To: ");
+        renderCommon(stationOne, stationTwo, "From", "To");
         if (present(stationOne) && present(stationTwo)) {
             readyToGo();
         } else {
@@ -102,7 +102,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private void renderDeparting(Optional<Station> stationOne, Optional<Station> stationTwo) {
         setSelectedType(R.id.departures);
 
-        renderCommon(stationOne, stationTwo, "From: ", "To: ");
+        renderCommon(stationOne, stationTwo, "From", "To");
 
         if (present(stationOne)) {
             readyToGo();
@@ -155,6 +155,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private void populateStationChoice(Station fromStation, View stationView, String labelText) {
         TextView label = (TextView) stationView.findViewById(R.id.label);
         label.setText(labelText);
+        label.setTextColor(getResources().getColor(R.color.lightgrey));
         StationView.initialiseStationView(stationView, fromStation, new NoOpClickListener(), this);
     }
 

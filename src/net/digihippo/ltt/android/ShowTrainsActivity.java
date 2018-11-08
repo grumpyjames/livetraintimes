@@ -274,6 +274,11 @@ public class ShowTrainsActivity extends Activity {
             table.removeAllViews();
             table.addView(View.inflate(this, net.digihippo.ltt.R.layout.board_header, null));
 
+            findViewById(R.id.platform).setSelected(true);
+            findViewById(R.id.expected_header).setSelected(true);
+            findViewById(R.id.details).setSelected(true);
+
+
             for (final DepartingTrain train: board.departingTrains()) {
                 final View row = View.inflate(this, net.digihippo.ltt.R.layout.board_entry, null);
 
