@@ -35,7 +35,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
     private static final Function<WWHServiceLocation, Station> ExtractLocationName = new Function<WWHServiceLocation, Station>() {
         @Override
         public Station apply(final WWHServiceLocation wwhServiceLocation) {
-            return new BasicStation(wwhServiceLocation.crs, wwhServiceLocation.locationName);
+            return Stations.lookup(wwhServiceLocation.crs);
         }
     };
     private static final Function<WWHServiceItemWithCallingPoints, DepartingTrain> ExtractDepartingTrain =
@@ -141,9 +141,9 @@ public class SoapLiveTrainsService implements DepartureBoardService {
 
             callingPoints.add(
                     CallingPoint.singlePoint(
-                            next.locationName,
-                            next.st,
-                            infer(next.et, next.st)));
+                        Stations.lookup(next.crs),
+                        next.st,
+                        infer(next.et, next.st)));
         }
 
 
@@ -176,7 +176,9 @@ public class SoapLiveTrainsService implements DepartureBoardService {
         public List<CallingPoint> build() {
             while (iterator.hasNext()) {
                 WWHCallingPoint next = iterator.next();
-                callingPoints.add(CallingPoint.singlePoint(next.locationName, next.st, infer(next.et, next.st)));
+                callingPoints.add(
+                    CallingPoint.singlePoint(
+                        Stations.lookup(next.crs), next.st, infer(next.et, next.st)));
             }
             return callingPoints.build();
         }

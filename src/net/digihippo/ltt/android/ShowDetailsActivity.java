@@ -56,7 +56,7 @@ public class ShowDetailsActivity extends Activity {
                     tv.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
                     String text = tv.getText().toString();
                     for (List<CallingPoint> branch : portions) {
-                        if (last(branch).locationName.equals(text)) {
+                        if (last(branch).station.fullName().equals(text)) {
                             showCallingPoints(branch);
                         }
                     }
@@ -64,9 +64,9 @@ public class ShowDetailsActivity extends Activity {
             };
             final float weight = 1F / ((float) portions.size());
 
-            addTextView(linearLayout, last(masterCallingPoints).locationName, onClickListener, true, weight);
+            addTextView(linearLayout, last(masterCallingPoints).station.fullName(), onClickListener, true, weight);
             for (List<CallingPoint> branchCallingPoints : Iterables.skip(portions, 1)) {
-                addTextView(linearLayout, last(branchCallingPoints).locationName, onClickListener, false, weight);
+                addTextView(linearLayout, last(branchCallingPoints).station.fullName(), onClickListener, false, weight);
             }
         } else {
             mainHeaderText.setText("This train calls at:");
@@ -119,7 +119,7 @@ public class ShowDetailsActivity extends Activity {
                         }
                     });
             TextView stationView = (TextView) row.findViewById(net.digihippo.ltt.R.id.station_name);
-            stationView.setText(callingPoint.locationName);
+            stationView.setText(callingPoint.station.fullName());
 
             table.addView(row);
         }

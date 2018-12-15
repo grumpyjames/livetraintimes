@@ -146,7 +146,6 @@ public final class Stations {
         allStations.put("ASF","Ashfield");
         allStations.put("AFS","Ashford (Surrey)");
         allStations.put("AFK","Ashford International");
-        allStations.put("ASI","Ashford International (Eurostar)");
         allStations.put("ASY","Ashley");
         allStations.put("AHD","Ashtead");
         allStations.put("AHN","Ashton-under-Lyne");
@@ -1501,7 +1500,6 @@ public final class Stations {
         allStations.put("PAD","London Paddington");
         allStations.put("LRB","London Road (Brighton)");
         allStations.put("LRD","London Road (Guildford)");
-        allStations.put("SPX","London St Pancras (Intl)");
         allStations.put("STP","London St Pancras International");
         allStations.put("VIC","London Victoria");
         allStations.put("WAT","London Waterloo");

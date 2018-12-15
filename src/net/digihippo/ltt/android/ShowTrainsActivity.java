@@ -195,7 +195,7 @@ public class ShowTrainsActivity extends Activity {
                 filterAnywhere(navigatorState.stationTwo).or(train.destinationList().get(0));
         FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
         for (final CallingPoint point: train.serviceDetails()) {
-            callingPointConsumer.onSinglePoint(point.locationName, point.et);
+            callingPointConsumer.onSinglePoint(point.station, point.et);
         }
 
         final LocalTime now = LocalTime.now();
@@ -380,8 +380,8 @@ public class ShowTrainsActivity extends Activity {
             this.soughtStation = soughtStation;
         }
 
-        public void onSinglePoint(String stationName, Either<BadTrainState, String> scheduledAtTime) {
-            if (arrivalTime == null && stationName.equals(soughtStation.fullName())) {
+        public void onSinglePoint(Station station, Either<BadTrainState, String> scheduledAtTime) {
+            if (arrivalTime == null && station.threeLetterCode().equals(soughtStation.threeLetterCode())) {
                 scheduledAtTime.consume(new Consumer<BadTrainState>() {
                     @Override
                     public void consume(BadTrainState badTrainState) {
