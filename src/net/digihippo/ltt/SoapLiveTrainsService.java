@@ -18,12 +18,12 @@ import static com.google.common.collect.Iterables.*;
 
 public class SoapLiveTrainsService implements DepartureBoardService {
     public static DepartureBoardService departureBoardService() {
-        final WWHLDBServiceSoap wwhldbServiceSoap = new WWHLDBServiceSoap();
+//        final WWHLDBServiceSoap wwhldbServiceSoap = new WWHLDBServiceSoap();
+//
+//        final WWHAccessToken accessToken = new WWHAccessToken();
+//        accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
 
-        final WWHAccessToken accessToken = new WWHAccessToken();
-        accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
-
-        return new SoapLiveTrainsService(wwhldbServiceSoap, accessToken);
+        return new LdbLiveTrainsService();
     }
     private static final Function<WWHServiceLocation, String> ExtractViaDestination =
             new Function<WWHServiceLocation, String>() {
@@ -47,7 +47,9 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                     ImmutableList<Station> destinations =
                             copyOf(transform(wwhServiceItem.destination, ExtractLocationName));
                     ImmutableList<String> viaDestinations = copyOf(
-                            filter(transform(wwhServiceItem.destination, ExtractViaDestination), Predicates.notNull()));
+                            filter(
+                                transform(wwhServiceItem.destination, ExtractViaDestination),
+                                Predicates.notNull()));
                     return new DepartingTrain(
                             isCircularRoute,
                             destinations,
@@ -61,7 +63,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                 }
             };
 
-    private static Either<BadTrainState, String> infer(String etd, String std) {
+    public static Either<BadTrainState, String> infer(String etd, String std) {
         // Three cases:
         // On time => scheduled time = estimated time
         // Delayed or Cancelled => exactly that

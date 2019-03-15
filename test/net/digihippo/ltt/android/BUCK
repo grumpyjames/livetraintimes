@@ -1,0 +1,21 @@
+robolectric_test(
+  name = 'argh',
+  srcs = glob(['*.java']),
+  vm_args = [
+    "-Drobolectric.dependency.dir=/Users/james/repos/livetraintimes/test/libs",
+  ],
+  deps = [
+    '//src/net/digihippo/ltt/ldb:ldb',
+
+    '//test/libs:junit',
+    '//test/libs:hamcrest-core',
+    '//test/libs:hamcrest-library',
+    '//test/libs:robolectric',
+    '//test/libs:robolectric-annotations',
+    '//test/libs:robolectric-junit',
+    '//test/libs:robolectric-sandbox',
+    '//test/libs:robolectric-utils',
+    '//test/libs:robolectric-pluginapi',
+    '//test/libs:robolectric-resources',
+  ]
+)

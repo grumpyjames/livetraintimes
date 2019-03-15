@@ -1,0 +1,6 @@
+android_library(
+  name = 'ldb',
+  srcs = glob(['*.java']),
+  deps = [],
+  visibility = ['PUBLIC']
+)

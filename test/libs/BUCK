@@ -15,3 +15,143 @@ prebuilt_jar(
   binary_jar = 'hamcrest-library-1.3.jar',
   visibility = [ 'PUBLIC' ]
 )
+
+prebuilt_jar(
+  name = 'robolectric',
+  binary_jar = 'robolectric-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+  deps = [
+    ':asm',
+    ':asm-analysis',
+    ':asm-commons',
+    ':asm-tree',
+    ':asm-util',
+    ':robolectric-annotations',
+    ':robolectric-junit',
+    ':robolectric-pluginapi',
+    ':robolectric-resources',
+    ':robolectric-sandbox',
+    ':robolectric-shadowapi',
+    ':robolectric-shadows-framework',
+    ':robolectric-utils',
+    ':robolectric-utils-reflector',
+    ':javax-inject',
+    ':android-monitor',
+    ':bouncy-castle',
+    ':guava',
+  ]
+)
+
+prebuilt_jar(
+  name = 'robolectric-all',
+  binary_jar = 'android-all-4.1.2_r1-robolectric-r1.jar',
+  visibility = [ 'PUBLIC' ]
+)
+
+prebuilt_jar(
+  name = 'asm',
+  binary_jar = 'asm-7.0.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'asm-commons',
+  binary_jar = 'asm-commons-7.0.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'asm-util',
+  binary_jar = 'asm-util-7.0.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'asm-tree',
+  binary_jar = 'asm-tree-7.0.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'asm-analysis',
+  binary_jar = 'asm-analysis-7.0.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-annotations',
+  binary_jar = 'robolectric-annotations-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-pluginapi',
+  binary_jar = 'robolectric-pluginapi-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-resources',
+  binary_jar = 'robolectric-resources-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-junit',
+  binary_jar = 'robolectric-junit-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-sandbox',
+  binary_jar = 'robolectric-sandbox-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-shadows-framework',
+  binary_jar = 'robolectric-shadows-framework-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-utils',
+  binary_jar = 'robolectric-utils-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-utils-reflector',
+  binary_jar = 'robolectric-utils-reflector-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'robolectric-shadowapi',
+  binary_jar = 'robolectric-shadowapi-4.2.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'javax-inject',
+  binary_jar = 'javax.inject-1.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+prebuilt_jar(
+  name = 'bouncy-castle',
+  binary_jar = 'bcprov-jdk15on-1.52.jar',
+  visibility = [ 'PUBLIC' ],
+)
+
+android_prebuilt_aar(
+  name = 'android-monitor',
+  aar = 'android-monitor-1.1.1.aar',
+  visibility = [ 'PUBLIC' ]
+)
+
+prebuilt_jar(
+  name = 'guava',
+  binary_jar = 'guava-27.0.1-jre.jar',
+  visibility = [ 'PUBLIC' ]
+)
