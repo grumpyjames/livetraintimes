@@ -1,29 +1,27 @@
 package net.digihippo.ltt;
 
-import com.google.common.collect.ImmutableList;
-
 import java.io.Serializable;
 import java.util.List;
 
 public class DepartingTrain implements Serializable {
     private final boolean isCircularRoute;
-    private final ImmutableList<Station> destinations;
-    private final ImmutableList<String> viaDestinations;
+    private final List<Station> destinations;
+    private final List<String> viaDestinations;
     private final String platform;
     private final ServiceDetails serviceDetails;
     private final Either<BadTrainState, String> departureTime;
     private final String scheduledTime;
     private final boolean onTime;
 
-    public DepartingTrain(
-            boolean isCircularRoute,
-            ImmutableList<Station> destinations,
-            ImmutableList<String> viaDestinations,
-            String platform,
-            ServiceDetails serviceDetails,
-            Either<BadTrainState, String> departureTime,
-            String scheduledTime,
-            boolean onTime)
+    DepartingTrain(
+        boolean isCircularRoute,
+        List<Station> destinations,
+        List<String> viaDestinations,
+        String platform,
+        ServiceDetails serviceDetails,
+        Either<BadTrainState, String> departureTime,
+        String scheduledTime,
+        boolean onTime)
     {
         this.isCircularRoute = isCircularRoute;
         this.destinations = destinations;

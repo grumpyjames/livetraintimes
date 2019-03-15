@@ -1,17 +1,10 @@
 package net.digihippo.ltt;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import net.digihippo.ltt.ldb.AndroidTrainService;
 
 import java.util.*;
 
-import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.transform;
 import static net.digihippo.ltt.SoapLiveTrainsService.infer;
 
 public class LdbLiveTrainsService implements DepartureBoardService
@@ -47,8 +40,8 @@ public class LdbLiveTrainsService implements DepartureBoardService
 
             trains.add(new DepartingTrain(
                 isCircularRoute,
-                ImmutableList.copyOf(destinations),
-                ImmutableList.copyOf(viaDestinations),
+                destinations,
+                viaDestinations,
                 service.platform,
                 toServiceDetails(service.callingPointLists),
                 infer(service.etd, service.std),
@@ -57,9 +50,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
             ));
         }
 
-        return new DepartureBoard(
-            trains
-        );
+        return new DepartureBoard(trains);
     }
 
     @Override
@@ -70,7 +61,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
 
     private static ServiceDetails
     toServiceDetails(List<List<AndroidTrainService.CallingPoint>> callingPointsList) {
-        final ImmutableList.Builder<CallingPoint> callingPoints = ImmutableList.builder();
+        final List<CallingPoint> callingPoints = new ArrayList<>();
 
         // Know: first list is the 'master' (what about if we query from the 'split' station?)
         // Splitaways start with the split station.
@@ -82,19 +73,16 @@ public class LdbLiveTrainsService implements DepartureBoardService
         final Set<String> forkLocations = new HashSet<>();
 
         for (final AndroidTrainService.CallingPoint next : masterBranch) {
-            Iterable<List<AndroidTrainService.CallingPoint>> journeysStartingHere =
-                Iterables.filter(otherBranches, new Predicate<List<AndroidTrainService.CallingPoint>>() {
-                    @Override
-                    public boolean apply(List<AndroidTrainService.CallingPoint> callingPoints) {
-                        return callingPoints.get(0).locationName.equals(next.locationName);
-                    }
-                });
 
-            for (List<AndroidTrainService.CallingPoint> journey : journeysStartingHere) {
-                CallingPointBuilder cpb = new CallingPointBuilder(journey.iterator());
-                cpb.addAll(callingPoints);
-                forks.add(cpb);
-                forkLocations.add(next.locationName);
+            for (List<AndroidTrainService.CallingPoint> journey : otherBranches)
+            {
+                if (journey.get(0).locationName.equals(next.locationName))
+                {
+                    CallingPointBuilder cpb = new CallingPointBuilder(journey.iterator());
+                    cpb.addAll(callingPoints);
+                    forks.add(cpb);
+                    forkLocations.add(next.locationName);
+                }
             }
 
             callingPoints.add(
@@ -104,34 +92,29 @@ public class LdbLiveTrainsService implements DepartureBoardService
                     infer(next.expectedTime, next.scheduledTime)));
         }
 
+        final List<List<CallingPoint>> callingPointLists = new ArrayList<>();
+        callingPointLists.add(callingPoints);
+        for (CallingPointBuilder fork : forks)
+        {
+            callingPointLists.add(fork.build());
+        }
 
-        return new ServiceDetails(
-            forkLocations,
-            copyOf(
-                concat(
-                    ImmutableList.<List<CallingPoint>>of(callingPoints.build()),
-                    transform(forks,
-                        new Function<CallingPointBuilder, List<CallingPoint>>() {
-                            @Override
-                            public List<CallingPoint> apply(CallingPointBuilder cpb) {
-                                return cpb.build();
-                            }
-                        }))));
+        return new ServiceDetails(forkLocations, callingPointLists);
     }
 
     private static final class CallingPointBuilder {
-        private final ImmutableList.Builder<CallingPoint> callingPoints = ImmutableList.builder();
+        private final List<CallingPoint> callingPoints = new ArrayList<>();
         private final Iterator<AndroidTrainService.CallingPoint> iterator;
 
         private CallingPointBuilder(Iterator<AndroidTrainService.CallingPoint> iterator) {
             this.iterator = iterator;
         }
 
-        public void addAll(ImmutableList.Builder<CallingPoint> callingPoints) {
-            this.callingPoints.addAll(callingPoints.build());
+        void addAll(List<CallingPoint> callingPoints) {
+            this.callingPoints.addAll(callingPoints);
         }
 
-        public List<CallingPoint> build() {
+        List<CallingPoint> build() {
             while (iterator.hasNext()) {
                 AndroidTrainService.CallingPoint next = iterator.next();
                 callingPoints.add(
@@ -140,7 +123,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
                         next.scheduledTime,
                         infer(next.expectedTime, next.scheduledTime)));
             }
-            return callingPoints.build();
+            return callingPoints;
         }
     }
 }
