@@ -1,7 +1,6 @@
 package net.digihippo.ltt.android;
 
 import android.os.AsyncTask;
-import com.google.common.base.Optional;
 import net.digihippo.ltt.*;
 import org.joda.time.Instant;
 
@@ -10,10 +9,10 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public final class Tasks implements Serializable {
+final class Tasks implements Serializable {
     private static final DepartureBoardService service = SoapLiveTrainsService.departureBoardService();
 
-    public static class BoardOrError {
+    static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;
         private final boolean networkConnectivityPresent;
@@ -30,19 +29,19 @@ public final class Tasks implements Serializable {
             board = null;
         }
 
-        public boolean hasBoard() {
+        boolean hasBoard() {
             return board != null;
         }
 
-        public Exception error() {
+        Exception error() {
             return error;
         }
 
-        public DepartureBoard board() {
+        DepartureBoard board() {
             return board;
         }
 
-        public boolean isNetworkConnectivityPresent()
+        boolean isNetworkConnectivityPresent()
         {
             return networkConnectivityPresent;
         }
@@ -58,10 +57,8 @@ public final class Tasks implements Serializable {
         @Override
         protected BoardOrError doInBackground(NavigatorState... states) {
             final NavigatorState navigatorState = states[0];
-            final Station from = navigatorState.stationOne.get();
-            final Optional<Station> to = filterAnywhere(navigatorState.stationTwo);
             try {
-                return new BoardOrError(service.boardFor(from, to));
+                return performRequest(navigatorState);
             } catch (Exception e) {
                 if (e.getMessage().contains("Trust anchor"))
                 {
@@ -69,7 +66,7 @@ public final class Tasks implements Serializable {
                     // don't recurse in case, magically, the http version throws the same error.
                     try
                     {
-                        return new BoardOrError(service.boardFor(from, to));
+                        return performRequest(navigatorState);
                     } catch (Exception again)
                     {
                         return handleError(navigatorState, again);
@@ -77,6 +74,21 @@ public final class Tasks implements Serializable {
                 }
 
                 return handleError(navigatorState, e);
+            }
+        }
+
+        private BoardOrError performRequest(NavigatorState navigatorState) throws Exception
+        {
+            final Station from = navigatorState.stationOne;
+
+            if (navigatorState.stationTwo != null &&
+                navigatorState.stationTwo != Anywhere.INSTANCE)
+            {
+                return new BoardOrError(service.boardFor(from, navigatorState.stationTwo));
+            }
+            else
+            {
+                return new BoardOrError(service.boardFor(from));
             }
         }
 
@@ -98,13 +110,6 @@ public final class Tasks implements Serializable {
             }
         }
 
-        private Optional<Station> filterAnywhere(Optional<Station> station) {
-            if (station.isPresent() && station.get() == Anywhere.INSTANCE) {
-                return Optional.absent();
-            }
-            return station;
-        }
-
         @Override
         protected void onPostExecute(BoardOrError boardOrError) {
             super.onPostExecute(boardOrError);
@@ -112,7 +117,7 @@ public final class Tasks implements Serializable {
         }
     }
     
-    public static void fetchTrains(ShowTrainsActivity context, NavigatorState navigatorState) {
+    static void fetchTrains(ShowTrainsActivity context, NavigatorState navigatorState) {
         final GetBoardsTask task = new GetBoardsTask(context);
         task.execute(navigatorState);
     }

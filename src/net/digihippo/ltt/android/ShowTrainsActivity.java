@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.digihippo.ltt.*;
@@ -170,29 +169,30 @@ public class ShowTrainsActivity extends Activity {
         switch (navigatorState.type) {
             case FastestTrain:
             case Departing:
-                return "Fetching departures from " + navigatorState.stationOne.get().fullName() +
+                return "Fetching departures from " + navigatorState.stationOne.fullName() +
                         maybe(" to ", navigatorState.stationTwo);
         }
         throw new RuntimeException("We added a new type and forgot to add the view for it");
     }
 
-    private String maybe(String message, Optional<Station> stationTwo) {
-        if (stationTwo.isPresent()) {
-            return message + stationTwo.get().fullName();
+    private String maybe(String message, Station stationTwo) {
+        if (stationTwo != null) {
+            return message + stationTwo.fullName();
         }
         return "";
     }
 
-    private Optional<Station> filterAnywhere(Optional<Station> station) {
-        if (station.isPresent() && station.get() == Anywhere.INSTANCE) {
-            return Optional.absent();
+    private Station filterAnywhere(Station station) {
+        if (station == Anywhere.INSTANCE) {
+            return null;
         }
         return station;
     }
 
     private void onDetails(final View rowToUpdate, final DepartingTrain train, final CharSequence due) {
         final Station endpoint =
-                filterAnywhere(navigatorState.stationTwo).or(train.destinationList().get(0));
+                navigatorState.stationTwo == null || navigatorState.stationTwo == Anywhere.INSTANCE ?
+                    train.destinationList().get(0) : navigatorState.stationTwo;
         FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
         for (final CallingPoint point: train.serviceDetails()) {
             callingPointConsumer.onSinglePoint(point.station, point.et);
@@ -248,8 +248,8 @@ public class ShowTrainsActivity extends Activity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Fastest Train");
             String platformText = currentBestTrain.platformText();
-            builder.setMessage("The fastest train from " + navigatorState.stationOne.get().fullName()
-                    + " to " + navigatorState.stationTwo.get().fullName()
+            builder.setMessage("The fastest train from " + navigatorState.stationOne.fullName()
+                    + " to " + navigatorState.stationTwo.fullName()
                     + " leaves at " + currentBestTrain.leavingAt()
                     + platformText
                     + ". It is expected to arrive at "

@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import net.digihippo.ltt.*;
 
@@ -35,10 +34,10 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
 
                 if (choiceId != null && station != null) {
                     if (choiceId.equals(CHOICE_ONE)) {
-                        navigatorState.stationOne = toMaybeStation(station);
+                        navigatorState.stationOne = toStation(station);
                     }
                     if (choiceId.equals(CHOICE_TWO)) {
-                        navigatorState.stationTwo = toMaybeStation(station);
+                        navigatorState.stationTwo = toStation(station);
                     }
                 }
             }
@@ -55,12 +54,12 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
         render();
     }
 
-    private Optional<Station> toMaybeStation(String station) {
+    private Station toStation(String station) {
         if (station.equals(Anywhere.INSTANCE.fullName())) {
-            return Optional.<Station>of(Anywhere.INSTANCE);
+            return Anywhere.INSTANCE;
         }
 
-        return Optional.of(Stations.reverseLookup(station));
+        return Stations.reverseLookup(station);
     }
 
     private void render() {
@@ -88,10 +87,10 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
         render();
     }
 
-    private void renderFastestTrain(Optional<Station> stationOne, Optional<Station> stationTwo) {
+    private void renderFastestTrain(Station stationOne, Station stationTwo) {
         setSelectedType(R.id.fastest);
 
-        renderCommon(stationOne, stationTwo, "From", "To");
+        renderCommon(stationOne, stationTwo);
         if (present(stationOne) && present(stationTwo)) {
             readyToGo();
         } else {
@@ -99,10 +98,10 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
         }
     }
 
-    private void renderDeparting(Optional<Station> stationOne, Optional<Station> stationTwo) {
+    private void renderDeparting(Station stationOne, Station stationTwo) {
         setSelectedType(R.id.departures);
 
-        renderCommon(stationOne, stationTwo, "From", "To");
+        renderCommon(stationOne, stationTwo);
 
         if (present(stationOne)) {
             readyToGo();
@@ -111,8 +110,8 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
         }
     }
 
-    private boolean present(Optional<Station> stationOne) {
-        return stationOne.isPresent() && !stationOne.get().equals(Anywhere.INSTANCE);
+    private boolean present(Station station) {
+        return station != null && !station.equals(Anywhere.INSTANCE);
     }
 
     private void setSelectedType(int id) {
@@ -127,15 +126,13 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     }
 
     private void renderCommon(
-            Optional<Station> stationOne,
-            Optional<Station> stationTwo,
-            String labelOneText,
-            String labelTwoText) {
-        Station firstStation = stationOne.or(Anywhere.INSTANCE);
-        populateStationChoice(firstStation, findViewById(R.id.choice_one), labelOneText);
+        Station stationOne,
+        Station stationTwo) {
+        Station firstStation = stationOne == null ? Anywhere.INSTANCE : stationOne;
+        populateStationChoice(firstStation, findViewById(R.id.choice_one), "From");
 
-        Station secondStation = stationTwo.or(Anywhere.INSTANCE);
-        populateStationChoice(secondStation, findViewById(R.id.choice_two), labelTwoText);
+        Station secondStation = stationTwo == null ? Anywhere.INSTANCE : stationTwo;
+        populateStationChoice(secondStation, findViewById(R.id.choice_two), "To");
     }
 
     private void readyToGo() {
@@ -183,7 +180,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private class ChangeTypeListener implements View.OnClickListener {
         private final NavigatorState.Type type;
 
-        public ChangeTypeListener(NavigatorState.Type type) {
+        ChangeTypeListener(NavigatorState.Type type) {
             this.type = type;
         }
 
@@ -196,7 +193,7 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private class SelectStationListener implements View.OnClickListener {
         private final String choiceId;
 
-        public SelectStationListener(String choiceId) {
+        SelectStationListener(String choiceId) {
             this.choiceId = choiceId;
         }
 

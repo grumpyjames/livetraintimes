@@ -88,8 +88,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
         this.accessToken = accessToken;
     }
 
-    @Override
-    public DepartureBoard boardFor(final Station from, final Optional<Station> to) throws Exception {
+    private DepartureBoard boardFor(final Station from, final Optional<Station> to) throws Exception {
 
         return toDepartureBoard(
                 wwhldbServiceSoap.GetDepBoardWithDetails(
@@ -102,6 +101,18 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                         accessToken)
         );
 
+    }
+
+    @Override
+    public DepartureBoard boardFor(Station fromStation) throws Exception
+    {
+        return boardFor(fromStation, Optional.<Station>absent());
+    }
+
+    @Override
+    public DepartureBoard boardFor(Station fromStation, Station toStation) throws Exception
+    {
+        return boardFor(fromStation, Optional.of(toStation));
     }
 
     @Override

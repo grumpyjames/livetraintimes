@@ -1,30 +1,19 @@
 package net.digihippo.ltt.android;
 
 import android.content.SharedPreferences;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import net.digihippo.ltt.Anywhere;
 import net.digihippo.ltt.Station;
 import net.digihippo.ltt.Stations;
 
 import java.io.Serializable;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
-import static com.google.common.collect.ImmutableSet.copyOf;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.transform;
+import java.util.*;
 
 public final class Favourites implements Serializable {
     private static final String FAVOURITES_KEY = "favourites";
     private static final String SEPARATOR = ",";
-    private static final Set<Station> favouriteStations = Sets.newTreeSet(new Comparator<Station>() {
+    private static final Set<Station> favouriteStations = new TreeSet<>(new Comparator<Station>() {
         @Override
         public int compare(Station lhs, Station rhs) {
             return lhs.fullName().compareTo(rhs.fullName());
@@ -49,17 +38,17 @@ public final class Favourites implements Serializable {
 
     private static Set<String> currentFavouritesAsStrings() {
         final Set<Station> favourites = Favourites.getFavourites();
-        return copyOf(transform(filter(favourites, new Predicate<Station>() {
-            @Override
-            public boolean apply(Station station) {
-                return station != Anywhere.INSTANCE && station.fullName() != null;
+
+        final Set<String> crsFavourites = new HashSet<>();
+        for (Station favourite : favourites)
+        {
+            if (favourite != Anywhere.INSTANCE && favourite.fullName() != null)
+            {
+                crsFavourites.add(favourite.threeLetterCode());
             }
-        }), new Function<Station, String>() {
-            @Override
-            public String apply(Station station) {
-                return station.threeLetterCode();
-            }
-        }));
+        }
+
+        return crsFavourites;
     }
 
     public static boolean isFavourite(Station station) {
@@ -67,7 +56,9 @@ public final class Favourites implements Serializable {
     }
 
     public static void deserializeFrom(SharedPreferences preferences) {
-        addFavourites(deserializeFavouritesFrom(Splitter.on(",").omitEmptyStrings().split(preferences.getString(FAVOURITES_KEY, ""))));
+        addFavourites(
+            deserializeFavouritesFrom(
+                Splitter.on(",").omitEmptyStrings().split(preferences.getString(FAVOURITES_KEY, ""))));
     }
 
     private static void addFavourites(List<Station> stations) {
@@ -76,19 +67,17 @@ public final class Favourites implements Serializable {
     }
 
     private static List<Station> deserializeFavouritesFrom(Iterable<String> favourites) {
-        return ImmutableList.copyOf(Iterables.filter(Iterables.transform(favourites, new Function<CharSequence, Station>() {
-            @Override
-            public Station apply(CharSequence charSequence) {
-                return Stations.lookup(charSequence.toString());
-            }
-        }), new Predicate<Station>() {
-
-            @Override
-            public boolean apply(Station station)
+        final List<Station> result = new ArrayList<>();
+        for (String favourite : favourites)
+        {
+            Station station = Stations.lookup(favourite);
+            if (station.fullName() != null)
             {
-                return station.fullName() != null;
+                result.add(station);
             }
-        }));
+        }
+
+        return result;
     }
 
     public static void save(SharedPreferences preferences) {

@@ -7,7 +7,6 @@ import android.widget.TextView;
 import net.digihippo.ltt.Anywhere;
 import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
-import net.digihippo.ltt.android.Favourites;
 
 public final class StationView {
 

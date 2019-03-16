@@ -13,14 +13,20 @@ public class LdbLiveTrainsService implements DepartureBoardService
         new AndroidTrainService("dcfa2a36-cb60-4e03-9264-c9544446945f");
 
     @Override
+    public DepartureBoard boardFor(Station fromStation) throws Exception
+    {
+        return boardFor(fromStation, null);
+    }
+
+    @Override
     public DepartureBoard boardFor(
         Station fromStation,
-        Optional<Station> toStation) throws Exception
+        Station toStation) throws Exception
     {
-        AndroidTrainService.Response response = androidTrainService.fetchTrains(
-            fromStation.threeLetterCode(),
-            toStation.isPresent() ? toStation.get().threeLetterCode() : null);
-
+        AndroidTrainService.Response response =
+            androidTrainService.fetchTrains(
+                fromStation.threeLetterCode(),
+                toStation == null ? null : toStation.threeLetterCode());
 
         final List<DepartingTrain> trains = new ArrayList<>();
         for (AndroidTrainService.Service service : response.services)
