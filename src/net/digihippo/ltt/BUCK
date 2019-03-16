@@ -2,8 +2,7 @@ android_library(
   name = 'live-trains-api',
   srcs = glob(['*.java']),
   deps = [
-    '//:jodatime',
-    '//:ksoap',
+    '//:jodatime'
   ],
   visibility = [ 'PUBLIC' ],
 )
