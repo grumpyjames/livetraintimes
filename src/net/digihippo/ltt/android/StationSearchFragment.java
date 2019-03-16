@@ -11,14 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import net.digihippo.ltt.FavouriteListener;
-import net.digihippo.ltt.Station;
-import net.digihippo.ltt.StationIndex;
-import net.digihippo.ltt.Stations;
+import net.digihippo.ltt.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.copyOf;
@@ -35,7 +30,7 @@ public class StationSearchFragment extends Fragment implements FavouriteListener
         state = args;
     }
 
-    public void initialize(Context context) {
+    private void initialize(Context context) {
         final StationAdapter adapter =
                 new StationAdapter(
                         context,
@@ -48,26 +43,21 @@ public class StationSearchFragment extends Fragment implements FavouriteListener
     }
 
     private StationIndex<Station> buildStationIndex() {
-        try {
-            //noinspection unchecked
-            return StationIndex.parse(
-                    Stations.allStations(),
-                    new Function<Station, String>() {
-                        @Override
-                        public String apply(Station station) {
-                            return station.fullName();
-                        }
-                    },
-                    new Function<Station, String>() {
-                        @Override
-                        public String apply(Station station) {
-                            return station.threeLetterCode();
-                        }
+        return StationIndex.parse(
+                Stations.allStations(),
+                new Function<Station, String>() {
+                    @Override
+                    public String apply(Station station) {
+                        return station.fullName();
                     }
-            );
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+                },
+                new Function<Station, String>() {
+                    @Override
+                    public String apply(Station station) {
+                        return station.threeLetterCode();
+                    }
+                }
+        );
     }
 
     @Override

@@ -1,11 +1,12 @@
 package net.digihippo.ltt;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
-import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class StationIndex<T>
 {
@@ -13,7 +14,7 @@ public class StationIndex<T>
     private final Function<T, String> toString;
     private final Function<T, String>[] canonicalPrefixes;
 
-    public StationIndex(
+    private StationIndex(
         Map<String, Set<T>> structure,
         Function<T, String> toString,
         Function<T, String>[] canonicalPrefixes)
@@ -34,33 +35,37 @@ public class StationIndex<T>
         {
             return Collections.emptyList();
         }
-        return Iterables.filter(set, new Predicate<T>()
+
+        final List<T> result = new ArrayList<>();
+        for (T s : set)
         {
-            @Override
-            public boolean apply(T s)
+            boolean withinToString = toString.apply(s).toLowerCase().contains(lowerCaseExpr);
+            if (!withinToString)
             {
-                boolean withinToString = toString.apply(s).toLowerCase().contains(lowerCaseExpr);
-                if (!withinToString)
+                for (Function<T, String> canonicalPrefix : canonicalPrefixes)
                 {
-                    for (Function<T, String> canonicalPrefix : canonicalPrefixes)
+                    if (canonicalPrefix.apply(s).toLowerCase().equals(lowerCaseExpr))
                     {
-                        if (canonicalPrefix.apply(s).toLowerCase().equals(lowerCaseExpr))
-                        {
-                            return true;
-                        }
+                        result.add(s);
+                        break;
                     }
                 }
-                return withinToString;
             }
-        });
+            else
+            {
+                result.add(s);
+            }
+        }
+        return result;
     }
 
+    @SafeVarargs
     public static <T> StationIndex<T> parse(
         final Iterable<T> expressions,
         final Function<T, String> toString,
-        final Function<T, String>... canonicalPrefixes) throws UnsupportedEncodingException
+        final Function<T, String>... canonicalPrefixes)
     {
-        final Builder<T> builder = new Builder<T>(toString, canonicalPrefixes);
+        final Builder<T> builder = new Builder<>(toString, canonicalPrefixes);
         final char[] prefix = new char[3];
         for (T expression : expressions)
         {
@@ -113,11 +118,11 @@ public class StationIndex<T>
 
     private static class Builder<T>
     {
-        private final Map<String, Set<T>> structure = new HashMap<String, Set<T>>();
+        private final Map<String, Set<T>> structure = new HashMap<>();
         private final Function<T, String> toString;
         private final Function<T, String>[] canonicalPrefixes;
 
-        public Builder(
+        Builder(
             Function<T, String> toString,
             Function<T, String>[] canonicalPrefixes)
         {
@@ -125,15 +130,14 @@ public class StationIndex<T>
             this.canonicalPrefixes = canonicalPrefixes;
         }
 
-        public void prefixFound(char[] prefix, T expression)
+        void prefixFound(char[] prefix, T expression)
         {
             String prefixStr = new String(prefix);
-            @SuppressWarnings("unchecked")
             Set<T> set =
                 structure.get(prefixStr);
             if (set == null)
             {
-                HashSet<T> hashSet = new HashSet<T>();
+                HashSet<T> hashSet = new HashSet<>();
                 hashSet.add(expression);
                 structure.put(prefixStr, hashSet);
             }
@@ -143,9 +147,9 @@ public class StationIndex<T>
             }
         }
 
-        public StationIndex<T> build()
+        StationIndex<T> build()
         {
-            return new StationIndex<T>(
+            return new StationIndex<>(
                 structure,
                 toString,
                 canonicalPrefixes);
