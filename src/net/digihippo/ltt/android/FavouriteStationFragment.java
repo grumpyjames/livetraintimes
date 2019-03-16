@@ -52,7 +52,7 @@ public class FavouriteStationFragment extends Fragment implements FavouriteListe
     }
 
     private void resetAdapter() {
-        final List<Station> stations = new ArrayList<Station>(favourites.size());
+        final List<Station> stations = new ArrayList<>(favourites.size());
         Collections.sort(stations, new Comparator<Station>() {
             @Override
             public int compare(Station s1, Station s2) {
