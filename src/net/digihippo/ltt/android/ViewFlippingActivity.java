@@ -11,14 +11,14 @@ import android.view.View;
 import com.astuetz.viewpager.extensions.FixedTabsView;
 import com.astuetz.viewpager.extensions.TabsAdapter;
 import com.astuetz.viewpager.extensions.ViewPagerTabButton;
-import com.google.common.collect.Lists;
 import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewFlippingActivity extends FragmentActivity implements FavouriteListener {
-    private List<Fragment> fragments = Lists.newArrayList();
+    private List<Fragment> fragments = new ArrayList<>();
     private static final String[] titles = {"Favourites", "Search"};
     private FavouriteStationFragment favouriteFragment;
 

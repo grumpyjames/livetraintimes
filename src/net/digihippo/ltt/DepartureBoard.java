@@ -1,13 +1,15 @@
 package net.digihippo.ltt;
 
-public class DepartureBoard {
-    private final Iterable<DepartingTrain> departingTrains;
+import java.util.List;
 
-    public DepartureBoard(Iterable<DepartingTrain> departingTrains) {
+public class DepartureBoard {
+    private final List<DepartingTrain> departingTrains;
+
+    DepartureBoard(List<DepartingTrain> departingTrains) {
         this.departingTrains = departingTrains;
     }
 
-    public Iterable<? extends DepartingTrain> departingTrains() {
+    public List<DepartingTrain> departingTrains() {
         return departingTrains;
     }
 }

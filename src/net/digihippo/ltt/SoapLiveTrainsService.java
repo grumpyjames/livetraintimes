@@ -122,7 +122,7 @@ public class SoapLiveTrainsService implements DepartureBoardService {
     }
 
     private DepartureBoard toDepartureBoard(final WWHStationBoardWithDetails wwhStationBoard) {
-        return new DepartureBoard(transform(wwhStationBoard.trainServices, ExtractDepartingTrain));
+        return new DepartureBoard(copyOf(transform(wwhStationBoard.trainServices, ExtractDepartingTrain)));
     }
 
     private static ServiceDetails toServiceDetails(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {

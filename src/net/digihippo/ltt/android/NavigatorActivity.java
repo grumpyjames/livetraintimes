@@ -6,8 +6,11 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import com.google.common.collect.ImmutableSet;
 import net.digihippo.ltt.*;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NavigatorActivity extends Activity implements FavouriteListener {
     private static final String CHOICE_ID = "choiceId";
@@ -15,8 +18,8 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private static final String CHOICE_ONE = "choiceOne";
     private static final String CHOICE_TWO = "choiceTwo";
 
-    private final ImmutableSet<Integer> typeIds =
-            ImmutableSet.of(R.id.departures, R.id.fastest);
+    private final Set<Integer> typeIds =
+        Collections.unmodifiableSet(new HashSet<Integer>(R.id.departures, R.id.fastest));
 
     private NavigatorState navigatorState = new NavigatorState();
 

@@ -13,9 +13,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import net.digihippo.ltt.*;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
@@ -25,6 +22,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShowTrainsActivity extends Activity {
@@ -266,11 +264,10 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private void populateBoard(TableLayout table, DepartureBoard board) {
-        final List<DepartingTrain> trains = ImmutableList.copyOf(board.departingTrains());
         table.setColumnShrinkable(0, false);
         table.setColumnStretchable(1, true);
         table.setColumnShrinkable(2, false);
-        if (trains.size() > 0) {
+        if (board.departingTrains().size() > 0) {
             table.removeAllViews();
             table.addView(View.inflate(this, net.digihippo.ltt.R.layout.board_header, null));
 
@@ -402,13 +399,11 @@ public class ShowTrainsActivity extends Activity {
     }
 
     private String destinationText(final DepartingTrain departingTrain) {
-        List<String> endPoints =
-                Lists.transform(departingTrain.destinationList(), new Function<Station, String>() {
-                    @Override
-                    public String apply(Station station) {
-                        return station.fullName();
-                    }
-                });
+        final List<String> endPoints = new ArrayList<>();
+        for (Station station : departingTrain.destinationList())
+        {
+            endPoints.add(station.fullName());
+        }
         List<String> via = departingTrain.viaDestinations();
         String destinationText = "";
         boolean addComma = false;

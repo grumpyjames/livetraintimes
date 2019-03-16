@@ -11,7 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import net.digihippo.ltt.BadTrainState;
 import net.digihippo.ltt.CallingPoint;
 import net.digihippo.ltt.Consumer;
@@ -65,9 +64,11 @@ public class ShowDetailsActivity extends Activity {
             final float weight = 1F / ((float) portions.size());
 
             addTextView(linearLayout, last(masterCallingPoints).station.fullName(), onClickListener, true, weight);
-            for (List<CallingPoint> branchCallingPoints : Iterables.skip(portions, 1)) {
+
+            for (List<CallingPoint> branchCallingPoints : portions.subList(1, portions.size())) {
                 addTextView(linearLayout, last(branchCallingPoints).station.fullName(), onClickListener, false, weight);
             }
+
         } else {
             mainHeaderText.setText("This train calls at:");
             header.removeView(secondaryHeaderText);
