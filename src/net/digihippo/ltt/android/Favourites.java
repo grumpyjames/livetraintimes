@@ -1,8 +1,7 @@
 package net.digihippo.ltt.android;
 
 import android.content.SharedPreferences;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
+import android.text.TextUtils;
 import net.digihippo.ltt.Anywhere;
 import net.digihippo.ltt.Station;
 import net.digihippo.ltt.Stations;
@@ -58,7 +57,7 @@ public final class Favourites implements Serializable {
     public static void deserializeFrom(SharedPreferences preferences) {
         addFavourites(
             deserializeFavouritesFrom(
-                Splitter.on(",").omitEmptyStrings().split(preferences.getString(FAVOURITES_KEY, ""))));
+                TextUtils.split(SEPARATOR, preferences.getString(FAVOURITES_KEY, ""))));
     }
 
     private static void addFavourites(List<Station> stations) {
@@ -66,7 +65,7 @@ public final class Favourites implements Serializable {
             Favourites.toggleFavourite(station, true);
     }
 
-    private static List<Station> deserializeFavouritesFrom(Iterable<String> favourites) {
+    private static List<Station> deserializeFavouritesFrom(String[] favourites) {
         final List<Station> result = new ArrayList<>();
         for (String favourite : favourites)
         {
@@ -82,7 +81,7 @@ public final class Favourites implements Serializable {
 
     public static void save(SharedPreferences preferences) {
         final SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(FAVOURITES_KEY, Joiner.on(SEPARATOR).join(currentFavouritesAsStrings()));
+        editor.putString(FAVOURITES_KEY, TextUtils.join(SEPARATOR, currentFavouritesAsStrings()));
 
         editor.commit();
     }

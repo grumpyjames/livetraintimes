@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
-import com.google.common.collect.Lists;
-import net.digihippo.ltt.*;
+import net.digihippo.ltt.FavouriteListener;
+import net.digihippo.ltt.Function;
+import net.digihippo.ltt.Station;
+import net.digihippo.ltt.StationIndex;
+import net.digihippo.ltt.Stations;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.google.common.collect.ImmutableList.copyOf;
 
 public class StationSearchFragment extends Fragment implements FavouriteListener {
     private ListView resultView;
@@ -34,7 +36,7 @@ public class StationSearchFragment extends Fragment implements FavouriteListener
         final StationAdapter adapter =
                 new StationAdapter(
                         context,
-                        Lists.<Station>newArrayList(),
+                        new ArrayList<Station>(),
                         this.state,
                         this);
         resultView.setAdapter(adapter);
@@ -80,7 +82,7 @@ public class StationSearchFragment extends Fragment implements FavouriteListener
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 2) {
-                    final List<Station> results = copyOf(stationIndex.search(charSequence.toString()));
+                    final List<Station> results = stationIndex.search(charSequence.toString());
                     resultView.setAdapter(new StationAdapter(context, results, state, StationSearchFragment.this));
                 }
             }

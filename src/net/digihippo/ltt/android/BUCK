@@ -9,8 +9,6 @@ android_library(
   srcs = glob(['*.java']),
   deps = [
     ':res',
-    '//:guava',
-    '//:jsr-305',
     '//:jodatime',
     '//src/net/digihippo/ltt:live-trains-api',
     '//src/net/digihippo/ltt/ldb:ldb',

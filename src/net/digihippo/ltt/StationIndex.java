@@ -24,7 +24,7 @@ public class StationIndex<T>
         this.canonicalPrefixes = canonicalPrefixes;
     }
 
-    public Iterable<T> search(final String expression)
+    public List<T> search(final String expression)
     {
         if (expression.length() < 3) return Collections.emptyList();
         final String lowerCaseExpr = expression.toLowerCase();

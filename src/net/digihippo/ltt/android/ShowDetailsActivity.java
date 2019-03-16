@@ -1,8 +1,10 @@
 package net.digihippo.ltt.android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import com.google.common.base.Joiner;
 import net.digihippo.ltt.BadTrainState;
 import net.digihippo.ltt.CallingPoint;
 import net.digihippo.ltt.Consumer;
@@ -19,6 +20,7 @@ import net.digihippo.ltt.DepartingTrain;
 import java.util.List;
 
 public class ShowDetailsActivity extends Activity {
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,7 @@ public class ShowDetailsActivity extends Activity {
         final TextView secondaryHeaderText = (TextView) header.findViewById(net.digihippo.ltt.R.id.headerTextSecondary);
         if (departingTrain.destinationList().size() > 1) {
             mainHeaderText.setText(
-                    "This train splits at " + Joiner.on(", ").join(departingTrain.serviceDetails().splitPoints()));
+                    "This train splits at " + TextUtils.join(", ", departingTrain.serviceDetails().splitPoints()));
             secondaryHeaderText.setText("Show the portion to: ");
             final LinearLayout linearLayout = (LinearLayout) header.findViewById(net.digihippo.ltt.R.id.portions);
             final List<List<CallingPoint>> portions = departingTrain.serviceDetails().allParts();

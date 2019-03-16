@@ -9,9 +9,11 @@ import android.widget.ListView;
 import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
 
-import java.util.*;
-
-import static com.google.common.collect.ImmutableList.copyOf;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 public class FavouriteStationFragment extends Fragment implements FavouriteListener {
     private ListView stationView;
@@ -61,7 +63,7 @@ public class FavouriteStationFragment extends Fragment implements FavouriteListe
         stationView.setAdapter(
                 new StationAdapter(
                         getActivity(),
-                        copyOf(favourites),
+                        stations,
                         this.state,
                         this)
         );
