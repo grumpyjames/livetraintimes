@@ -5,7 +5,7 @@ import java.util.List;
 public class DepartureBoard {
     private final List<DepartingTrain> departingTrains;
 
-    DepartureBoard(List<DepartingTrain> departingTrains) {
+    public DepartureBoard(List<DepartingTrain> departingTrains) {
         this.departingTrains = departingTrains;
     }
 

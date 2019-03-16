@@ -13,6 +13,7 @@ android_library(
     '//:jsr-305',
     '//:jodatime',
     '//src/net/digihippo/ltt:live-trains-api',
+    '//src/net/digihippo/ltt/ldb:ldb',
     '//src/com/astuetz/viewpager/extensions:tabs',
     '//:android-support'
   ],

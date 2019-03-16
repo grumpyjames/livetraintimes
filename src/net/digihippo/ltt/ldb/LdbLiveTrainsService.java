@@ -1,11 +1,15 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.ldb;
 
-import com.google.common.base.Optional;
+import net.digihippo.ltt.*;
 import net.digihippo.ltt.ldb.AndroidTrainService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import static net.digihippo.ltt.SoapLiveTrainsService.infer;
+import static net.digihippo.ltt.DepartureTimes.infer;
 
 public class LdbLiveTrainsService implements DepartureBoardService
 {

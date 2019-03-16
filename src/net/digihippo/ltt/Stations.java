@@ -1,36 +1,20 @@
 package net.digihippo.ltt;
 
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public final class Stations {
     public static Iterable<Station> allStations() {
-        return Iterables.unmodifiableIterable(Iterables.transform(allReverseStations.entrySet(),
-                new Function<Map.Entry<String, String>, Station>() {
-            @Override
-            public Station apply(Map.Entry<String, String> input) {
-                return new BasicStation(input.getValue(), input.getKey());
-            }
-        }));
-    }
+        final List<Station> stations = new ArrayList<>(allReverseStations.size());
+        for (Map.Entry<String, String> entry : allReverseStations.entrySet())
+        {
+            stations.add(new BasicStation(entry.getValue(), entry.getKey()));
+        }
 
-    public static List<Station> find(final String searchString) {
-        final String lowerCaseSearch = searchString.toLowerCase();
-        final String upperCaseSearch = searchString.toUpperCase();
-        return ImmutableList.copyOf(Iterables.filter(allStations(), new Predicate<Station>() {
-            @Override
-            public boolean apply(Station station) {
-                return station.threeLetterCode().startsWith(upperCaseSearch)
-                        || station.fullName().toLowerCase().contains(lowerCaseSearch);
-            }
-        }));
+        return stations;
     }
 
     public static Station lookup(String threeLetterCode) {
@@ -39,12 +23,16 @@ public final class Stations {
 
     public static Station reverseLookup(String stationFullName) {
         String threeLetterCode = allReverseStations.get(stationFullName);
-        Preconditions.checkNotNull(threeLetterCode, "How did we get to a full name that doesn't lookup?");
+        if (threeLetterCode == null)
+        {
+            throw new IllegalStateException(
+                "How did we get to a full name that doesn't lookup? Name was " + stationFullName);
+        }
         return new BasicStation(threeLetterCode, stationFullName);
     }
 
-    private static Map<String, String> allStations = Maps.newHashMap();
-    private static Map<String, String> allReverseStations = Maps.newTreeMap();
+    private static Map<String, String> allStations = new HashMap<>();
+    private static Map<String, String> allReverseStations = new TreeMap<>();
 
     static {
         allStations.put("ABW","Abbey Wood");

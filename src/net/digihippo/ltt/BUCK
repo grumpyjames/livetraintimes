@@ -2,10 +2,6 @@ android_library(
   name = 'live-trains-api',
   srcs = glob(['*.java']),
   deps = [
-    '//src/net/digihippo/ltt/soap:soap-trains',
-    '//src/net/digihippo/ltt/ldb:ldb',
-    '//:guava',
-    '//:jsr-305',
     '//:jodatime',
     '//:ksoap',
   ],

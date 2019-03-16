@@ -13,7 +13,7 @@ public class DepartingTrain implements Serializable {
     private final String scheduledTime;
     private final boolean onTime;
 
-    DepartingTrain(
+    public DepartingTrain(
         boolean isCircularRoute,
         List<Station> destinations,
         List<String> viaDestinations,

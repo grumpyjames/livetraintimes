@@ -1,4 +1,4 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.soap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -8,22 +8,21 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.digihippo.ltt.soap.*;
+import net.digihippo.ltt.*;
 
 import java.util.Iterator;
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Iterables.*;
+import static net.digihippo.ltt.DepartureTimes.infer;
 
 public class SoapLiveTrainsService implements DepartureBoardService {
     public static DepartureBoardService departureBoardService() {
-//        final WWHLDBServiceSoap wwhldbServiceSoap = new WWHLDBServiceSoap();
-//
-//        final WWHAccessToken accessToken = new WWHAccessToken();
-//        accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
+        final WWHLDBServiceSoap wwhldbServiceSoap = new WWHLDBServiceSoap();
 
-        return new LdbLiveTrainsService();
+        final WWHAccessToken accessToken = new WWHAccessToken();
+        accessToken.TokenValue = "dcfa2a36-cb60-4e03-9264-c9544446945f";
+
+        return new SoapLiveTrainsService(wwhldbServiceSoap, accessToken);
     }
     private static final Function<WWHServiceLocation, String> ExtractViaDestination =
             new Function<WWHServiceLocation, String>() {
@@ -45,10 +44,10 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                     boolean isCircularRoute =
                             wwhServiceItem.isCircularRoute == null ? false : wwhServiceItem.isCircularRoute;
                     ImmutableList<Station> destinations =
-                            copyOf(transform(wwhServiceItem.destination, ExtractLocationName));
-                    ImmutableList<String> viaDestinations = copyOf(
-                            filter(
-                                transform(wwhServiceItem.destination, ExtractViaDestination),
+                            ImmutableList.copyOf(Iterables.transform(wwhServiceItem.destination, ExtractLocationName));
+                    ImmutableList<String> viaDestinations = ImmutableList.copyOf(
+                            Iterables.filter(
+                                Iterables.transform(wwhServiceItem.destination, ExtractViaDestination),
                                 Predicates.notNull()));
                     return new DepartingTrain(
                             isCircularRoute,
@@ -62,23 +61,6 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                         );
                 }
             };
-
-    public static Either<BadTrainState, String> infer(String etd, String std) {
-        // Three cases:
-        // On time => scheduled time = estimated time
-        // Delayed or Cancelled => exactly that
-        // Otherwise, etd is actually a usable time string.
-        if ("On time".equals(etd)) {
-            return Either.right(std);
-        }
-        for (BadTrainState badTrainState: BadTrainState.values()) {
-            if (badTrainState.name().equals(etd)) {
-                return Either.left(badTrainState);
-            }
-        }
-
-        return Either.right(etd);
-    }
 
     private final WWHLDBServiceSoap wwhldbServiceSoap;
     private final WWHAccessToken accessToken;
@@ -103,26 +85,23 @@ public class SoapLiveTrainsService implements DepartureBoardService {
 
     }
 
-    @Override
     public DepartureBoard boardFor(Station fromStation) throws Exception
     {
         return boardFor(fromStation, Optional.<Station>absent());
     }
 
-    @Override
     public DepartureBoard boardFor(Station fromStation, Station toStation) throws Exception
     {
         return boardFor(fromStation, Optional.of(toStation));
     }
 
-    @Override
     public void httpsIsBroken()
     {
         wwhldbServiceSoap.httpsIsBroken();
     }
 
     private DepartureBoard toDepartureBoard(final WWHStationBoardWithDetails wwhStationBoard) {
-        return new DepartureBoard(copyOf(transform(wwhStationBoard.trainServices, ExtractDepartingTrain)));
+        return new DepartureBoard(ImmutableList.copyOf(Iterables.transform(wwhStationBoard.trainServices, ExtractDepartingTrain)));
     }
 
     private static ServiceDetails toServiceDetails(WWHArrayOfArrayOfCallingPoints wwhServiceDetails) {
@@ -162,10 +141,10 @@ public class SoapLiveTrainsService implements DepartureBoardService {
 
         return new ServiceDetails(
                 forkLocations.build(),
-                copyOf(
-                        concat(
+                ImmutableList.copyOf(
+                        Iterables.concat(
                                 ImmutableList.<List<CallingPoint>>of(callingPoints.build()),
-                                transform(forks,
+                                Iterables.transform(forks,
                                         new Function<CallingPointBuilder, List<CallingPoint>>() {
                                             @Override
                                             public List<CallingPoint> apply(CallingPointBuilder cpb) {

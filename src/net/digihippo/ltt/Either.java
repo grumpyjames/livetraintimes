@@ -1,7 +1,5 @@
 package net.digihippo.ltt;
 
-import com.google.common.base.Function;
-
 import java.io.Serializable;
 
 public abstract class Either<A,B> implements Serializable {
@@ -10,12 +8,12 @@ public abstract class Either<A,B> implements Serializable {
 
     private Either() {}
 
-    public static <A, B> Either<A, B> left(final A a) {
-        return new Left<A, B>(a);
+    static <A, B> Either<A, B> left(final A a) {
+        return new Left<>(a);
     }
 
-    public static <A, B> Either<A, B> right(final B b) {
-        return new Right<A, B>(b);
+    static <A, B> Either<A, B> right(final B b) {
+        return new Right<>(b);
     }
 
     private static final class Left<A, B> extends Either<A, B> {

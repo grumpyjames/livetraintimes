@@ -3,6 +3,10 @@ java_library(
   srcs = glob(['*.java']),
   deps = [
     '//:ksoap',
+    '//:guava',
+    '//:jsr-305',
+
+    '//src/net/digihippo/ltt:live-trains-api'
   ],
   visibility = [ 'PUBLIC' ],
 )

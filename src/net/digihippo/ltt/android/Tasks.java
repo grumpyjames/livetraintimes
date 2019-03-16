@@ -1,7 +1,11 @@
 package net.digihippo.ltt.android;
 
 import android.os.AsyncTask;
-import net.digihippo.ltt.*;
+import net.digihippo.ltt.Anywhere;
+import net.digihippo.ltt.DepartureBoard;
+import net.digihippo.ltt.DepartureBoardService;
+import net.digihippo.ltt.Station;
+import net.digihippo.ltt.ldb.LdbLiveTrainsService;
 import org.joda.time.Instant;
 
 import java.io.IOException;
@@ -10,7 +14,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 final class Tasks implements Serializable {
-    private static final DepartureBoardService service = SoapLiveTrainsService.departureBoardService();
+    private static final DepartureBoardService service = new LdbLiveTrainsService();
 
     static class BoardOrError {
         private final DepartureBoard board;

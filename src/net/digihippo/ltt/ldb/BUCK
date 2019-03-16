@@ -1,6 +1,8 @@
 android_library(
   name = 'ldb',
   srcs = glob(['*.java']),
-  deps = [],
+  deps = [
+    '//src/net/digihippo/ltt:live-trains-api',
+  ],
   visibility = ['PUBLIC']
 )
