@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.astuetz.viewpager.extensions.FixedTabsView;
@@ -30,6 +31,7 @@ public class ViewFlippingActivity extends FragmentActivity implements FavouriteL
         Bundle extras = getIntent().getExtras();
 
         final SharedPreferences preferences = getPreferences(0);
+        Log.w("Favourites", "Loading favourites");
         Favourites.deserializeFrom(preferences);
 
         favouriteFragment = new FavouriteStationFragment();

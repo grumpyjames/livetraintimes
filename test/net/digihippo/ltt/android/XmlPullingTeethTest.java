@@ -1,6 +1,9 @@
 package net.digihippo.ltt.android;
 
 import android.util.Xml;
+import net.digihippo.ltt.ldb.AndroidTrainService;
+import net.digihippo.ltt.ldb.LdbLiveTrainsService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -8,7 +11,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static net.digihippo.ltt.ldb.AndroidTrainService.readResponse;
 
@@ -1043,5 +1048,31 @@ public class XmlPullingTeethTest
         parser.setInput(new ByteArrayInputStream(xmlResponse.getBytes("UTF-8")), "UTF-8");
         parser.nextTag();
         System.out.println(readResponse(parser));
+    }
+
+    @Test
+    @Ignore // handy to capture xml for weird things.
+    public void recordRequest() throws IOException, XmlPullParserException
+    {
+        InputStream inputStream = AndroidTrainService
+            .makeBoardRequest(
+                "https",
+                LdbLiveTrainsService.TOKEN,
+                "VIC",
+                null
+            );
+        final byte[] buffer = new byte[2048];
+        int read = 1;
+        try (final FileOutputStream fileOutputStream = new FileOutputStream("/tmp/response"))
+        {
+            while (read > 0)
+            {
+                read = inputStream.read(buffer);
+                if (read > 0)
+                {
+                    fileOutputStream.write(buffer, 0, read);
+                }
+            }
+        }
     }
 }

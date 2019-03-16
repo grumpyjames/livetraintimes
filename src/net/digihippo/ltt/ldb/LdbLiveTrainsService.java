@@ -13,8 +13,9 @@ import static net.digihippo.ltt.DepartureTimes.infer;
 
 public class LdbLiveTrainsService implements DepartureBoardService
 {
+    public static final String TOKEN = "dcfa2a36-cb60-4e03-9264-c9544446945f";
     private final AndroidTrainService androidTrainService =
-        new AndroidTrainService("dcfa2a36-cb60-4e03-9264-c9544446945f");
+        new AndroidTrainService(TOKEN);
 
     @Override
     public DepartureBoard boardFor(Station fromStation) throws Exception

@@ -20,13 +20,25 @@ public class AndroidTrainService
     private static final String UTF_8 = "UTF-8";
     private String protocol = "https";
 
-    public AndroidTrainService(String token)
+    AndroidTrainService(String token)
     {
         this.token = token;
     }
 
-    public Response fetchTrains(final String fromCrs, final String toCrs)
+    Response fetchTrains(final String fromCrs, final String toCrs)
         throws IOException, XmlPullParserException
+    {
+        InputStream inputStream = makeBoardRequest(protocol, token, fromCrs, toCrs);
+
+        XmlPullParser parser = Xml.newPullParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        parser.setInput(inputStream, UTF_8);
+        parser.nextTag();
+        return readResponse(parser);
+    }
+
+    public static InputStream makeBoardRequest(
+        String protocol, String token, String fromCrs, String toCrs) throws IOException
     {
         URL url = new URL(protocol + "://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb7.asmx");
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -54,13 +66,7 @@ public class AndroidTrainService
         urlConnection.setDoOutput(true);
         urlConnection.getOutputStream().write(content.getBytes(UTF_8));
 
-        InputStream inputStream = urlConnection.getInputStream();
-
-        XmlPullParser parser = Xml.newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-        parser.setInput(inputStream, UTF_8);
-        parser.nextTag();
-        return readResponse(parser);
+        return urlConnection.getInputStream();
     }
 
     public void httpIsBroken()
@@ -165,7 +171,7 @@ public class AndroidTrainService
     public static final class Destination
     {
         public final String crs;
-        public final  String via;
+        public final String via;
 
         public Destination(String crs,  String via)
         {
@@ -191,7 +197,7 @@ public class AndroidTrainService
         public final String serviceType;
         public final String serviceID;
         public final List<List<CallingPoint>> callingPointLists;
-        public final  String platform;
+        public final String platform;
         public final boolean isCircularRoute;
         public final List<Destination> destinations;
 

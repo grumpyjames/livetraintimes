@@ -2,6 +2,7 @@ package net.digihippo.ltt.android;
 
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 import net.digihippo.ltt.Anywhere;
 import net.digihippo.ltt.Station;
 import net.digihippo.ltt.Stations;
@@ -55,9 +56,11 @@ public final class Favourites implements Serializable {
     }
 
     public static void deserializeFrom(SharedPreferences preferences) {
+        String favouritesString = preferences.getString(FAVOURITES_KEY, "");
+        Log.w("Favourites", favouritesString);
         addFavourites(
             deserializeFavouritesFrom(
-                TextUtils.split(SEPARATOR, preferences.getString(FAVOURITES_KEY, ""))));
+                TextUtils.split(SEPARATOR, favouritesString)));
     }
 
     private static void addFavourites(List<Station> stations) {

@@ -59,6 +59,7 @@ public class FavouriteStationFragment extends Fragment implements FavouriteListe
                 return s1.fullName().compareTo(s2.fullName());
             }
         });
+        stations.addAll(favourites);
 
         stationView.setAdapter(
                 new StationAdapter(
