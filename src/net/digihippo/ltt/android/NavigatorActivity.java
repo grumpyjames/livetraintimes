@@ -72,8 +72,27 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     private void attachButtonListeners() {
         findViewById(R.id.departures).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.Departing));
         findViewById(R.id.fastest).setOnClickListener(new ChangeTypeListener(NavigatorState.Type.FastestTrain));
-        findViewById(R.id.choice_one).findViewById(R.id.select_action).setOnClickListener(new SelectStationListener(CHOICE_ONE));
-        findViewById(R.id.choice_two).findViewById(R.id.select_action).setOnClickListener(new SelectStationListener(CHOICE_TWO));
+
+        findViewById(R.id.choice_one)
+            .findViewById(R.id.select_action)
+            .setOnClickListener(new SelectStationListener(CHOICE_ONE));
+        findViewById(R.id.choice_one)
+            .findViewById(R.id.label)
+            .setOnClickListener(new SelectStationListener(CHOICE_ONE));
+        findViewById(R.id.choice_one)
+            .findViewById(R.id.station_name)
+            .setOnClickListener(new SelectStationListener(CHOICE_ONE));
+
+        findViewById(R.id.choice_two)
+            .findViewById(R.id.select_action)
+            .setOnClickListener(new SelectStationListener(CHOICE_TWO));
+        findViewById(R.id.choice_two)
+            .findViewById(R.id.label)
+            .setOnClickListener(new SelectStationListener(CHOICE_TWO));
+        findViewById(R.id.choice_two)
+            .findViewById(R.id.station_name)
+            .setOnClickListener(new SelectStationListener(CHOICE_TWO));
+
         findViewById(R.id.reverse_direction).setOnClickListener(new ReverseDirectionListener());
         findViewById(R.id.go).setOnClickListener(new ShowTrainsListener());
     }
@@ -131,10 +150,12 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
         Station stationOne,
         Station stationTwo) {
         Station firstStation = stationOne == null ? Anywhere.INSTANCE : stationOne;
-        populateStationChoice(firstStation, findViewById(R.id.choice_one), "From");
+        populateStationChoice(
+            firstStation, findViewById(R.id.choice_one), "From", new SelectStationListener(CHOICE_ONE));
 
         Station secondStation = stationTwo == null ? Anywhere.INSTANCE : stationTwo;
-        populateStationChoice(secondStation, findViewById(R.id.choice_two), "To");
+        populateStationChoice(
+            secondStation, findViewById(R.id.choice_two), "To", new SelectStationListener(CHOICE_TWO));
     }
 
     private void readyToGo() {
@@ -151,11 +172,12 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
         findViewById(R.id.go).setEnabled(false);
     }
 
-    private void populateStationChoice(Station fromStation, View stationView, String labelText) {
+    private void populateStationChoice(
+        Station station, View stationView, String labelText, SelectStationListener selectStationListener) {
         TextView label = (TextView) stationView.findViewById(R.id.label);
         label.setText(labelText);
         label.setTextColor(getResources().getColor(R.color.lightgrey));
-        StationView.initialiseStationView(stationView, fromStation, new NoOpClickListener(), this);
+        StationView.initialiseStationView(stationView, station, selectStationListener, this);
     }
 
     @Override
