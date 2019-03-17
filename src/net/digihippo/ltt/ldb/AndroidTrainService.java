@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("CharsetObjectCanBeUsed")
@@ -114,7 +115,6 @@ public class AndroidTrainService
     public static Response readResponse(XmlPullParser parser)
         throws XmlPullParserException, IOException
     {
-
         String startTag = "Envelope";
         final List<String> entryTree = Arrays.asList(
             "Body", "GetDepBoardWithDetailsResponse", "GetStationBoardResult"
@@ -246,7 +246,7 @@ public class AndroidTrainService
         parser.require(XmlPullParser.START_TAG, null, "GetStationBoardResult");
 
         String platformAvailable = null;
-        List<Service> services = null;
+        List<Service> services = Collections.emptyList();
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -330,7 +330,7 @@ public class AndroidTrainService
         String serviceType = null;
         String serviceID = null;
         String platform = null;
-        List<List<CallingPoint>> callingPointLists = null;
+        List<List<CallingPoint>> callingPointLists = Collections.emptyList();
         boolean isCircularRoute = false;
         List<Destination> destinations = null;
         while (parser.next() != XmlPullParser.END_TAG) {
