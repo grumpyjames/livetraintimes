@@ -57,10 +57,9 @@ public final class Favourites implements Serializable {
 
     public static void deserializeFrom(SharedPreferences preferences) {
         String favouritesString = preferences.getString(FAVOURITES_KEY, "");
-        Log.w("Favourites", favouritesString);
         addFavourites(
             deserializeFavouritesFrom(
-                TextUtils.split(SEPARATOR, favouritesString)));
+                TextUtils.split(favouritesString, SEPARATOR)));
     }
 
     private static void addFavourites(List<Station> stations) {
@@ -78,7 +77,6 @@ public final class Favourites implements Serializable {
                 result.add(station);
             }
         }
-
         return result;
     }
 

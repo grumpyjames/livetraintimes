@@ -31,7 +31,6 @@ public class ViewFlippingActivity extends FragmentActivity implements FavouriteL
         Bundle extras = getIntent().getExtras();
 
         final SharedPreferences preferences = getPreferences(0);
-        Log.w("Favourites", "Loading favourites");
         Favourites.deserializeFrom(preferences);
 
         favouriteFragment = new FavouriteStationFragment();
