@@ -8,18 +8,11 @@ import android.view.View;
 import android.widget.TextView;
 import net.digihippo.ltt.*;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 public class NavigatorActivity extends Activity implements FavouriteListener {
     private static final String CHOICE_ID = "choiceId";
     static final String NAVIGATOR_STATE = "navigatorState";
     private static final String CHOICE_ONE = "choiceOne";
     private static final String CHOICE_TWO = "choiceTwo";
-
-    private final Set<Integer> typeIds =
-        Collections.unmodifiableSet(new HashSet<Integer>(R.id.departures, R.id.fastest));
 
     private NavigatorState navigatorState = new NavigatorState();
 
@@ -118,14 +111,20 @@ public class NavigatorActivity extends Activity implements FavouriteListener {
     }
 
     private void setSelectedType(int id) {
-        for (int typeId : typeIds) {
-            if (typeId != id)
-            {
-                ((TextView) findViewById(typeId)).setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-            }
+        if (R.id.departures == id)
+        {
+            ((TextView) findViewById(R.id.fastest))
+                .setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+            ((TextView) findViewById(R.id.departures))
+                .setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         }
-        TextView selected = (TextView) findViewById(id);
-        selected.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
+        else
+        {
+            ((TextView) findViewById(R.id.departures))
+                .setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+            ((TextView) findViewById(R.id.fastest))
+                .setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        }
     }
 
     private void renderCommon(
