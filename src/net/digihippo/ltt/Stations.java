@@ -1528,6 +1528,7 @@ public final class Stations {
         allStations.put("MST","Maesteg");
         allStations.put("MEW","Maesteg (Ewenny Road)");
         allStations.put("MAG","Maghull");
+        allStations.put("MNS","Maghull North");
         allStations.put("MDN","Maiden Newton");
         allStations.put("MAI","Maidenhead");
         allStations.put("MDB","Maidstone Barracks");
