@@ -32,14 +32,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal">
             <Button
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/swap_from_to"
                     android:id="@+id/reverse_direction"
                     android:layout_gravity="center_horizontal"/>
             <Button
-                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/go"
