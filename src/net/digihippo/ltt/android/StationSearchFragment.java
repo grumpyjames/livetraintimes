@@ -3,24 +3,20 @@ package net.digihippo.ltt.android;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
-import net.digihippo.ltt.FavouriteListener;
-import net.digihippo.ltt.Function;
-import net.digihippo.ltt.Station;
-import net.digihippo.ltt.StationIndex;
-import net.digihippo.ltt.Stations;
+import net.digihippo.ltt.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StationSearchFragment extends Fragment implements FavouriteListener {
+public class StationSearchFragment extends SelectableFragment implements FavouriteListener {
     private ListView resultView;
     private EditText editView;
     private Bundle state;
@@ -107,5 +103,18 @@ public class StationSearchFragment extends Fragment implements FavouriteListener
     @Override
     public void favouriteRemoved(Station station) {
         if (favouriteListener != null) favouriteListener.favouriteRemoved(station);
+    }
+
+    @Override
+    public void onSelected(boolean selected)
+    {
+        if (selected)
+        {
+            InputMethodManager imm =
+                (InputMethodManager) editView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            editView.requestFocus();
+
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

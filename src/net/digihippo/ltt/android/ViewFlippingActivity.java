@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.astuetz.viewpager.extensions.FixedTabsView;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewFlippingActivity extends FragmentActivity implements FavouriteListener {
-    private List<Fragment> fragments = new ArrayList<>();
+    private List<SelectableFragment> fragments = new ArrayList<>();
     private static final String[] titles = {"Favourites", "Search"};
     private FavouriteStationFragment favouriteFragment;
 
@@ -66,6 +65,30 @@ public class ViewFlippingActivity extends FragmentActivity implements FavouriteL
             }
         });
         fixedTabsView.setViewPager(pager);
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int i, float v, int i1)
+            {
+                fixedTabsView.onPageScrolled(i, v, i1);
+            }
+
+            @Override
+            public void onPageSelected(int i)
+            {
+                fixedTabsView.onPageSelected(i);
+                for (int j = 0; j < fragments.size(); j++)
+                {
+                     fragments.get(j).onSelected(j == i);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i)
+            {
+                fixedTabsView.onPageScrollStateChanged(i);
+            }
+        });
     }
 
     @Override
@@ -87,7 +110,7 @@ public class ViewFlippingActivity extends FragmentActivity implements FavouriteL
         Favourites.getFavourites().remove(station);
     }
 
-    private void addFragment(Fragment fragment, Bundle extras) {
+    private void addFragment(SelectableFragment fragment, Bundle extras) {
         fragments.add(fragment);
         fragment.setArguments(extras);
     }

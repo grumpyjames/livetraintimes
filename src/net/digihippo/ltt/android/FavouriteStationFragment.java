@@ -1,10 +1,12 @@
 package net.digihippo.ltt.android;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
@@ -15,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public class FavouriteStationFragment extends Fragment implements FavouriteListener {
+public class FavouriteStationFragment extends SelectableFragment implements FavouriteListener {
     private ListView stationView;
     private Bundle state;
     private Set<Station> favourites;
@@ -68,5 +70,16 @@ public class FavouriteStationFragment extends Fragment implements FavouriteListe
                         this.state,
                         this)
         );
+    }
+
+    @Override
+    public void onSelected(boolean selected)
+    {
+        if (selected)
+        {
+            InputMethodManager imm =
+                (InputMethodManager) stationView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(stationView.getWindowToken(), 0);
+        }
     }
 }
