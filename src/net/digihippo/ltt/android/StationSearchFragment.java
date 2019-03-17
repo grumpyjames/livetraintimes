@@ -16,7 +16,7 @@ import net.digihippo.ltt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StationSearchFragment extends SelectableFragment implements FavouriteListener {
+public class StationSearchFragment extends SelectableFragment implements FavouriteListener, Runnable {
     private ListView resultView;
     private EditText editView;
     private Bundle state;
@@ -34,7 +34,8 @@ public class StationSearchFragment extends SelectableFragment implements Favouri
                         context,
                         new ArrayList<Station>(),
                         this.state,
-                        this);
+                        this,
+                    this);
         resultView.setAdapter(adapter);
         stationIndex = buildStationIndex();
         attachEditListener(editView, resultView, context);
@@ -79,7 +80,13 @@ public class StationSearchFragment extends SelectableFragment implements Favouri
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 2) {
                     final List<Station> results = stationIndex.search(charSequence.toString());
-                    resultView.setAdapter(new StationAdapter(context, results, state, StationSearchFragment.this));
+                    resultView.setAdapter(
+                        new StationAdapter(
+                            context,
+                            results,
+                            state,
+                            StationSearchFragment.this,
+                            StationSearchFragment.this));
                 }
             }
 
@@ -116,5 +123,13 @@ public class StationSearchFragment extends SelectableFragment implements Favouri
 
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    @Override
+    public void run()
+    {
+        InputMethodManager imm =
+            (InputMethodManager) editView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editView.getWindowToken(), 0);
     }
 }

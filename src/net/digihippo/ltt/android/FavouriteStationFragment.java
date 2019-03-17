@@ -17,7 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public class FavouriteStationFragment extends SelectableFragment implements FavouriteListener {
+public class FavouriteStationFragment extends SelectableFragment implements FavouriteListener, Runnable
+{
     private ListView stationView;
     private Bundle state;
     private Set<Station> favourites;
@@ -65,10 +66,11 @@ public class FavouriteStationFragment extends SelectableFragment implements Favo
 
         stationView.setAdapter(
                 new StationAdapter(
-                        getActivity(),
-                        stations,
-                        this.state,
-                        this)
+                    getActivity(),
+                    stations,
+                    this.state,
+                    this,
+                    this)
         );
     }
 
@@ -81,5 +83,11 @@ public class FavouriteStationFragment extends SelectableFragment implements Favo
                 (InputMethodManager) stationView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(stationView.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void run()
+    {
+
     }
 }

@@ -19,17 +19,19 @@ class StationAdapter extends BaseAdapter {
     private final FavouriteListener favouriteListener;
     private final TextView.OnClickListener clickListener;
 
-    public StationAdapter(
-            final Context context,
-            final List<Station> stations,
-            final Bundle state,
-            final FavouriteListener favouriteListener) {
+    StationAdapter(
+        final Context context,
+        final List<Station> stations,
+        final Bundle state,
+        final FavouriteListener favouriteListener,
+        final Runnable preClick) {
         this.context = context;
         this.stations = stations;
         this.favouriteListener = favouriteListener;
         this.clickListener = new TextView.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preClick.run();
                 final Intent intent = new Intent(context, NavigatorActivity.class);
                 // Android 9 is less permissive of passing null to putExtras
                 if (state != null)
