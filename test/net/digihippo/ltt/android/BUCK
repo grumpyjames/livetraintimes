@@ -2,7 +2,7 @@ robolectric_test(
   name = 'argh',
   srcs = glob(['*.java']),
   vm_args = [
-    "-Drobolectric.dependency.dir=/Users/james/repos/livetraintimes/test/libs",
+    "-Drobolectric.dependency.dir=test/libs",
   ],
   deps = [
     '//src/net/digihippo/ltt/ldb:ldb',
