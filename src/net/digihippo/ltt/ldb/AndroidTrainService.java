@@ -41,7 +41,7 @@ public class AndroidTrainService
     public static InputStream makeBoardRequest(
         String protocol, String token, String fromCrs, String toCrs) throws IOException
     {
-        URL url = new URL(protocol + "://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb7.asmx");
+        URL url = new URL(protocol + "://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx");
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("POST");
         urlConnection.setRequestProperty(
@@ -57,7 +57,7 @@ public class AndroidTrainService
                 "        </n0:AccessToken>\n" +
                 "    </v:Header>\n" +
                 "    <v:Body>\n" +
-                "        <n1:GetDepBoardWithDetailsRequest xmlns:n1=\"http://thalesgroup.com/RTTI/2015-05-14/ldb/\">\n" +
+                "        <n1:GetDepBoardWithDetailsRequest xmlns:n1=\"http://thalesgroup.com/RTTI/2017-10-01/ldb/\">\n" +
                 "            <n1:numRows>20</n1:numRows>\n" +
                 "            <n1:crs>" + fromCrs + "</n1:crs>\n" +
                 (toCrs != null ? ("            <n1:filterCrs>" + toCrs + "</n1:filterCrs>\n") : "") +

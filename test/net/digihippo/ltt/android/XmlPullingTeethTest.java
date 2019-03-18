@@ -1056,9 +1056,9 @@ public class XmlPullingTeethTest
     {
         InputStream inputStream = AndroidTrainService
             .makeBoardRequest(
-                "https",
+                "http",
                 LdbLiveTrainsService.TOKEN,
-                "VIC",
+                "WAT",
                 null
             );
         final byte[] buffer = new byte[2048];
