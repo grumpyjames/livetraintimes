@@ -1,7 +1,6 @@
 package net.digihippo.ltt.ldb;
 
 import net.digihippo.ltt.*;
-import net.digihippo.ltt.ldb.AndroidTrainService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -97,7 +96,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
             }
 
             callingPoints.add(
-                CallingPoint.singlePoint(
+                new CallingPoint(
                     Stations.lookup(next.crs),
                     next.scheduledTime,
                     infer(next.expectedTime, next.scheduledTime)));
@@ -129,7 +128,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
             while (iterator.hasNext()) {
                 AndroidTrainService.CallingPoint next = iterator.next();
                 callingPoints.add(
-                    CallingPoint.singlePoint(
+                    new CallingPoint(
                         Stations.lookup(next.crs),
                         next.scheduledTime,
                         infer(next.expectedTime, next.scheduledTime)));
