@@ -1,7 +1,9 @@
 package net.digihippo.ltt.ldb;
 
+import android.annotation.SuppressLint;
 import net.digihippo.ltt.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,7 +50,11 @@ public class LdbLiveTrainsService implements DepartureBoardService
                 }
             }
 
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat format =
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
             trains.add(new DepartingTrain(
+                format.parse(service.requestedAt),
                 isCircularRoute,
                 destinations,
                 viaDestinations,

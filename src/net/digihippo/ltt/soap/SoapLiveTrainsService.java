@@ -10,6 +10,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.digihippo.ltt.*;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,15 +51,16 @@ public class SoapLiveTrainsService implements DepartureBoardService {
                                 Iterables.transform(wwhServiceItem.destination, ExtractViaDestination),
                                 Predicates.notNull()));
                     return new DepartingTrain(
-                            isCircularRoute,
-                            destinations,
-                            viaDestinations,
-                            wwhServiceItem.platform,
-                            toServiceDetails(wwhServiceItem.subsequentCallingPoints),
-                            infer(wwhServiceItem.etd, wwhServiceItem.std),
-                            wwhServiceItem.std,
-                            "On time".equals(wwhServiceItem.etd)
-                        );
+                        new Date() /* wrong, but haven't got the root wwh thing in scope */,
+                        isCircularRoute,
+                        destinations,
+                        viaDestinations,
+                        wwhServiceItem.platform,
+                        toServiceDetails(wwhServiceItem.subsequentCallingPoints),
+                        infer(wwhServiceItem.etd, wwhServiceItem.std),
+                        wwhServiceItem.std,
+                        "On time".equals(wwhServiceItem.etd)
+                    );
                 }
             };
 

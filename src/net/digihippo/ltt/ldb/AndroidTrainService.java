@@ -191,6 +191,7 @@ public class AndroidTrainService
 
     public static final class Service
     {
+        public final String requestedAt;
         public final String std;
         public final String etd;
         public final String operator;
@@ -202,6 +203,7 @@ public class AndroidTrainService
         public final List<Destination> destinations;
 
         Service(
+            String requestedAt,
             String std,
             String etd,
             String operator,
@@ -212,6 +214,7 @@ public class AndroidTrainService
             boolean isCircularRoute,
             List<Destination> destinations)
         {
+            this.requestedAt = requestedAt;
 
             this.std = std;
             this.etd = etd;
@@ -324,6 +327,7 @@ public class AndroidTrainService
     {
         parser.require(XmlPullParser.START_TAG, null, "service");
 
+        String requestedAt = null;
         String std = null;
         String etd = null;
         String operator = null;
@@ -341,6 +345,9 @@ public class AndroidTrainService
 
             switch (name)
             {
+                case "generatedAt":
+                    requestedAt = readTextField(parser, "generatedAt");
+                    break;
                 case "etd":
                     etd = readTextField(parser, "etd");
                     break;
@@ -377,6 +384,7 @@ public class AndroidTrainService
         }
 
         return new Service(
+            requestedAt,
             std, etd, operator, serviceType,
             serviceID, callingPointLists, platform, isCircularRoute,
             destinations);

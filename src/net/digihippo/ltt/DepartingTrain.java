@@ -1,9 +1,11 @@
 package net.digihippo.ltt;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class DepartingTrain implements Serializable {
+    private final Date requestedAt;
     private final boolean isCircularRoute;
     private final List<Station> destinations;
     private final List<String> viaDestinations;
@@ -14,6 +16,7 @@ public class DepartingTrain implements Serializable {
     private final boolean onTime;
 
     public DepartingTrain(
+        Date requestedAt,
         boolean isCircularRoute,
         List<Station> destinations,
         List<String> viaDestinations,
@@ -23,6 +26,7 @@ public class DepartingTrain implements Serializable {
         String scheduledTime,
         boolean onTime)
     {
+        this.requestedAt = requestedAt;
         this.isCircularRoute = isCircularRoute;
         this.destinations = destinations;
         this.viaDestinations = viaDestinations;
@@ -67,4 +71,8 @@ public class DepartingTrain implements Serializable {
         return onTime;
     }
 
+    public Date getArrivalTime(Station atStation)
+    {
+        return serviceDetails.getArrivalTime(atStation, requestedAt);
+    }
 }

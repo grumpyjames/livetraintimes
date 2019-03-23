@@ -1,6 +1,7 @@
 package net.digihippo.ltt;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public abstract class Either<A,B> implements Serializable {
     public abstract <T> T either(final Function<A, T> onA, final Function<B, T> onB);
@@ -14,6 +15,44 @@ public abstract class Either<A,B> implements Serializable {
 
     static <A, B> Either<A, B> right(final B b) {
         return new Right<>(b);
+    }
+
+    boolean isRight()
+    {
+        return either(new Function<A, Boolean>()
+        {
+            @Override
+            public Boolean apply(A a)
+            {
+                return false;
+            }
+        }, new Function<B, Boolean>()
+        {
+            @Override
+            public Boolean apply(B b)
+            {
+                return true;
+            }
+        });
+    }
+
+    B unwrap()
+    {
+        return either(new Function<A, B>()
+        {
+            @Override
+            public B apply(A a)
+            {
+                throw new IllegalStateException();
+            }
+        }, new Function<B, B>()
+        {
+            @Override
+            public B apply(B b)
+            {
+                return b;
+            }
+        });
     }
 
     private static final class Left<A, B> extends Either<A, B> {
