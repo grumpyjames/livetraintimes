@@ -252,65 +252,75 @@ public class ShowTrainsActivity extends Activity {
 
 
             for (final DepartingTrain train: board.departingTrains()) {
-                final View row = View.inflate(this, net.digihippo.ltt.R.layout.board_entry, null);
-
-                final TextView due = (TextView) row.findViewById(net.digihippo.ltt.R.id.due);
-                final TextView comment = (TextView) row.findViewById(net.digihippo.ltt.R.id.comment);
-                final TextView alert = (TextView) row.findViewById(net.digihippo.ltt.R.id.alert);
-                train.getDepartureTime()
-                        .consume(
-                                new Consumer<BadTrainState>() {
-                                    @Override
-                                    public void consume(BadTrainState badTrainState) {
-                                        alert.setText(badTrainState.name());
-                                        due.setText(train.getScheduledTime());
-
-                                        comment.setVisibility(View.GONE);
-                                    }
-                                },
-                                new Consumer<String>() {
-                                    @Override
-                                    public void consume(String expectedAt) {
-                                        if (train.onTime())
-                                        {
-                                            due.setText(expectedAt);
-                                            alert.setText("");
-                                            alert.setBackgroundColor(Color.TRANSPARENT);
-                                            // could set colour here?
-                                            comment.setText("On time");
-                                        }
-                                        else
-                                        {
-                                            due.setText(train.getScheduledTime());
-                                            // could set colour here?
-                                            comment.setText(expectedAt);
-                                            alert.setText("");
-                                            alert.setBackgroundColor(Color.TRANSPARENT);
-                                        }
-                                    }
-                                }
-                        );
-
-                TextView destinationView = (TextView) row.findViewById(net.digihippo.ltt.R.id.destination);
-                destinationView.setText(train.destinationText());
-
-                TextView platform = (TextView) row.findViewById(net.digihippo.ltt.R.id.platform);
-                platform.setText(train.platform());
-
-                table.addView(row);
-                row.findViewById(net.digihippo.ltt.R.id.button).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final Intent intent = new Intent(ShowTrainsActivity.this, ShowDetailsActivity.class);
-                        intent.putExtra(NavigatorActivity.NAVIGATOR_STATE, navigatorState);
-                        intent.putExtra(TRAIN, train);
-                        ShowTrainsActivity.this.startActivity(intent);
-                    }
-                });
-
-                displayArrivalTime(row, train);
+                showOneTrain(table, train);
             }
             showFastestTrain(board);
         }
+    }
+
+    private void showOneTrain(TableLayout table, final DepartingTrain train)
+    {
+        final View row = View.inflate(this, R.layout.board_entry, null);
+
+        populateDepartureTime(train, row);
+        ((TextView) row.findViewById(R.id.destination)).setText(train.destinationText());
+        ((TextView) row.findViewById(R.id.platform)).setText(train.platform());
+        attachShowDetailsListener(train, row);
+        displayArrivalTime(row, train);
+
+        table.addView(row);
+    }
+
+    private void attachShowDetailsListener(final DepartingTrain train, View row)
+    {
+        row.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Intent intent = new Intent(ShowTrainsActivity.this, ShowDetailsActivity.class);
+                intent.putExtra(NavigatorActivity.NAVIGATOR_STATE, navigatorState);
+                intent.putExtra(TRAIN, train);
+                ShowTrainsActivity.this.startActivity(intent);
+            }
+        });
+    }
+
+    private void populateDepartureTime(final DepartingTrain train, View row)
+    {
+        final TextView due = (TextView) row.findViewById(R.id.due);
+        final TextView comment = (TextView) row.findViewById(R.id.comment);
+        final TextView alert = (TextView) row.findViewById(R.id.alert);
+        train.getDepartureTime()
+                .consume(
+                        new Consumer<BadTrainState>() {
+                            @Override
+                            public void consume(BadTrainState badTrainState) {
+                                alert.setText(badTrainState.name());
+                                due.setText(train.getScheduledTime());
+
+                                comment.setVisibility(View.GONE);
+                            }
+                        },
+                        new Consumer<String>() {
+                            @Override
+                            public void consume(String expectedAt) {
+                                if (train.onTime())
+                                {
+                                    due.setText(expectedAt);
+                                    alert.setText("");
+                                    alert.setBackgroundColor(Color.TRANSPARENT);
+                                    // could set colour here?
+                                    comment.setText("On time");
+                                }
+                                else
+                                {
+                                    due.setText(train.getScheduledTime());
+                                    // could set colour here?
+                                    comment.setText(expectedAt);
+                                    alert.setText("");
+                                    alert.setBackgroundColor(Color.TRANSPARENT);
+                                }
+                            }
+                        }
+                );
     }
 }
