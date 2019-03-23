@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class DepartingTrain implements Serializable {
+    public static final String ON_TIME = "On time";
     private final Date requestedAt;
     private final boolean isCircularRoute;
     private final List<Station> destinations;
@@ -80,7 +81,7 @@ public class DepartingTrain implements Serializable {
     public String getActualDepartureTime()
     {
         String et = getDepartureTime().unwrap();
-        if (et.equals("On time"))
+        if (et.equals(ON_TIME))
         {
             return scheduledTime;
         }

@@ -1,7 +1,6 @@
 package net.digihippo.ltt;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public abstract class Either<A,B> implements Serializable {
     public abstract <T> T either(final Function<A, T> onA, final Function<B, T> onB);

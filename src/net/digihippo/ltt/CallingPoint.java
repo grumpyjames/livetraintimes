@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
+import static net.digihippo.ltt.DepartingTrain.ON_TIME;
+
 public class CallingPoint implements Serializable {
     public final Station station;
     public final String scheduledAtTime;
@@ -28,7 +30,7 @@ public class CallingPoint implements Serializable {
     Date arrivalTime(Date requestTime)
     {
         String unwrap = et.unwrap();
-        if (unwrap.equals("On time"))
+        if (unwrap.equals(ON_TIME))
         {
             return parseDate(scheduledAtTime, requestTime);
         }
