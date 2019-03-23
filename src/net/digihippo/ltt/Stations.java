@@ -460,6 +460,7 @@ public final class Stations {
         allStations.put("CAM","Camberley");
         allStations.put("CBN","Camborne");
         allStations.put("CBG","Cambridge");
+        allStations.put("CMB","Cambridge North");
         allStations.put("CBH","Cambridge Heath");
         allStations.put("CBL","Cambuslang");
         allStations.put("CMD","Camden Road");
@@ -613,6 +614,7 @@ public final class Stations {
         allStations.put("COP","Copplestone");
         allStations.put("CRB","Corbridge");
         allStations.put("COR","Corby");
+        allStations.put("CFC","Corfe Castle");
         allStations.put("CKH","Corkerhill");
         allStations.put("CKL","Corkickle");
         allStations.put("CPA","Corpach");
@@ -1252,6 +1254,7 @@ public final class Stations {
         allStations.put("IBM","IBM Halt");
         allStations.put("IFI","Ifield");
         allStations.put("IFD","Ilford");
+        allStations.put("ILN","Ilkeston");
         allStations.put("ILK","Ilkley");
         allStations.put("IMW","Imperial Wharf");
         allStations.put("INE","Ince & Elton");
@@ -1289,6 +1292,7 @@ public final class Stations {
         allStations.put("KMS","Kemsing");
         allStations.put("KML","Kemsley");
         allStations.put("KEN","Kendal");
+        allStations.put("KNW","Kenilworth");
         allStations.put("KLY","Kenley");
         allStations.put("KNE","Kennett");
         allStations.put("KNS","Kennishead");
@@ -1509,6 +1513,7 @@ public final class Stations {
         allStations.put("LOS","Lostwithiel");
         allStations.put("LBO","Loughborough");
         allStations.put("LGJ","Loughborough Junction");
+        allStations.put("LMR","Low Moor");
         allStations.put("LOW","Lowdham");
         allStations.put("LSY","Lower Sydenham");
         allStations.put("LWT","Lowestoft");
