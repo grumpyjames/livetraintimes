@@ -228,7 +228,7 @@ public class ShowTrainsActivity extends Activity {
             builder.setMessage("The fastest train from " + navigatorState.stationOne.fullName()
                     + " to " + navigatorState.stationTwo.fullName()
                     + " leaves at " + best.getActualDepartureTime()
-                    + platformText
+                    + " from platform " + platformText
                     + ". It is expected to arrive at "
                     + simpleDateFormat.format(best.findArrivalTimeAt(navigatorState.stationTwo)) + ".");
             builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {

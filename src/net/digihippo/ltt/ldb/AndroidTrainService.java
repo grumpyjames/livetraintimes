@@ -149,11 +149,13 @@ public class AndroidTrainService
 
     public static final class Response
     {
+        public final String generatedAt;
         public final String platformAvailable;
         public final List<Service> services;
 
-        Response(String platformAvailable, List<Service> services)
+        Response(String generatedAt, String platformAvailable, List<Service> services)
         {
+            this.generatedAt = generatedAt;
             this.platformAvailable = platformAvailable;
             this.services = services;
         }
@@ -162,7 +164,8 @@ public class AndroidTrainService
         public String toString()
         {
             return "Response{" +
-                "platformAvailable='" + platformAvailable + '\'' +
+                "generatedAt='" + generatedAt + '\'' +
+                ", platformAvailable='" + platformAvailable + '\'' +
                 ", services=" + services +
                 '}';
         }
@@ -191,7 +194,6 @@ public class AndroidTrainService
 
     public static final class Service
     {
-        public final String requestedAt;
         public final String std;
         public final String etd;
         public final String operator;
@@ -203,7 +205,6 @@ public class AndroidTrainService
         public final List<Destination> destinations;
 
         Service(
-            String requestedAt,
             String std,
             String etd,
             String operator,
@@ -214,8 +215,6 @@ public class AndroidTrainService
             boolean isCircularRoute,
             List<Destination> destinations)
         {
-            this.requestedAt = requestedAt;
-
             this.std = std;
             this.etd = etd;
             this.operator = operator;
@@ -249,6 +248,7 @@ public class AndroidTrainService
         parser.require(XmlPullParser.START_TAG, null, "GetStationBoardResult");
 
         String platformAvailable = null;
+        String generatedAt = null;
         List<Service> services = Collections.emptyList();
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -259,12 +259,14 @@ public class AndroidTrainService
                 platformAvailable = readTextField(parser, "platformAvailable");
             } else if (name.equals("trainServices")) {
                 services = readServices(parser);
+            } else if (name.equals("generatedAt")) {
+                generatedAt = readTextField(parser, "generatedAt");
             } else {
                 skip(parser);
             }
         }
 
-        return new Response(platformAvailable, services);
+        return new Response(generatedAt, platformAvailable, services);
     }
 
     /*
@@ -327,7 +329,6 @@ public class AndroidTrainService
     {
         parser.require(XmlPullParser.START_TAG, null, "service");
 
-        String requestedAt = null;
         String std = null;
         String etd = null;
         String operator = null;
@@ -345,9 +346,6 @@ public class AndroidTrainService
 
             switch (name)
             {
-                case "generatedAt":
-                    requestedAt = readTextField(parser, "generatedAt");
-                    break;
                 case "etd":
                     etd = readTextField(parser, "etd");
                     break;
@@ -384,7 +382,6 @@ public class AndroidTrainService
         }
 
         return new Service(
-            requestedAt,
             std, etd, operator, serviceType,
             serviceID, callingPointLists, platform, isCircularRoute,
             destinations);

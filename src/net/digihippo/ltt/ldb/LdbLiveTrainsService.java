@@ -62,7 +62,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             trains.add(new DepartingTrain(
-                format.parse(service.requestedAt),
+                format.parse(response.generatedAt),
                 isCircularRoute,
                 destinations,
                 viaDestinations,
