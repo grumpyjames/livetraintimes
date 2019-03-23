@@ -11,7 +11,6 @@ import android.view.View;
 import com.astuetz.viewpager.extensions.FixedTabsView;
 import com.astuetz.viewpager.extensions.TabsAdapter;
 import com.astuetz.viewpager.extensions.ViewPagerTabButton;
-import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
 
 import java.util.ArrayList;

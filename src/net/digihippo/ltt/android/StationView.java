@@ -5,7 +5,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import net.digihippo.ltt.Anywhere;
-import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
 
 public final class StationView {

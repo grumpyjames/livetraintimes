@@ -1,5 +1,7 @@
-package net.digihippo.ltt;
+package net.digihippo.ltt.android;
 
+
+import net.digihippo.ltt.Station;
 
 public interface FavouriteListener {
     void favouriteAdded(final Station station);

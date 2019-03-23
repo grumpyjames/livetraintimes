@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import net.digihippo.ltt.FavouriteListener;
 import net.digihippo.ltt.Station;
 
 import java.util.List;
