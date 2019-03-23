@@ -6,7 +6,6 @@ import net.digihippo.ltt.DepartureBoard;
 import net.digihippo.ltt.DepartureBoardService;
 import net.digihippo.ltt.Station;
 import net.digihippo.ltt.ldb.LdbLiveTrainsService;
-import org.joda.time.Instant;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -99,7 +98,7 @@ final class Tasks implements Serializable {
         private BoardOrError handleError(NavigatorState navigatorState, Exception e)
         {
             Exception withHelpfulMessage =
-                new Exception("At " + Instant.now() + ", failed to retrieve trains: " + navigatorState, e);
+                new Exception("Failed to retrieve trains: " + navigatorState, e);
             // see if we can reach Google's public DNS
             Socket sock = new Socket();
             try

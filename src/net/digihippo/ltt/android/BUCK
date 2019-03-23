@@ -9,7 +9,6 @@ android_library(
   srcs = glob(['*.java']),
   deps = [
     ':res',
-    '//:jodatime',
     '//src/net/digihippo/ltt:live-trains-api',
     '//src/net/digihippo/ltt/ldb:ldb',
     '//src/com/astuetz/viewpager/extensions:tabs',
