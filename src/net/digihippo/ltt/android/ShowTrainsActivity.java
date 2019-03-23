@@ -1,5 +1,6 @@
 package net.digihippo.ltt.android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,23 +15,19 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import net.digihippo.ltt.*;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static net.digihippo.ltt.FastestTrain.fastestTrainIndex;
 
 public class ShowTrainsActivity extends Activity {
     private static final String TRAIN = "train";
     private AlertDialog alertDialog;
     private NavigatorState navigatorState;
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm");
-    private CurrentBestTrain currentBestTrain;
     private boolean fetchingTrains = false;
 
     @Override
@@ -75,11 +72,10 @@ public class ShowTrainsActivity extends Activity {
                 .setIcon(net.digihippo.ltt.R.drawable.ic_menu_refresh)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-
         return true;
     }
 
-    public void onBoardOrError(final Tasks.BoardOrError boardOrError) {
+    void onBoardOrError(final Tasks.BoardOrError boardOrError) {
         if (alertDialog != null) {
             alertDialog.hide();
         }
@@ -168,36 +164,28 @@ public class ShowTrainsActivity extends Activity {
             case FastestTrain:
             case Departing:
                 return "Fetching departures from " + navigatorState.stationOne.fullName() +
-                        maybe(" to ", navigatorState.stationTwo);
+                        maybeTo(navigatorState.stationTwo);
         }
         throw new RuntimeException("We added a new type and forgot to add the view for it");
     }
 
-    private String maybe(String message, Station stationTwo) {
+    private String maybeTo(Station stationTwo) {
         if (stationTwo != null) {
-            return message + stationTwo.fullName();
+            return " to " + stationTwo.fullName();
         }
         return "";
     }
 
-    private Station filterAnywhere(Station station) {
-        if (station == Anywhere.INSTANCE) {
-            return null;
-        }
-        return station;
-    }
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 
-    private void onDetails(final View rowToUpdate, final DepartingTrain train, final CharSequence due) {
+    private void displayArrivalTime(final View rowToUpdate, final DepartingTrain train) {
         final Station endpoint =
                 navigatorState.stationTwo == null || navigatorState.stationTwo == Anywhere.INSTANCE ?
                     train.destinationList().get(0) : navigatorState.stationTwo;
-        FindArrivalTime callingPointConsumer = new FindArrivalTime(endpoint);
-        for (final CallingPoint point: train.serviceDetails()) {
-            callingPointConsumer.onSinglePoint(point.station, point.et);
-        }
+        final Date arrivalTime = train.findArrivalTimeAt(endpoint);
+        final String arrivalTimeStr = simpleDateFormat.format(arrivalTime);
 
-        final LocalTime now = LocalTime.now();
-        final String arrivalTime = callingPointConsumer.getArrivalTime();
         if (arrivalTime != null) {
             train.getDepartureTime()
                     .consume(
@@ -205,24 +193,9 @@ public class ShowTrainsActivity extends Activity {
                             new Consumer<String>() {
                                 @Override
                                 public void consume(String etd) {
-                                    TextView arrivingAt = (TextView) rowToUpdate.findViewById(net.digihippo.ltt.R.id.arrivingAt);
-                                    arrivingAt.setText(arrivalTime);
-
-                                    LocalTime localTime = DATE_TIME_FORMATTER.parseLocalTime(arrivalTime);
-                                    final DateTime arrivalDateTime;
-                                    if (localTime.isBefore(now)) {
-                                        arrivalDateTime = localTime.toDateTimeToday().plusDays(1);
-                                    } else {
-                                        arrivalDateTime = localTime.toDateTimeToday();
-                                    }
-
-                                    if (currentBestTrain == null || currentBestTrain.arrivesAfter(arrivalDateTime)) {
-                                        currentBestTrain =
-                                            new CurrentBestTrain(
-                                                arrivalDateTime,
-                                                train.platform(),
-                                                due.toString());
-                                    }
+                                    TextView arrivingAt =
+                                        (TextView) rowToUpdate.findViewById(net.digihippo.ltt.R.id.arrivingAt);
+                                    arrivingAt.setText(arrivalTimeStr);
                                 }
                             }
                     );
@@ -238,20 +211,22 @@ public class ShowTrainsActivity extends Activity {
         };
     }
 
-    private void showFastestTrain() {
+    private void showFastestTrain(DepartureBoard board) {
         if (navigatorState.type == NavigatorState.Type.FastestTrain)
         {
+            int index = fastestTrainIndex(navigatorState.stationTwo, board.departingTrains());
+            final DepartingTrain best = board.departingTrains().get(index);
             alertDialog.hide();
             alertDialog.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Fastest Train");
-            String platformText = currentBestTrain.platformText();
+            String platformText = best.platform();
             builder.setMessage("The fastest train from " + navigatorState.stationOne.fullName()
                     + " to " + navigatorState.stationTwo.fullName()
-                    + " leaves at " + currentBestTrain.leavingAt()
+                    + " leaves at " + best.getActualDepartureTime()
                     + platformText
                     + ". It is expected to arrive at "
-                    + DATE_TIME_FORMATTER.print(currentBestTrain.arrivalDateTime.toLocalTime()) + ".");
+                    + simpleDateFormat.format(best.findArrivalTimeAt(navigatorState.stationTwo)) + ".");
             builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -317,7 +292,7 @@ public class ShowTrainsActivity extends Activity {
                         );
 
                 TextView destinationView = (TextView) row.findViewById(net.digihippo.ltt.R.id.destination);
-                destinationView.setText(destinationText(train));
+                destinationView.setText(train.destinationText());
 
                 TextView platform = (TextView) row.findViewById(net.digihippo.ltt.R.id.platform);
                 platform.setText(train.platform());
@@ -333,98 +308,9 @@ public class ShowTrainsActivity extends Activity {
                     }
                 });
 
-                onDetails(row, train, due.getText());
+                displayArrivalTime(row, train);
             }
-            showFastestTrain();
+            showFastestTrain(board);
         }
-    }
-
-    private static final class CurrentBestTrain {
-        private final DateTime arrivalDateTime;
-        private final String platform;
-        private final String due;
-
-        public CurrentBestTrain(
-            DateTime arrivalDateTime,
-            String platform,
-            String due) {
-            this.arrivalDateTime = arrivalDateTime;
-            this.platform = platform;
-            this.due = due;
-        }
-
-        public boolean arrivesAfter(DateTime arrivalDateTime) {
-            return arrivalDateTime.isBefore(this.arrivalDateTime);
-        }
-
-        public String platformText()
-        {
-            return (platform != null && platform.length() > 0) ? " from platform " + platform : "";
-        }
-
-        public String leavingAt()
-        {
-            return due;
-        }
-    }
-
-    private static class FindArrivalTime {
-        private final Station soughtStation;
-
-        private String arrivalTime;
-
-        public FindArrivalTime(Station soughtStation) {
-            this.soughtStation = soughtStation;
-        }
-
-        public void onSinglePoint(Station station, Either<BadTrainState, String> scheduledAtTime) {
-            if (arrivalTime == null && station.threeLetterCode().equals(soughtStation.threeLetterCode())) {
-                scheduledAtTime.consume(new Consumer<BadTrainState>() {
-                    @Override
-                    public void consume(BadTrainState badTrainState) {
-
-                    }
-                }, new Consumer<String>() {
-                    @Override
-                    public void consume(String arrival) {
-                        arrivalTime = arrival;
-                    }
-                });
-            }
-        }
-
-        public String getArrivalTime() {
-            return arrivalTime;
-        }
-    }
-
-    private String destinationText(final DepartingTrain departingTrain) {
-        final List<String> endPoints = new ArrayList<>();
-        for (Station station : departingTrain.destinationList())
-        {
-            endPoints.add(station.fullName());
-        }
-        List<String> via = departingTrain.viaDestinations();
-        String destinationText = "";
-        boolean addComma = false;
-        for (int i = 0; i < endPoints.size(); i++) {
-            if (addComma) {
-                destinationText += ", ";
-            } else {
-                addComma = true;
-            }
-
-            if (i < via.size()) {
-                destinationText += (endPoints.get(i) + " " + via.get(i).trim());
-            } else {
-                destinationText += endPoints.get(i);
-            }
-        }
-
-        if (departingTrain.isCircularRoute()) {
-            destinationText += " (circular route)";
-        }
-
-        return destinationText;
     }
 }

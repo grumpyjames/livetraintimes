@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static net.digihippo.ltt.FastestTrain.fastestTrainIndex;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -83,22 +84,5 @@ public class FastestTrainTest
                 Stations.reverseLookup("Beeston"),
                 Arrays.asList(train, trainTwo)),
             is(0));
-    }
-
-    private int fastestTrainIndex(Station toStation, List<DepartingTrain> haystack)
-    {
-        int fastest = -1;
-        Date earliest = null;
-        for (int i = 0; i < haystack.size(); i++)
-        {
-            final DepartingTrain train = haystack.get(i);
-            final Date arrivalTime = train.getArrivalTime(toStation);
-            if (fastest == -1 || arrivalTime.before(earliest))
-            {
-                fastest = i;
-                earliest = arrivalTime;
-            }
-        }
-        return fastest;
     }
 }

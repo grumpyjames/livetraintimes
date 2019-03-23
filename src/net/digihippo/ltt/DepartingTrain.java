@@ -1,6 +1,7 @@
 package net.digihippo.ltt;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,11 +38,11 @@ public class DepartingTrain implements Serializable {
         this.onTime = onTime;
     }
 
-    public List<String> viaDestinations() {
+    private List<String> viaDestinations() {
         return viaDestinations;
     }
 
-    public boolean isCircularRoute() {
+    private boolean isCircularRoute() {
         return isCircularRoute;
     }
 
@@ -71,8 +72,48 @@ public class DepartingTrain implements Serializable {
         return onTime;
     }
 
-    public Date getArrivalTime(Station atStation)
+    public Date findArrivalTimeAt(Station atStation)
     {
         return serviceDetails.getArrivalTime(atStation, requestedAt);
+    }
+
+    public String getActualDepartureTime()
+    {
+        String et = getDepartureTime().unwrap();
+        if (et.equals("On time"))
+        {
+            return scheduledTime;
+        }
+        return et;
+    }
+
+    public String destinationText() {
+        final List<String> endPoints = new ArrayList<>();
+        for (Station station : destinationList())
+        {
+            endPoints.add(station.fullName());
+        }
+        List<String> via = viaDestinations();
+        StringBuilder destinationText = new StringBuilder();
+        boolean addComma = false;
+        for (int i = 0; i < endPoints.size(); i++) {
+            if (addComma) {
+                destinationText.append(", ");
+            } else {
+                addComma = true;
+            }
+
+            if (i < via.size()) {
+                destinationText.append(endPoints.get(i)).append(" ").append(via.get(i).trim());
+            } else {
+                destinationText.append(endPoints.get(i));
+            }
+        }
+
+        if (isCircularRoute()) {
+            destinationText.append(" (circular route)");
+        }
+
+        return destinationText.toString();
     }
 }
