@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static net.digihippo.ltt.FastestTrain.fastestTrainIndex;
 
@@ -178,6 +179,9 @@ public class ShowTrainsActivity extends Activity {
 
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+    {
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+    }
 
     private void displayArrivalTime(final View rowToUpdate, final DepartingTrain train) {
         final Station endpoint =

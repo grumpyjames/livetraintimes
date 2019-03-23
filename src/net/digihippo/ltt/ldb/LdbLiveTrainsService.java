@@ -1,7 +1,13 @@
 package net.digihippo.ltt.ldb;
 
 import android.annotation.SuppressLint;
-import net.digihippo.ltt.*;
+import net.digihippo.ltt.CallingPoint;
+import net.digihippo.ltt.DepartingTrain;
+import net.digihippo.ltt.DepartureBoard;
+import net.digihippo.ltt.DepartureBoardService;
+import net.digihippo.ltt.ServiceDetails;
+import net.digihippo.ltt.Station;
+import net.digihippo.ltt.Stations;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import static net.digihippo.ltt.DepartureTimes.infer;
 
@@ -52,6 +59,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
 
             @SuppressLint("SimpleDateFormat") SimpleDateFormat format =
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             trains.add(new DepartingTrain(
                 format.parse(service.requestedAt),
