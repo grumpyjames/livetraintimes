@@ -78,6 +78,11 @@ public class DepartingTrain implements Serializable {
         return serviceDetails.getArrivalTime(atStation, requestedAt);
     }
 
+    public String findArrivalTimeStrAt(Station station)
+    {
+        return serviceDetails.findArrivalTimeStrAt(station);
+    }
+
     public String getActualDepartureTime()
     {
         String et = getDepartureTime().unwrap();

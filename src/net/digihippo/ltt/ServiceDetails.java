@@ -28,6 +28,24 @@ public class ServiceDetails implements Iterable<CallingPoint>, Serializable {
         return splitLocations;
     }
 
+    public String findArrivalTimeStrAt(Station station)
+    {
+        for (List<CallingPoint> callingPoints : callingPointsList)
+        {
+            for (CallingPoint callingPoint : callingPoints)
+            {
+                if (station.equals(callingPoint.station))
+                {
+                    if (callingPoint.hasArrivalTime())
+                    {
+                        return callingPoint.arrivalTimeStr();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public Date getArrivalTime(Station station, Date requestTime)
     {
         for (List<CallingPoint> callingPoints : callingPointsList)

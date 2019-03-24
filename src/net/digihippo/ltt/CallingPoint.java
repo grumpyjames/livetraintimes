@@ -27,17 +27,22 @@ public class CallingPoint implements Serializable {
         return et.isRight();
     }
 
-    Date arrivalTime(Date requestTime)
+    String arrivalTimeStr()
     {
         String unwrap = et.unwrap();
         if (unwrap.equals(ON_TIME))
         {
-            return parseDate(scheduledAtTime, requestTime);
+            return scheduledAtTime;
         }
         else
         {
-            return parseDate(unwrap, requestTime);
+            return unwrap;
         }
+    }
+
+    Date arrivalTime(Date requestTime)
+    {
+        return parseDate(arrivalTimeStr(), requestTime);
     }
 
     private Date parseDate(String scheduledAtTime, Date requestTime)

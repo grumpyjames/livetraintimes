@@ -19,9 +19,6 @@ import net.digihippo.ltt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 import static net.digihippo.ltt.FastestTrain.fastestTrainIndex;
 
@@ -177,18 +174,11 @@ public class ShowTrainsActivity extends Activity {
         return "";
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-    {
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
-    }
-
     private void displayArrivalTime(final View rowToUpdate, final DepartingTrain train) {
         final Station endpoint =
                 navigatorState.stationTwo == null || navigatorState.stationTwo == Anywhere.INSTANCE ?
                     train.destinationList().get(0) : navigatorState.stationTwo;
-        final Date arrivalTime = train.findArrivalTimeAt(endpoint);
-        final String arrivalTimeStr = simpleDateFormat.format(arrivalTime);
+        final String arrivalTime = train.findArrivalTimeStrAt(endpoint);
 
         if (arrivalTime != null) {
             train.getDepartureTime()
@@ -199,7 +189,7 @@ public class ShowTrainsActivity extends Activity {
                                 public void consume(String etd) {
                                     TextView arrivingAt =
                                         (TextView) rowToUpdate.findViewById(net.digihippo.ltt.R.id.arrivingAt);
-                                    arrivingAt.setText(arrivalTimeStr);
+                                    arrivingAt.setText(arrivalTime);
                                 }
                             }
                     );
@@ -228,9 +218,9 @@ public class ShowTrainsActivity extends Activity {
             builder.setMessage("The fastest train from " + navigatorState.stationOne.fullName()
                     + " to " + navigatorState.stationTwo.fullName()
                     + " leaves at " + best.getActualDepartureTime()
-                    + " from platform " + platformText
+                    + (nullOrEmpty(platformText) ? "" : " from platform " + platformText)
                     + ". It is expected to arrive at "
-                    + simpleDateFormat.format(best.findArrivalTimeAt(navigatorState.stationTwo)) + ".");
+                    + best.findArrivalTimeStrAt(navigatorState.stationTwo) + ".");
             builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -240,6 +230,11 @@ public class ShowTrainsActivity extends Activity {
             alertDialog = builder.create();
             alertDialog.show();
         }
+    }
+
+    private boolean nullOrEmpty(String str)
+    {
+        return str == null || str.isEmpty();
     }
 
     private void populateBoard(TableLayout table, DepartureBoard board) {
@@ -305,6 +300,7 @@ public class ShowTrainsActivity extends Activity {
                             }
                         },
                         new Consumer<String>() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void consume(String expectedAt) {
                                 if (train.onTime())
