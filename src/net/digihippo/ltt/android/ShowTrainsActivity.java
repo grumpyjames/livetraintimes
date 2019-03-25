@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import net.digihippo.ltt.*;
+import net.digihippo.ltt.ldb.AndroidTrainService;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -22,7 +23,8 @@ import java.io.Writer;
 
 import static net.digihippo.ltt.FastestTrain.fastestTrainIndex;
 
-public class ShowTrainsActivity extends Activity {
+public class ShowTrainsActivity extends Activity implements BoardReceiver
+{
     private static final String TRAIN = "train";
     private AlertDialog alertDialog;
     private NavigatorState navigatorState;
@@ -73,7 +75,8 @@ public class ShowTrainsActivity extends Activity {
         return true;
     }
 
-    void onBoardOrError(final Tasks.BoardOrError boardOrError) {
+    @Override
+    public void onBoardOrError(final Tasks.BoardOrError boardOrError) {
         if (alertDialog != null) {
             alertDialog.hide();
         }
@@ -83,43 +86,74 @@ public class ShowTrainsActivity extends Activity {
             populateBoard(table, boardOrError.board());
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            if (boardOrError.isNetworkConnectivityPresent())
+            switch (boardOrError.getErrorType())
             {
-                builder.setMessage(
-                    "Failed to retrieve trains, even though this device has internet connectivity. " +
-                        "Please send a bug report so this can be fixed :-)");
-                builder.setNeutralButton("Send bug report", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
+                case Connectivity:
+                    builder.setMessage("Unable to retrieve trains - are you connected to the internet?");
+                    builder.setNeutralButton("Retry", new DialogInterface.OnClickListener()
                     {
-                        Writer writer = new StringWriter();
-                        //noinspection ThrowableResultOfMethodCallIgnored
-                        boardOrError.error().printStackTrace(new PrintWriter(writer));
-                        String exceptionText = writer.toString();
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            attemptToFetchTrains();
+                        }
+                    });
+                    break;
+                case Programmer:
+                    builder.setMessage(
+                        "Failed to comprehend response from National Rail. This is almost certainly my fault, sorry!" +
+                            " Please send a bug report so this can be fixed :-)");
+                    builder.setNeutralButton("Send bug report", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            Writer writer = new StringWriter();
+                            //noinspection ThrowableResultOfMethodCallIgnored
+                            PrintWriter printWriter = new PrintWriter(writer);
+                            boardOrError.error().printStackTrace(printWriter);
+                            printWriter.println("It occurred due to a weird response:");
+                            printWriter.println(
+                                ((AndroidTrainService.ParseException) boardOrError.error()).responseContent);
+                            String exceptionText = writer.toString();
 
-                        Intent intent = new Intent(Intent.ACTION_SENDTO);
-                        intent.setType("message/rfc822");
-                        intent.putExtra(Intent.EXTRA_SUBJECT, "A live train times bug");
-                        intent.putExtra(Intent.EXTRA_TEXT,
-                            "Please investigate the below exception: \n" + exceptionText);
-                        intent.setData(Uri.parse("mailto:james.byatt@digihippo.net"));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        ShowTrainsActivity.this.startActivity(intent);
-                    }
-                });
-            }
-            else
-            {
-                builder.setMessage("Unable to retrieve trains - are you connected to the internet?");
-                builder.setNeutralButton("Retry", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
+                            Intent intent = new Intent(Intent.ACTION_SENDTO);
+                            intent.setType("message/rfc822");
+                            intent.putExtra(Intent.EXTRA_SUBJECT, "A live train times bug");
+                            intent.putExtra(Intent.EXTRA_TEXT,
+                                "Please investigate the below exception: \n" + exceptionText);
+                            intent.setData(Uri.parse("mailto:james.byatt@digihippo.net"));
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            ShowTrainsActivity.this.startActivity(intent);
+                        }
+                    });
+                    break;
+                case Other:
+                    builder.setMessage(
+                        "Failed to retrieve trains, even though this device has internet connectivity. " +
+                            "Please send a bug report so this can be fixed :-)");
+                    builder.setNeutralButton("Send bug report", new DialogInterface.OnClickListener()
                     {
-                        attemptToFetchTrains();
-                    }
-                });
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            Writer writer = new StringWriter();
+                            //noinspection ThrowableResultOfMethodCallIgnored
+                            boardOrError.error().printStackTrace(new PrintWriter(writer));
+                            String exceptionText = writer.toString();
+
+                            Intent intent = new Intent(Intent.ACTION_SENDTO);
+                            intent.setType("message/rfc822");
+                            intent.putExtra(Intent.EXTRA_SUBJECT, "A live train times bug");
+                            intent.putExtra(Intent.EXTRA_TEXT,
+                                "Please investigate the below exception: \n" + exceptionText);
+                            intent.setData(Uri.parse("mailto:james.byatt@digihippo.net"));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            ShowTrainsActivity.this.startActivity(intent);
+                        }
+                    });
+                    break;
             }
             builder.setCancelable(true);
             alertDialog = builder.create();

@@ -8,7 +8,10 @@ import net.digihippo.ltt.DepartureBoardService;
 import net.digihippo.ltt.ServiceDetails;
 import net.digihippo.ltt.Station;
 import net.digihippo.ltt.Stations;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +29,7 @@ public class LdbLiveTrainsService implements DepartureBoardService
         new AndroidTrainService(TOKEN);
 
     @Override
-    public DepartureBoard boardFor(Station fromStation) throws Exception
+    public DepartureBoard boardFor(Station fromStation) throws IOException
     {
         return boardFor(fromStation, null);
     }
@@ -34,12 +37,15 @@ public class LdbLiveTrainsService implements DepartureBoardService
     @Override
     public DepartureBoard boardFor(
         Station fromStation,
-        Station toStation) throws Exception
+        Station toStation) throws IOException
     {
         AndroidTrainService.Response response =
-            androidTrainService.fetchTrains(
-                fromStation.threeLetterCode(),
-                toStation == null ? null : toStation.threeLetterCode());
+            null;
+
+        response = androidTrainService.fetchTrains(
+            fromStation.threeLetterCode(),
+            toStation == null ? null : toStation.threeLetterCode());
+
 
         final List<DepartingTrain> trains = new ArrayList<>();
         for (AndroidTrainService.Service service : response.services)
@@ -61,26 +67,26 @@ public class LdbLiveTrainsService implements DepartureBoardService
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-            trains.add(new DepartingTrain(
-                format.parse(response.generatedAt),
-                isCircularRoute,
-                destinations,
-                viaDestinations,
-                service.platform,
-                toServiceDetails(service.callingPointLists),
-                infer(service.etd, service.std),
-                service.std,
-                "On time".equals(service.etd)
-            ));
+            try
+            {
+                trains.add(new DepartingTrain(
+                    format.parse(response.generatedAt),
+                    isCircularRoute,
+                    destinations,
+                    viaDestinations,
+                    service.platform,
+                    toServiceDetails(service.callingPointLists),
+                    infer(service.etd, service.std),
+                    service.std,
+                    "On time".equals(service.etd)
+                ));
+            } catch (ParseException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
 
         return new DepartureBoard(trains);
-    }
-
-    @Override
-    public void httpsIsBroken()
-    {
-        androidTrainService.httpIsBroken();
     }
 
     private static ServiceDetails

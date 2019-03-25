@@ -4,8 +4,7 @@ import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,16 +25,49 @@ public class AndroidTrainService
         this.token = token;
     }
 
+    public static final class ParseException extends RuntimeException
+    {
+        public final String responseContent;
+
+        public ParseException(String responseContent, XmlPullParserException root)
+        {
+            super(root);
+            this.responseContent = responseContent;
+        }
+    }
+
     Response fetchTrains(final String fromCrs, final String toCrs)
-        throws IOException, XmlPullParserException
+        throws IOException, ParseException
     {
         InputStream inputStream = makeBoardRequest(protocol, token, fromCrs, toCrs);
 
+        // Yes, this is hilariously inefficient, but I would like the full
+        // request string available for debugging if something breaks.
+        final int bufferSize = 1024;
+        final char[] buffer = new char[bufferSize];
+        final StringBuilder out = new StringBuilder();
+        Reader in = new InputStreamReader(inputStream, "UTF-8");
+        for (; ; ) {
+            int rsz = in.read(buffer, 0, buffer.length);
+            if (rsz < 0)
+                break;
+            out.append(buffer, 0, rsz);
+        }
+        final String responseText = out.toString();
+
+
         XmlPullParser parser = Xml.newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-        parser.setInput(inputStream, UTF_8);
-        parser.nextTag();
-        return readResponse(parser);
+
+        try
+        {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+            parser.setInput(new ByteArrayInputStream(responseText.getBytes("UTF-8")), UTF_8);
+            parser.nextTag();
+            return readResponse(parser);
+        } catch (XmlPullParserException e)
+        {
+            throw new ParseException(responseText, e);
+        }
     }
 
     public static InputStream makeBoardRequest(

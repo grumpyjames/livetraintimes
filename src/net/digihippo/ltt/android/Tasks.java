@@ -5,30 +5,39 @@ import net.digihippo.ltt.Anywhere;
 import net.digihippo.ltt.DepartureBoard;
 import net.digihippo.ltt.DepartureBoardService;
 import net.digihippo.ltt.Station;
+import net.digihippo.ltt.ldb.AndroidTrainService;
 import net.digihippo.ltt.ldb.LdbLiveTrainsService;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 final class Tasks implements Serializable {
     private static final DepartureBoardService service = new LdbLiveTrainsService();
 
+    public enum ErrorType
+    {
+        Connectivity,
+        Programmer,
+        UnexpectedResponse,
+        Other;
+    }
+
     static class BoardOrError {
         private final DepartureBoard board;
         private final Exception error;
-        private final boolean networkConnectivityPresent;
+        private final ErrorType errorType;
 
         private BoardOrError(DepartureBoard board) {
             this.board = board;
             this.error = null;
-            this.networkConnectivityPresent = true;
+            this.errorType = null;
         }
 
-        private BoardOrError(Exception exc, boolean networkConnectivityPresent) {
+        private BoardOrError(Exception exc, ErrorType errorType) {
             error = exc;
-            this.networkConnectivityPresent = networkConnectivityPresent;
+            this.errorType = errorType;
             board = null;
         }
 
@@ -44,16 +53,16 @@ final class Tasks implements Serializable {
             return board;
         }
 
-        boolean isNetworkConnectivityPresent()
+        ErrorType getErrorType()
         {
-            return networkConnectivityPresent;
+            return errorType;
         }
     }
 
     private static class GetBoardsTask extends AsyncTask<NavigatorState, Integer, BoardOrError> {
-        private final ShowTrainsActivity context;
+        private final BoardReceiver context;
 
-        private GetBoardsTask(ShowTrainsActivity context) {
+        private GetBoardsTask(BoardReceiver context) {
             this.context = context;
         }
 
@@ -62,25 +71,14 @@ final class Tasks implements Serializable {
             final NavigatorState navigatorState = states[0];
             try {
                 return performRequest(navigatorState);
-            } catch (Exception e) {
-                if (e.getMessage().contains("Trust anchor"))
-                {
-                    service.httpsIsBroken();
-                    // don't recurse in case, magically, the http version throws the same error.
-                    try
-                    {
-                        return performRequest(navigatorState);
-                    } catch (Exception again)
-                    {
-                        return handleError(navigatorState, again);
-                    }
-                }
-
+            } catch (IOException e) {
                 return handleError(navigatorState, e);
+            } catch (AndroidTrainService.ParseException pe) {
+                return new BoardOrError(pe, ErrorType.Programmer);
             }
         }
 
-        private BoardOrError performRequest(NavigatorState navigatorState) throws Exception
+        private BoardOrError performRequest(NavigatorState navigatorState) throws IOException
         {
             final Station from = navigatorState.stationOne;
 
@@ -99,17 +97,22 @@ final class Tasks implements Serializable {
         {
             Exception withHelpfulMessage =
                 new Exception("Failed to retrieve trains: " + navigatorState, e);
-            // see if we can reach Google's public DNS
-            Socket sock = new Socket();
+            // see if we can reach Google
             try
             {
-                sock.connect(new InetSocketAddress("8.8.8.8", 53), 1500);
-                sock.close();
-                return new BoardOrError(withHelpfulMessage, true);
+                URL url = new URL( "https://www.google.com");
+                final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("HEAD");
+                if (urlConnection.getResponseCode() < 300)
+                {
+                    return new BoardOrError(withHelpfulMessage, ErrorType.Other);
+                }
+
+                return new BoardOrError(withHelpfulMessage, ErrorType.Connectivity);
             }
             catch (IOException ioe)
             {
-                return new BoardOrError(withHelpfulMessage, false);
+                return new BoardOrError(withHelpfulMessage, ErrorType.Connectivity);
             }
         }
 

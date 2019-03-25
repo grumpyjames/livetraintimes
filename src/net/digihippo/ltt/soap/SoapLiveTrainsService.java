@@ -10,6 +10,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.digihippo.ltt.*;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -72,27 +73,33 @@ public class SoapLiveTrainsService implements DepartureBoardService {
         this.accessToken = accessToken;
     }
 
-    private DepartureBoard boardFor(final Station from, final Optional<Station> to) throws Exception {
+    private DepartureBoard boardFor(final Station from, final Optional<Station> to) throws IOException {
 
-        return toDepartureBoard(
-                wwhldbServiceSoap.GetDepBoardWithDetails(
-                        20,
-                        from.threeLetterCode(),
-                        to.isPresent() ? to.get().threeLetterCode() : null,
-                        null,
-                        null,
-                        null,
-                        accessToken)
-        );
+        try
+        {
+            return toDepartureBoard(
+                    wwhldbServiceSoap.GetDepBoardWithDetails(
+                            20,
+                            from.threeLetterCode(),
+                            to.isPresent() ? to.get().threeLetterCode() : null,
+                            null,
+                            null,
+                            null,
+                            accessToken)
+            );
+        } catch (Exception e)
+        {
+            throw new IOException(e);
+        }
 
     }
 
-    public DepartureBoard boardFor(Station fromStation) throws Exception
+    public DepartureBoard boardFor(Station fromStation) throws IOException
     {
         return boardFor(fromStation, Optional.<Station>absent());
     }
 
-    public DepartureBoard boardFor(Station fromStation, Station toStation) throws Exception
+    public DepartureBoard boardFor(Station fromStation, Station toStation) throws IOException
     {
         return boardFor(fromStation, Optional.of(toStation));
     }
