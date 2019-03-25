@@ -243,21 +243,30 @@ public class ShowTrainsActivity extends Activity implements BoardReceiver
         if (navigatorState.type == NavigatorState.Type.FastestTrain)
         {
             int index = fastestTrainIndex(navigatorState.stationTwo, board.departingTrains());
-            final DepartingTrain best = board.departingTrains().get(index);
             alertDialog.hide();
             alertDialog.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Fastest Train");
-            String platformText = best.platform();
-            builder.setMessage("The fastest train from " + navigatorState.stationOne.fullName()
+            if (index >= 0)
+            {
+                final DepartingTrain best = board.departingTrains().get(index);
+                String platformText = best.platform();
+                builder.setMessage("The fastest train from " + navigatorState.stationOne.fullName()
                     + " to " + navigatorState.stationTwo.fullName()
                     + " leaves at " + best.getActualDepartureTime()
                     + (nullOrEmpty(platformText) ? "" : " from platform " + platformText)
                     + ". It is expected to arrive at "
                     + best.findArrivalTimeStrAt(navigatorState.stationTwo) + ".");
-            builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+            } else {
+                builder.setMessage(
+                    "Unable to find a train to " + navigatorState.stationTwo.fullName() + " with a known arrival time");
+            }
+
+            builder.setNeutralButton("Ok", new DialogInterface.OnClickListener()
+            {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                public void onClick(DialogInterface dialogInterface, int i)
+                {
                     alertDialog.hide();
                 }
             });

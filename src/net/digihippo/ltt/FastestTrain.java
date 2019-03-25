@@ -14,7 +14,7 @@ public final class FastestTrain
         {
             final DepartingTrain train = haystack.get(i);
             final Date arrivalTime = train.findArrivalTimeAt(toStation);
-            if (fastest == -1 || arrivalTime.before(earliest))
+            if (arrivalTime != null && (fastest == -1 || arrivalTime.before(earliest)))
             {
                 fastest = i;
                 earliest = arrivalTime;

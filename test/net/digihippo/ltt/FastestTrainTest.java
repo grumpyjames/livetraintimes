@@ -14,10 +14,12 @@ public class FastestTrainTest
     public void fastestTrainOfASingleTrainIsThatTrain()
     {
         DepartingTrain train = new DepartingTrainTestBuilder()
+            .requestedAt("2018-11-05T14:00:00.000Z")
             .withPlatform("5")
             .withDestination("Beeston")
             .onTime("Bedford", "14:10")
             .onTime("Leicester", "15:20")
+            .onTime("Beeston", "15:50")
             .build()
             .onSchedule("15:43")
             .build();
