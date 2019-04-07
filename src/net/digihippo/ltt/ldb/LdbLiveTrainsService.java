@@ -63,9 +63,11 @@ public class LdbLiveTrainsService implements DepartureBoardService
                 }
             }
 
+            // We can't easily parse the time zone from the response because it contains
+            // a variable amount of precision in the subsecond region. My god.
             @SuppressLint("SimpleDateFormat") SimpleDateFormat format =
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            format.setTimeZone(TimeZone.getTimeZone("Europe/London"));
 
             try
             {
