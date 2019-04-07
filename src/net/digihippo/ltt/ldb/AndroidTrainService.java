@@ -153,11 +153,9 @@ public class AndroidTrainService
         );
         for (String tag : entryTree)
         {
-            System.out.println("I claim I must be at " + startTag);
             parser.require(XmlPullParser.START_TAG, null, startTag);
             while (parser.next() != XmlPullParser.END_TAG)
             {
-                System.out.println("I seek " + tag);
                 if (parser.getEventType() != XmlPullParser.START_TAG)
                 {
                     continue;
@@ -165,7 +163,6 @@ public class AndroidTrainService
                 String name = parser.getName();
                 if (name.equals(tag))
                 {
-                    System.out.println("Found " + tag);
                     startTag = tag;
                     break;
                 }
