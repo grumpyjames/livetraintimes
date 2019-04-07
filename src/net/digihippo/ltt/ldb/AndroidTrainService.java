@@ -75,6 +75,8 @@ public class AndroidTrainService
     {
         URL url = new URL(protocol + "://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx");
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setConnectTimeout(10000);
+        urlConnection.setReadTimeout(5000);
         urlConnection.setRequestMethod("POST");
         urlConnection.setRequestProperty(
             "SOAPAction", "http://thalesgroup.com/RTTI/2015-05-14/ldb/GetDepBoardWithDetails");

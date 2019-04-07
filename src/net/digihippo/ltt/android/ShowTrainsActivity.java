@@ -88,6 +88,18 @@ public class ShowTrainsActivity extends Activity implements BoardReceiver
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             switch (boardOrError.getErrorType())
             {
+                case Timeout:
+                    builder.setMessage("Timed out retrieving trains, even though there is internet connectivity." +
+                        " Try again, things might improve.");
+                    builder.setNeutralButton("Retry", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            attemptToFetchTrains();
+                        }
+                    });
+                    break;
                 case Connectivity:
                     builder.setMessage("Unable to retrieve trains - are you connected to the internet?");
                     builder.setNeutralButton("Retry", new DialogInterface.OnClickListener()
@@ -101,7 +113,8 @@ public class ShowTrainsActivity extends Activity implements BoardReceiver
                     break;
                 case Programmer:
                     builder.setMessage(
-                        "Failed to comprehend response from National Rail. This is almost certainly my fault, sorry!" +
+                        "Failed to comprehend departure board response from National Rail." +
+                            " This is almost certainly my fault!" +
                             " Please send a bug report so this can be fixed :-)");
                     builder.setNeutralButton("Send bug report", new DialogInterface.OnClickListener()
                     {

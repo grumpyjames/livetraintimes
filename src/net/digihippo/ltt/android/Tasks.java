@@ -11,6 +11,7 @@ import net.digihippo.ltt.ldb.LdbLiveTrainsService;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 final class Tasks implements Serializable {
@@ -20,8 +21,8 @@ final class Tasks implements Serializable {
     {
         Connectivity,
         Programmer,
-        UnexpectedResponse,
-        Other;
+        Timeout,
+        Other
     }
 
     static class BoardOrError {
@@ -71,8 +72,10 @@ final class Tasks implements Serializable {
             final NavigatorState navigatorState = states[0];
             try {
                 return performRequest(navigatorState);
+            } catch (SocketTimeoutException ste) {
+                return handleError(navigatorState, ste, true);
             } catch (IOException e) {
-                return handleError(navigatorState, e);
+                return handleError(navigatorState, e, false);
             } catch (AndroidTrainService.ParseException pe) {
                 return new BoardOrError(pe, ErrorType.Programmer);
             }
@@ -93,19 +96,22 @@ final class Tasks implements Serializable {
             }
         }
 
-        private BoardOrError handleError(NavigatorState navigatorState, Exception e)
+        private BoardOrError handleError(
+            NavigatorState navigatorState, Exception original, boolean wasTimeout)
         {
             Exception withHelpfulMessage =
-                new Exception("Failed to retrieve trains: " + navigatorState, e);
+                new Exception("Failed to retrieve trains: " + navigatorState, original);
             // see if we can reach Google
             try
             {
                 URL url = new URL( "https://www.google.com");
                 final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("HEAD");
+                urlConnection.setConnectTimeout(5000);
+                urlConnection.setReadTimeout(2000);
                 if (urlConnection.getResponseCode() < 300)
                 {
-                    return new BoardOrError(withHelpfulMessage, ErrorType.Other);
+                    return new BoardOrError(withHelpfulMessage, wasTimeout ? ErrorType.Timeout : ErrorType.Other);
                 }
 
                 return new BoardOrError(withHelpfulMessage, ErrorType.Connectivity);
