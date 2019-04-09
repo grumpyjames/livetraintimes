@@ -570,6 +570,9 @@ public class AndroidTrainService
                 case "et":
                     expectedTime = readTextField(parser, "et");
                     break;
+                case "at":
+                    expectedTime = readTextField(parser, "at");
+                    break;
                 default:
                     skip(parser);
                     break;
