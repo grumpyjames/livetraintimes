@@ -115,7 +115,7 @@ public class StationSearchFragment extends SelectableFragment implements Favouri
     @Override
     public void onSelected(boolean selected)
     {
-        if (selected)
+        if (selected && editView != null)
         {
             InputMethodManager imm =
                 (InputMethodManager) editView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -128,8 +128,11 @@ public class StationSearchFragment extends SelectableFragment implements Favouri
     @Override
     public void run()
     {
-        InputMethodManager imm =
-            (InputMethodManager) editView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editView.getWindowToken(), 0);
+        if (editView != null)
+        {
+            InputMethodManager imm =
+                (InputMethodManager) editView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editView.getWindowToken(), 0);
+        }
     }
 }
